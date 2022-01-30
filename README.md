@@ -12,6 +12,9 @@ Features / opinions
 -   Validation on the client and the server
     -   When your server supports `FormData` like [Remix!](https://remix.run/)
 -   Nested / array / object fields
+-   Type safe
+    -   `name` and `id` attribute generation
+    -   Error referencing
 
 ## Install
 

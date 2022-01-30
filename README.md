@@ -97,7 +97,7 @@ and just create the input names with `.user.`:
 <input type="password" name={fields.user.password()} />;
 ```
 
-And this is all type checked 👌
+And all this is type checked 👌
 
 ## Arrays
 

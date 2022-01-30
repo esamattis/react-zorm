@@ -8,9 +8,8 @@ Tools for creating type safe forms using the browser native `<form>` and
 Features / opinions
 
 -   Validation on the client and the browser
-    -   When your server support `FormData` eg. [Remix!](https://remix.run/)
--   Nested / array fields
--   Object fields
+    -   When your server supports `FormData` like [Remix!](https://remix.run/)
+-   Nested / array / object fields
 -   No controlled inputs
 
 ## Install
@@ -51,7 +50,7 @@ function Signup() {
                 className={errors.email("errored")}
             />
             {errors.email((e) => (
-                // Render when the field has an error
+                // Rendered when the field has an error
                 <ErrorMessage message={e.message} />
             ))}
             Password:
@@ -71,7 +70,7 @@ function Signup() {
 
 Play with this example in Codesandbod.
 
-Also checkout this classic TODOs demonstrating almost every feature in the library.
+Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library.
 
 ## Objects
 
@@ -122,3 +121,29 @@ users.map((user, index) => {
     );
 });
 ```
+
+See the [TODOs example][todos] for more deatails
+
+## API
+
+### `createValidator(formName: string, formParser: ZodObject): Validator`
+
+Create a form `Validator`
+
+## `Validator` properties
+
+-   `fields`: Chainable object for generating input `name`s and `id`s
+    -   Call without arguments or with `.prop("name")` to generate the input name attribute value
+    -   Call `.prop("id")` to generate a unique HTML id. Use for `aria-describedby` for example
+-   `useValidation(): ValidationObject`: React hook for using the validator with a `<form>`
+-   `useValidationContext(): ValidationContextObject`: React hook for using the validator from nested components
+
+## `ValidationObject` properties
+
+-   `props(customize: HTMLFormElement): HTMLFormElementProperties`: Get spreadable props for `<form>`
+-   `validation`: The current Zod validation status returned by [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)
+    -   The validation started on the first submit and after that on every input blur event
+-   `validate(): void`: Manually invoke validation
+-   `Context`: Context React component for providing the value for `useValidationContext()`
+
+[todos]: http://todo.invalid

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { z } from "zod";
-import { createValidator } from "../src/react-hook";
+import { createValidator } from "../../src/react-hook";
 
 const FormValues = z.object({
-    listName: z.string().min(1),
+    meta: z.object({
+        listName: z.string().min(1),
+    }),
     todos: z.array(
         z.object({
             task: z.string().min(1),
@@ -19,7 +21,6 @@ const FormValues = z.object({
                 .transform((s) => {
                     return Number(s);
                 }),
-            tags: z.array(z.string()).optional(),
         }),
     ),
 });
@@ -28,6 +29,10 @@ const { useValidation, useValidationContext, fields } = createValidator(
     "todo-list",
     FormValues,
 );
+
+function renderError(props: { message: string }) {
+    return <div className="error-message">{props.message}</div>;
+}
 
 function TodoItem(props: { index: number }) {
     const { errors } = useValidationContext();
@@ -38,17 +43,17 @@ function TodoItem(props: { index: number }) {
             <input
                 type="text"
                 name={fields.todos(props.index).task()}
-                className={errors.todos(props.index).task("error")}
+                className={errors.todos(props.index).task("errored")}
             />
-            {errors.todos(props.index).task((e) => e.code + " code")}
+            {errors.todos(props.index).task(renderError)}
             <br />
             Priority <br />
             <input
                 type="text"
                 name={fields.todos(props.index).priority()}
-                className={errors.todos(props.index).priority("error")}
+                className={errors.todos(props.index).priority("errored")}
             />
-            {errors.todos(props.index).priority((e) => e.message + "dsf")}
+            {errors.todos(props.index).priority(renderError)}
         </fieldset>
     );
 }
@@ -75,15 +80,15 @@ function TodoList() {
                     },
                 })}
             >
-                <h1>List name</h1>
+                <h1>Todo List</h1>
+                List name
                 <br />
                 <input
                     type="text"
-                    name={fields.listName()}
-                    className={errors.listName("error")}
+                    name={fields.meta.listName()}
+                    className={errors.meta.listName("errored")}
                 />
-                {errors.listName((e) => e.message)}
-
+                {errors.meta.listName(renderError)}
                 <h2>Todos</h2>
                 {range.map((index) => (
                     <TodoItem key={index} index={index} />
@@ -96,7 +101,9 @@ function TodoList() {
                         Submit all
                     </button>
                 </div>
-                <pre>{JSON.stringify(validation, null, 2)}</pre>
+                <pre>
+                    Validation status: {JSON.stringify(validation, null, 2)}
+                </pre>
             </form>
         </Context>
     );

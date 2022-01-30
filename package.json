@@ -25,7 +25,8 @@
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json",
-        "dev": "parcel example/index.html",
+        "example-complex": "parcel --no-cache examples/complex/index.html",
+        "example-signup": "parcel --no-cache examples/signup/index.html",
         "jest": "jest",
         "tsc": "tsc",
         "test": "tsc && jest"

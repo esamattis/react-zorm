@@ -5,18 +5,18 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { ZodIssue, ZodObject } from "zod";
+import { ZodObject } from "zod";
 import { createErrorChain, FieldErrors } from "./error-path-chain";
-import { createFields, Parser, safeParseForm } from "./parse-form";
+import { createFields, safeParseForm } from "./parse-form";
 
 const ValidationContext = createContext<any>(null);
 
-export function createFormValidator<T extends ZodObject<any>>(
+export function createValidator<T extends ZodObject<any>>(
     ns: string,
     FormParser: T,
 ) {
     type ErrorsType = FieldErrors<ReturnType<typeof FormParser["parse"]>>;
-    type ResultType = ReturnType<T["safeParse"]>;
+    type ValidationResult = ReturnType<T["safeParse"]>;
 
     return {
         fields: createFields(ns, FormParser),
@@ -28,6 +28,7 @@ export function createFormValidator<T extends ZodObject<any>>(
             }
             return {
                 errors: context.errors as ErrorsType,
+                validation: context.validation as ValidationResult,
             };
         },
         useValidation() {
@@ -35,9 +36,8 @@ export function createFormValidator<T extends ZodObject<any>>(
             const setContextValidation = useRef<any>(null);
             const formRef = useRef<HTMLFormElement>(null);
 
-            const [validation, setValidation] = useState<ResultType | null>(
-                null,
-            );
+            const [validation, setValidation] =
+                useState<ValidationResult | null>(null);
 
             const issues = !validation?.success
                 ? validation?.error.issues
@@ -52,16 +52,15 @@ export function createFormValidator<T extends ZodObject<any>>(
 
                 const res = safeParseForm(FormParser, formRef.current);
 
-                setContextValidation?.current(res);
+                setContextValidation?.current?.(res);
                 setValidation(res);
 
                 return res;
             }, []);
 
             const Context = useCallback((props: { children: any }) => {
-                const [validation, setValidation] = useState<ResultType | null>(
-                    null,
-                );
+                const [validation, setValidation] =
+                    useState<ValidationResult | null>(null);
                 setContextValidation.current = setValidation;
 
                 const issues = !validation?.success

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { z } from "zod";
-import { createValidator } from "../../src/react-hook";
+import { createValidator } from "react-zorm";
 
 const FormValues = z.object({
     email: z.string().refine(

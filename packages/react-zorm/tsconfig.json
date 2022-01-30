@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "esnext",
-        "lib": ["es2018", "dom", "esnext"],
+        "lib": ["es2018", "dom", "esnext", "DOM.Iterable"],
         "moduleResolution": "node",
         "jsx": "react",
         "forceConsistentCasingInFileNames": true,

@@ -39,11 +39,15 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
     }
 
     let ret: any = {};
+    // https://8ypq7n41z0.codesandbox.io/
 
-    data.forEach((value, key) => {
-        // https://8ypq7n41z0.codesandbox.io/
+    for (const [key, value] of data.entries()) {
         ret = setIn(ret, key, value);
-    });
+    }
+
+    // data.forEach((value, key) => {
+    //     ret = setIn(ret, key, value);
+    // });
 
     return ret;
 }

@@ -7,10 +7,11 @@ Tools for creating type safe forms using the browser native `<form>` and
 
 Features / opinions
 
--   Validation on the client and the browser
+-   No controlled inputs
+-   No React components, just a React hook
+-   Validation on the client and the server
     -   When your server supports `FormData` like [Remix!](https://remix.run/)
 -   Nested / array / object fields
--   No controlled inputs
 
 ## Install
 

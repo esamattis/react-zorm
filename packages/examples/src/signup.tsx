@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { z } from "zod";
 import { createValidator } from "react-zorm";

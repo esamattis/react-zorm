@@ -16,13 +16,8 @@
         "zod": "^3.11.6"
     },
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json",
         "example-todos": "parcel src/todos.html",
-        "example-signup": "parcel src/signup.html",
-        "jest": "jest",
-        "tsc": "tsc",
-        "test": "tsc && jest"
+        "example-signup": "parcel src/signup.html"
     },
     "author": "",
     "license": "ISC"

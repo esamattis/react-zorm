@@ -53,7 +53,7 @@ function Signup() {
                 type="text"
                 // Generate name attribute by calling the method
                 name={fields.email()}
-                // Add "errored" class when the field has an validation error
+                // Add "errored" class when the field has a validation error
                 className={errors.email("errored")}
             />
             {errors.email((e) => (

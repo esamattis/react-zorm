@@ -124,6 +124,22 @@ users.map((user, index) => {
 
 See the [TODOs example][todos] for more deatails
 
+## Server-side validation
+
+This is Remix but React Zorm does not actually use any Remix APIs so this method
+can be adapted for example to Cloudflare Workers and any other tools using the
+web platform APIs.
+
+```tsx
+import { parseForm } from "react-zorm";
+
+export let action: ActionFunction = async ({ request }) => {
+    const form = await request.formData();
+    // Get validated and typed form object. This throw on validation errors.
+    const data = parseForm(FormValues, form);
+};
+```
+
 ## API
 
 ### `createValidator(formName: string, formParser: ZodObject): Validator`

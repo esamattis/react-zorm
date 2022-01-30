@@ -1,3 +1,3 @@
 # Zorm
 
-Type safe &lt;form> for React using [Zod](https://github.com/colinhacks/zod)
+Type safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)

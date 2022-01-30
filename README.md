@@ -101,7 +101,7 @@ And all this is type checked 👌
 
 ## Arrays
 
-Type with array of user objects
+Array of user objects for example:
 
 ```tsx
 const FormValues = z.object({
@@ -114,7 +114,7 @@ const FormValues = z.object({
 });
 ```
 
-And put the array index to `users(index)`:
+and put the array index to `users(index)`:
 
 ```tsx
 users.map((user, index) => {

@@ -20,6 +20,8 @@ npm install react-zorm
 
 ## Example
 
+Also on [Codesandbox!](https://codesandbox.io/s/react-zorm-signup-form-example-inlub)
+
 ```tsx
 import { z } from "zod";
 import { createValidator } from "react-zorm";
@@ -67,8 +69,6 @@ function Signup() {
     );
 }
 ```
-
-Play with this example in Codesandbod.
 
 Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library.
 
@@ -146,4 +146,4 @@ Create a form `Validator`
 -   `validate(): void`: Manually invoke validation
 -   `Context`: Context React component for providing the value for `useValidationContext()`
 
-[todos]: http://todo.invalid
+[todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx

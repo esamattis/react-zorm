@@ -109,7 +109,7 @@ const FormValues = z.object({
 });
 ```
 
-And put the array index `users(index)`:
+And put the array index to `users(index)`:
 
 ```tsx
 users.map((user, index) => {

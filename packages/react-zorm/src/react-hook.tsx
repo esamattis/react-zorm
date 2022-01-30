@@ -11,6 +11,11 @@ import { createFields, safeParseForm } from "./parse-form";
 
 const ValidationContext = createContext<any>(null);
 
+export interface OverrideFormProps {
+    onSubmit?(e: React.FormEvent<HTMLFormElement>): any;
+    onBlur?(e: React.FormEvent<HTMLFormElement>): any;
+}
+
 export function createValidator<T extends ZodObject<any>>(
     ns: string,
     FormParser: T,
@@ -82,8 +87,8 @@ export function createValidator<T extends ZodObject<any>>(
                 validation,
                 validate,
                 Context,
-                props(props?: React.ComponentProps<"form">) {
-                    const overriddes: React.ComponentProps<"form"> = {
+                props(props?: OverrideFormProps) {
+                    const overriddes: OverrideFormProps = {
                         onSubmit(e) {
                             const res = validate();
 

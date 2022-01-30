@@ -25,9 +25,11 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "typescript": "^4.5.5",
-        "zod": "^3.11.6"
+        "zod": "^3.11.6",
+        "esbuild": "^0.14.14"
     },
     "scripts": {
+        "esbuild": "esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify",
         "build": "tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json",
         "jest": "jest",

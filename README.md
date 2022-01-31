@@ -9,7 +9,7 @@ Features / opinions
 
 -   🛑 No controlled inputs
     -   🚀 Which means this is as performant as React form libraries can get!
--   🛑 No React components, just a React hook
+-   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   When your server supports `FormData` like [Remix!](https://remix.run/)

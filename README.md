@@ -1,9 +1,6 @@
 # 🪱 React Zorm
 
-Type safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
-
-Tools for creating type safe forms using the browser native `<form>` and
-`FormData` with React.js and Zod.
+Type-safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
 
 Features / opinions
 

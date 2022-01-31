@@ -183,7 +183,7 @@ Create a form `Validator`
 #### `Zorm` properties
 
 -   `ref`: HTMLFormElement ref
--   `props(overrides: Props)`:Get spreadable props for `<form>`
+-   `props(overrides: Props)`: Get spreadable props for `<form>`
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
     [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)

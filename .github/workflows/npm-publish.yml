@@ -1,0 +1,11 @@
+name: Publish npm package
+
+on:
+    push:
+        branches:
+            - release/*/*
+jobs:
+    release:
+        uses: valu-digital/npm-packages/.github/workflows/npm-release-reusable.yml@master
+        secrets:
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,7 +1,16 @@
 import React from "react";
 import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
-import { createFields, parseForm } from "../src/parse-form";
+import { parseForm } from "../src/parse-form";
+import { FieldsFromSchema, SimpleSchema } from "../src/types";
+import { initFieldPathChain } from "../src/chains";
+
+function createFields<Schema extends SimpleSchema>(
+    formName: string,
+    schema: Schema,
+): FieldsFromSchema<Schema> {
+    return initFieldPathChain(formName);
+}
 
 test("single field", () => {
     const FormValues = z.object({

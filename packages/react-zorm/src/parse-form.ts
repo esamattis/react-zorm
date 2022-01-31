@@ -1,4 +1,4 @@
-import { createFieldsProxy } from "./generate-path";
+import { initFieldPathChain } from "./chains";
 import { setIn } from "./set-in";
 import { FieldsFromSchema, SimpleSchema } from "./types";
 
@@ -17,10 +17,6 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
         ret = setIn(ret, key, value);
     }
 
-    // data.forEach((value, key) => {
-    //     ret = setIn(ret, key, value);
-    // });
-
     return ret;
 }
 
@@ -36,11 +32,4 @@ export function safeParseForm<P extends SimpleSchema>(
     form: HTMLFormElement | FormData,
 ): ReturnType<P["safeParse"]> {
     return parser.safeParse(parseFormAny(form));
-}
-
-export function createFields<P extends SimpleSchema>(
-    ns: string,
-    parser: P,
-): FieldsFromSchema<P> {
-    return createFieldsProxy(ns);
 }

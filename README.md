@@ -17,6 +17,9 @@ Features / opinions
     -   `name` and `id` attribute generation
     -   Error referencing
 
+If you enjoy this lib a Twitter shout-out
+[@esamatti](https://twitter.com/esamatti) is always welcome! 😊
+
 ## Install
 
 ```
@@ -29,35 +32,37 @@ Also on [Codesandbox!](https://codesandbox.io/s/react-zorm-signup-form-example-i
 
 ```tsx
 import { z } from "zod";
-import { createValidator } from "react-zorm";
+import { useZorm } from "react-zorm";
 
-const FormValues = z.object({
+const FormSchema = z.object({
     email: z.string().min(1),
     password: z.string().min(8),
 });
 
-const { useValidation, fields } = createValidator("signup", FormValues);
-
 function Signup() {
-    const { validation, props, errors } = useValidation();
+    const zo = useZorm("signup", FormSchema);
 
     return (
         <form
-            {...props({
-                // custom form props
-                onSubmit(e) {},
+            {...zo.props({
+                // Zorm assigns onSubmit and onBlur.
+                // Add your handlers here if you need them
+                onSubmit() {},
+                onBlur() {},
             })}
         >
             Email:
             <input
                 type="text"
-                // Generate name attribute by calling the method
-                name={fields.email()}
-                // Add "errored" class when the field has a validation error
-                className={errors.email("errored")}
+                // Generate name attribute by invoking the field on the "fields chain"
+                name={zo.fields.email()}
+                // Add "errored" class when the field has a validation error by
+                // invoking the "errors chain".
+                // This is convenience for .email() ? "errored" : undefined
+                className={zo.errors.email("errored")}
             />
-            {errors.email((e) => (
-                // Rendered when the field has an error
+            {zo.errors.email((e) => (
+                // Use function for streamlined error message rendering
                 <ErrorMessage message={e.message} />
             ))}
             Password:
@@ -66,7 +71,7 @@ function Signup() {
                 name={fields.password()}
                 className={errors.password("errored")}
             />
-            {errors.password((e) => (
+            {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
             <button type="submit">Signup!</button>
@@ -77,12 +82,14 @@ function Signup() {
 
 Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library.
 
-## Objects
+## Nested data
+
+### Objects
 
 Create a Zod type with a nested object
 
 ```tsx
-const FormValues = z.object({
+const FormSchema = z.object({
     user: z.object({
         email: z.string().min(1),
         password: z.string().min(8),
@@ -93,18 +100,16 @@ const FormValues = z.object({
 and just create the input names with `.user.`:
 
 ```tsx
-<input type="text" name={fields.user.email()} />;
-<input type="password" name={fields.user.password()} />;
+<input type="text" name={zo.fields.user.email()} />;
+<input type="password" name={zo.fields.user.password()} />;
 ```
 
-And all this is type checked 👌
-
-## Arrays
+### Arrays
 
 Array of user objects for example:
 
 ```tsx
-const FormValues = z.object({
+const FormSchema = z.object({
     users: z.array(
         z.object({
             email: z.string().min(1),
@@ -120,14 +125,39 @@ and put the array index to `users(index)`:
 users.map((user, index) => {
     return (
         <>
-            <input type="text" name={fields.users(index).email()} />
-            <input type="password" name={fields.users(index).password()} />
+            <input type="text" name={zo.fields.users(index).email()} />
+            <input type="password" name={zo.fields.users(index).password()} />
         </>
     );
 });
 ```
 
-See the [TODOs example][todos] for more deatails
+And all this is type checked 👌
+
+See the [TODOs example][todos] for more details
+
+## The Chains
+
+The chains are a way to access the form validation state in a type safe way. The
+invocation via `()` is the way the get the chain data. The `fields` chain is for
+the field `name` and `id` attributes and the `errors` chain is for getting the
+possible error data with convenience overloads for rendering and setting class
+names.
+
+### `fields` invocation
+
+Return values for different invocation types
+
+-   `("name"): string` - The `name` attribute value
+-   `("id"): string` - Unique `id` attribute value to be used with `aria-describedby`
+-   `(): string` - The default, same as `"name"`
+-   `(index: number): Chain` - Special case for setting array index
+
+### `errors` invocation
+
+-   `(): ZodIssue | null` - Possible ZodIssue object
+-   `(str: string): string | undefined` - Return the passed string on error
+-   `(render: () => any): any` - Invode the passed function and return its return value
 
 ## Server-side validation
 
@@ -145,26 +175,82 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
+## When Zorm validates?
+
+When the form submits and on blurs after the first submit attempt.
+
+If you want total control over this, just don't spread the `props()`, but set
+the `ref` and call `validate()` manually when you need. Note that then you
+need to manually prevent submitting when the form is invalid.
+
+```tsx
+function Signup() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        <form
+            ref={zo.ref}
+            onSubmit={(e) => {
+                const validation = zo.validate();
+
+                if (!validation.success) {
+                    e.preventDefault();
+                }
+            }}
+        >
+            ...
+        </form>
+    );
+}
+```
+
 ## API
 
-### `createValidator(formName: string, formParser: ZodObject): Validator`
+Tools available for importing from `"react-zorm"`
+
+### `useZorm(formName: string, schema: ZodObject): Zorm`
 
 Create a form `Validator`
 
-## `Validator` properties
+#### `Zorm` properties
 
--   `fields`: Chainable object for generating input `name`s and `id`s
-    -   Call without arguments or with `.prop("name")` to generate the input name attribute value
-    -   Call `.prop("id")` to generate a unique HTML id. Use for `aria-describedby` for example
--   `useValidation(): ValidationObject`: React hook for using the validator with a `<form>`
--   `useValidationContext(): ValidationContextObject`: React hook for using the validator from nested components
+-   `ref`: HTMLFormElement ref
+-   `props(overrides: Props)`: Get spreadable props for `<form>`
+-   `validation: SafeParseReturnType | null`: The current Zod validation status
+    returned by
+    [`safeParse()`][safeparse]
+-   `validate(): SafeParseReturnType`: Manually invoke validation
+-   `fields: FieldChain`: The fields chain
+-   `errors: ErrorFieldChain`: The error chain
 
-## `ValidationObject` properties
+[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
 
--   `props(customize: HTMLFormElement): HTMLFormElementProperties`: Get spreadable props for `<form>`
--   `validation`: The current Zod validation status returned by [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)
-    -   The validation started on the first submit and after that on every input blur event
--   `validate(): void`: Manually invoke validation
--   `Context`: Context React component for providing the value for `useValidationContext()`
+### `Zorm` Type
+
+The type of the object returned by `useZorm()`. This type object can be used to
+type component props if you want to split the form to multiple components and
+pass the `zorm` object around.
+
+```ts
+import type { Zorm } from "react-zorm";
+
+function MyForm() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        // ...
+        <SubComponent zorm={zo} />
+        //..
+    );
+}
+
+function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
+    // ...
+}
+```
+
+### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
+
+Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
 [todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx

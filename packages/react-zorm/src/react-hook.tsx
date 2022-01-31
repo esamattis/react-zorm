@@ -1,3 +1,7 @@
+/**
+ * Deprecated prototype. This will be gone!
+ */
+
 import React, {
     useCallback,
     createContext,
@@ -6,8 +10,9 @@ import React, {
     useState,
 } from "react";
 import { ZodObject } from "zod";
-import { createErrorChain, FieldErrors } from "./error-path-chain";
-import { createFields, safeParseForm } from "./parse-form";
+import { errorChain, fieldChain } from "./chains";
+import { safeParseForm } from "./parse-form";
+import { ErrorFieldChain } from "./types";
 
 const ValidationContext = createContext<any>(null);
 
@@ -16,15 +21,18 @@ export interface OverrideFormProps {
     onBlur?(e: React.FormEvent<HTMLFormElement>): any;
 }
 
+/**
+ * @deprecated
+ */
 export function createValidator<T extends ZodObject<any>>(
     ns: string,
     FormParser: T,
 ) {
-    type ErrorsType = FieldErrors<ReturnType<typeof FormParser["parse"]>>;
+    type ErrorsType = ErrorFieldChain<ReturnType<typeof FormParser["parse"]>>;
     type ValidationResult = ReturnType<T["safeParse"]>;
 
     return {
-        fields: createFields(ns, FormParser),
+        fields: fieldChain(ns),
         useValidationContext: () => {
             const context = useContext(ValidationContext);
 
@@ -65,6 +73,7 @@ export function createValidator<T extends ZodObject<any>>(
 
             const Context = useCallback((props: { children: any }) => {
                 const [validation, setValidation] =
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     useState<ValidationResult | null>(null);
                 setContextValidation.current = setValidation;
 
@@ -72,7 +81,7 @@ export function createValidator<T extends ZodObject<any>>(
                     ? validation?.error.issues
                     : undefined;
 
-                const errors = createErrorChain(issues) as any as ErrorsType;
+                const errors = errorChain(issues) as any as ErrorsType;
                 return (
                     <ValidationContext.Provider value={{ errors, validation }}>
                         {props.children}
@@ -80,7 +89,7 @@ export function createValidator<T extends ZodObject<any>>(
                 );
             }, []);
 
-            const errors = createErrorChain(issues) as any as ErrorsType;
+            const errors = errorChain(issues) as any as ErrorsType;
 
             return {
                 errors,

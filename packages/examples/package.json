@@ -19,6 +19,10 @@
         "example-todos": "parcel src/todos.html",
         "example-signup": "parcel src/signup.html"
     },
+    "alias": {
+        "react": "./node_modules/react",
+        "react-dom": "./node_modules/react-dom"
+    },
     "author": "",
     "license": "ISC"
 }

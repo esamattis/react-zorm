@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { z } from "zod";
-import { createValidator } from "react-zorm";
+import { useZorm, Zorm } from "react-zorm";
 
-const FormValues = z.object({
+const FormSchema = z.object({
     meta: z.object({
         listName: z.string().min(1),
     }),
@@ -25,17 +25,12 @@ const FormValues = z.object({
     ),
 });
 
-const { useValidation, useValidationContext, fields } = createValidator(
-    "todo-list",
-    FormValues,
-);
-
 function renderError(props: { message: string }) {
     return <div className="error-message">{props.message}</div>;
 }
 
-function TodoItem(props: { index: number }) {
-    const { errors } = useValidationContext();
+function TodoItem(props: { zorm: Zorm<typeof FormSchema>; index: number }) {
+    const { fields, errors } = props.zorm;
 
     return (
         <fieldset>
@@ -59,8 +54,8 @@ function TodoItem(props: { index: number }) {
 }
 
 function TodoList() {
-    const { validation, Context, props, errors } = useValidation();
-    const canSubmit = !validation || validation?.success === true;
+    const zo = useZorm("todos", FormSchema);
+    const canSubmit = !zo.validation || zo.validation?.success === true;
     const [todos, setTodos] = useState(1);
     const addTodo = () => setTodos((n) => n + 1);
 
@@ -69,43 +64,41 @@ function TodoList() {
         .map((_, i) => i);
 
     return (
-        <Context>
-            <form
-                {...props({
-                    onSubmit(e) {
-                        e.preventDefault();
-                        if (validation?.success) {
-                            alert("Form ok!");
-                        }
-                    },
-                })}
-            >
-                <h1>Todo List</h1>
-                List name
-                <br />
-                <input
-                    type="text"
-                    name={fields.meta.listName()}
-                    className={errors.meta.listName("errored")}
-                />
-                {errors.meta.listName(renderError)}
-                <h2>Todos</h2>
-                {range.map((index) => (
-                    <TodoItem key={index} index={index} />
-                ))}
-                <button type="button" onClick={addTodo}>
-                    Add todo
+        <form
+            {...zo.props({
+                onSubmit(e) {
+                    e.preventDefault();
+                    if (zo.validation?.success) {
+                        alert("Form ok!");
+                    }
+                },
+            })}
+        >
+            <h1>Todo List</h1>
+            List name
+            <br />
+            <input
+                type="text"
+                name={zo.fields.meta.listName()}
+                className={zo.errors.meta.listName("errored")}
+            />
+            {zo.errors.meta.listName(renderError)}
+            <h2>Todos</h2>
+            {range.map((index) => (
+                <TodoItem key={index} index={index} zorm={zo} />
+            ))}
+            <button type="button" onClick={addTodo}>
+                Add todo
+            </button>
+            <div>
+                <button disabled={!canSubmit} type="submit">
+                    Submit all
                 </button>
-                <div>
-                    <button disabled={!canSubmit} type="submit">
-                        Submit all
-                    </button>
-                </div>
-                <pre>
-                    Validation status: {JSON.stringify(validation, null, 2)}
-                </pre>
-            </form>
-        </Context>
+            </div>
+            <pre>
+                Validation status: {JSON.stringify(zo.validation, null, 2)}
+            </pre>
+        </form>
     );
 }
 

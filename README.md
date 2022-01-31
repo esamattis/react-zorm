@@ -210,7 +210,7 @@ function MyForm() {
     );
 }
 
-function SubComponent(props: { zorm: Zorm<FormSchema> }) {
+function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
     // ...
 }
 ```

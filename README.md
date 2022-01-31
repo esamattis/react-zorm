@@ -138,11 +138,11 @@ See the [TODOs example][todos] for more details
 
 ## The Chains
 
-The chains are a way to access the form validation state in a type safe way. The
-invocation via `()` is the way the get the chain data. The `fields` chain is for
-the field `name` and `id` attributes and the `errors` chain is for getting the
-possible error data with convenience overloads for rendering and setting class
-names.
+The chains are a way to access the form validation state in a type safe way.
+The invocation via `()` returns the chain value. On the `fields` chain the value is the `name` input attribute
+and the `errors` chain it is the possible ZodIssue object for the field.
+
+There few other option for invoking the chain:
 
 ### `fields` invocation
 
@@ -151,13 +151,14 @@ Return values for different invocation types
 -   `("name"): string` - The `name` attribute value
 -   `("id"): string` - Unique `id` attribute value to be used with `aria-describedby`
 -   `(): string` - The default, same as `"name"`
--   `(index: number): Chain` - Special case for setting array index
+-   `(index: number): Chain` - Special case for setting array indices
 
 ### `errors` invocation
 
 -   `(): ZodIssue | null` - Possible ZodIssue object
 -   `(str: string): string | undefined` - Return the passed string on error
--   `(render: (issue: ZodIssue) => any): any` - Invoke the passed function and return its return value
+-   `(render: (issue: ZodIssue) => any): any` - Invoke the passed function and
+    return its return value. When there's no error a `null` is returned.
 
 ## Server-side validation
 

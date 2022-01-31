@@ -251,7 +251,7 @@ function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
 
 Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
-### `safeParseForm(form, schame): SafeParseReturnType`
+### `safeParseForm(form, schema): SafeParseReturnType`
 
 Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 

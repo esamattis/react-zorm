@@ -180,7 +180,7 @@ Tools available for importing from `"react-zorm"`
 
 Create a form `Validator`
 
-## `Zorm` properties
+#### `Zorm` properties
 
 -   `ref`: HTMLFormElement ref
 -   `props(overrides: Props)`:Get spreadable props for `<form>`
@@ -190,5 +190,33 @@ Create a form `Validator`
 -   `validate(): SafeParseReturnType`: Manually invoke validation
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErrorFieldChain`: The error chain
+
+### Zorm Type
+
+The type of the object returned by `useZorm()`. This type object can be used to
+type component props if you want to split the form to multiple components and
+pass the `zorm` object around.
+
+```ts
+import type { Zorm } from "react-zorm";
+
+function MyForm() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        // ...
+        <SubComponent zorm={zo} />
+        //..
+    );
+}
+
+function SubComponent(props: { zorm: Zorm<FormSchema> }) {
+    // ...
+}
+```
+
+### parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
+
+Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
 [todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx

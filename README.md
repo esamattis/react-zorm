@@ -172,11 +172,13 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
+## When Zorm validates?
+
 ## API
 
 Tools available for importing from `"react-zorm"`
 
-### useZorm(formName: string, schema: ZodObject): Zorm`
+### `useZorm(formName: string, schema: ZodObject): Zorm`
 
 Create a form `Validator`
 
@@ -191,7 +193,7 @@ Create a form `Validator`
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErrorFieldChain`: The error chain
 
-### Zorm Type
+### `Zorm` Type
 
 The type of the object returned by `useZorm()`. This type object can be used to
 type component props if you want to split the form to multiple components and
@@ -215,7 +217,7 @@ function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
 }
 ```
 
-### parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
+### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
 
 Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 

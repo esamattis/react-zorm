@@ -214,7 +214,7 @@ Create a form `Validator`
 -   `props(overrides: Props)`: Get spreadable props for `<form>`
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
-    [`safeParse()`](safeParse)
+    [`safeParse()`][safeparse]
 -   `validate(): SafeParseReturnType`: Manually invoke validation
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErrorFieldChain`: The error chain

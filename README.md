@@ -5,7 +5,7 @@ Type-safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
 Features / opinions
 
 -   🛑 No controlled inputs
-    -   🚀 Which means this is as performant as React form libraries can get!
+    -   🚀 As performant as React form libraries can get!
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
 -   ✅ Validation on the client [and the server](#server-side-validation)

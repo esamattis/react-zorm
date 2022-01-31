@@ -135,6 +135,26 @@ See the [TODOs example][todos] for more details
 
 ## The Chains
 
+The chains are a way to access the form data in a type safe way. The invocation
+via `()` is the way the get the chain data. The `fields` chain is for the field
+`name` and `id` attributes and the `errors` chain if for getting the possible
+error data with convenience overloads for rendering and setting class names.
+
+## `fields` invocation
+
+Return values for different invocation types
+
+-   `("name"): string` - The `name` attribute value
+-   `("id"): string` - Unique `id` attribute value to be used with `aria-describedby`
+-   `(): string` - The default, same as `"name"`
+-   `(index: number): Chain` - Special case for setting array index
+
+## `errors` invocation
+
+-   `(): ZodIssue | null` - Possible ZodIssue object
+-   `(str: string): string | undefined` - Return the passed string on error
+-   `(render: () => any): any` - Invode the passed function and return its return value
+
 ## Server-side validation
 
 This is Remix but React Zorm does not actually use any Remix APIs so this method

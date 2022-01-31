@@ -135,12 +135,13 @@ See the [TODOs example][todos] for more details
 
 ## The Chains
 
-The chains are a way to access the form data in a type safe way. The invocation
-via `()` is the way the get the chain data. The `fields` chain is for the field
-`name` and `id` attributes and the `errors` chain if for getting the possible
-error data with convenience overloads for rendering and setting class names.
+The chains are a way to access the form validation state in a type safe way. The
+invocation via `()` is the way the get the chain data. The `fields` chain is for
+the field `name` and `id` attributes and the `errors` chain is for getting the
+possible error data with convenience overloads for rendering and setting class
+names.
 
-## `fields` invocation
+### `fields` invocation
 
 Return values for different invocation types
 
@@ -149,7 +150,7 @@ Return values for different invocation types
 -   `(): string` - The default, same as `"name"`
 -   `(index: number): Chain` - Special case for setting array index
 
-## `errors` invocation
+### `errors` invocation
 
 -   `(): ZodIssue | null` - Possible ZodIssue object
 -   `(str: string): string | undefined` - Return the passed string on error
@@ -173,24 +174,21 @@ export let action: ActionFunction = async ({ request }) => {
 
 ## API
 
-### `createValidator(formName: string, formParser: ZodObject): Validator`
+Tools available for importing from `"react-zorm"`
+
+### useZorm(formName: string, schema: ZodObject): Zorm`
 
 Create a form `Validator`
 
-## `Validator` properties
+## `Zorm` properties
 
--   `fields`: Chainable object for generating input `name`s and `id`s
-    -   Call without arguments or with `.prop("name")` to generate the input name attribute value
-    -   Call `.prop("id")` to generate a unique HTML id. Use for `aria-describedby` for example
--   `useValidation(): ValidationObject`: React hook for using the validator with a `<form>`
--   `useValidationContext(): ValidationContextObject`: React hook for using the validator from nested components
-
-## `ValidationObject` properties
-
--   `props(customize: HTMLFormElement): HTMLFormElementProperties`: Get spreadable props for `<form>`
--   `validation`: The current Zod validation status returned by [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)
-    -   The validation started on the first submit and after that on every input blur event
--   `validate(): void`: Manually invoke validation
--   `Context`: Context React component for providing the value for `useValidationContext()`
+-   `ref`: HTMLFormElement ref
+-   `props(overrides: Props)`:Get spreadable props for `<form>`
+-   `validation: SafeParseReturnType | null`: The current Zod validation status
+    returned by
+    [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)
+-   `validate(): SafeParseReturnType`: Manually invoke validation
+-   `fields: FieldChain`: The fields chain
+-   `errors: ErrorFieldChain`: The error chain
 
 [todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx

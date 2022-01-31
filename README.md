@@ -17,6 +17,9 @@ Features / opinions
     -   `name` and `id` attribute generation
     -   Error referencing
 
+If you enjoy this lib a Twitter shout-out
+[@esamatti](https://twitter.com/esamatti) is always welcome! 😊
+
 ## Install
 
 ```
@@ -174,10 +177,11 @@ export let action: ActionFunction = async ({ request }) => {
 
 ## When Zorm validates?
 
-On the form submits and on blurs after the first submit attempt.
+When the form submits and on blurs after the first submit attempt.
 
 If you want total control over this, just don't spread the `props()`, but set
-the `ref` and call `validate()` manually when you need.
+the `ref` and call `validate()` manually when you need. Note that then you
+need to manually prevent submitting when the form is invalid.
 
 ```tsx
 function Signup() {

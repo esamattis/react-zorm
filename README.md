@@ -157,7 +157,7 @@ Return values for different invocation types
 
 -   `(): ZodIssue | null` - Possible ZodIssue object
 -   `(str: string): string | undefined` - Return the passed string on error
--   `(render: () => any): any` - Invode the passed function and return its return value
+-   `(render: (issue: ZodIssue) => any): any` - Invode the passed function and return its return value
 
 ## Server-side validation
 

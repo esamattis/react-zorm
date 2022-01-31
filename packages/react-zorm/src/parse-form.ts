@@ -1,6 +1,6 @@
 import { createFieldsProxy } from "./generate-path";
 import { setIn } from "./set-in";
-import { FieldsFromParser, Parser } from "./types";
+import { FieldsFromSchema, SimpleSchema } from "./types";
 
 export function parseFormAny(form: HTMLFormElement | FormData) {
     let data: FormData;
@@ -24,23 +24,23 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
     return ret;
 }
 
-export function parseForm<P extends Parser>(
+export function parseForm<P extends SimpleSchema>(
     parser: P,
     form: HTMLFormElement | FormData,
 ): ReturnType<P["parse"]> {
     return parser.parse(parseFormAny(form));
 }
 
-export function safeParseForm<P extends Parser>(
+export function safeParseForm<P extends SimpleSchema>(
     parser: P,
     form: HTMLFormElement | FormData,
 ): ReturnType<P["safeParse"]> {
     return parser.safeParse(parseFormAny(form));
 }
 
-export function createFields<P extends Parser>(
+export function createFields<P extends SimpleSchema>(
     ns: string,
     parser: P,
-): FieldsFromParser<P> {
+): FieldsFromSchema<P> {
     return createFieldsProxy(ns);
 }

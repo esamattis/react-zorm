@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { z } from "zod";
-import { createValidator } from "react-zorm";
+import { useZorm } from "react-zorm";
 
-const FormValues = z.object({
+const FormFields = z.object({
     email: z.string().refine(
         (val) => {
             return val.includes("@") && val.includes(".");
@@ -13,22 +13,20 @@ const FormValues = z.object({
     password: z.string().min(8),
 });
 
-const { useValidation, fields } = createValidator("signup", FormValues);
-
 function ErrorMessage(props: { message: string }) {
     return <div className="error-message">{props.message}</div>;
 }
 
 function Signup() {
-    const { validation, props, errors } = useValidation();
-    const canSubmit = !validation || validation?.success === true;
+    const zo = useZorm("signup", FormFields);
+    const canSubmit = !zo.validation || zo.validation?.success === true;
 
     return (
         <form
-            {...props({
+            {...zo.props({
                 onSubmit(e) {
                     e.preventDefault();
-                    if (validation?.success) {
+                    if (zo.validation?.success) {
                         alert("Form ok!");
                     }
                 },
@@ -38,20 +36,20 @@ function Signup() {
             Email: <br />
             <input
                 type="text"
-                name={fields.email()}
-                className={errors.email("errored")}
+                name={zo.fields.email()}
+                className={zo.errors.email("errored")}
             />
-            {errors.email((e) => (
+            {zo.errors.email((e) => (
                 <ErrorMessage message={e.message} />
             ))}
             <br />
             Password: <br />
             <input
                 type="password"
-                name={fields.password()}
-                className={errors.password("errored")}
+                name={zo.fields.password()}
+                className={zo.errors.password("errored")}
             />
-            {errors.password((e) => (
+            {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
             <div>
@@ -59,7 +57,9 @@ function Signup() {
                     Signup!
                 </button>
             </div>
-            <pre>Validation status: {JSON.stringify(validation, null, 2)}</pre>
+            <pre>
+                Validation status: {JSON.stringify(zo.validation, null, 2)}
+            </pre>
         </form>
     );
 }

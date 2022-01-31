@@ -22,14 +22,14 @@ export type FieldChain<T extends object> = {
 };
 
 /**
- * Something like Zod parser
+ * Something like Zod schema
  */
-export interface Parser {
+export interface SimpleSchema {
     parse: (arg: any) => any;
     safeParse: (arg: any) => any;
 }
 
-export type FieldsFromParser<T extends Parser> = FieldChain<
+export type FieldsFromSchema<T extends SimpleSchema> = FieldChain<
     ReturnType<T["parse"]>
 >;
 
@@ -51,7 +51,7 @@ export type ErrorFieldChain<T extends object> = {
         : ErrorRender;
 };
 
-export type ErrorFieldsFromParser<T extends Parser> = ErrorFieldChain<
+export type ErrorFieldsFromSchema<T extends SimpleSchema> = ErrorFieldChain<
     ReturnType<T["parse"]>
 >;
 
@@ -60,13 +60,15 @@ export interface OverrideFormProps {
     onBlur?(e: React.FormEvent<HTMLFormElement>): any;
 }
 
-export interface Zorm<T extends ZodObject<any>> {
+type SchemaToObject<Schema extends SimpleSchema> = ReturnType<Schema["parse"]>;
+
+export interface Zorm<Schema extends ZodObject<any>> {
     ref: React.RefObject<HTMLFormElement>;
     props(override?: OverrideFormProps): {
         ref: React.RefObject<HTMLFormElement>;
     } & OverrideFormProps;
-    fields: FieldChain<T>;
-    errors: ErrorFieldChain<T>;
-    validate(): ReturnType<T["safeParse"]>;
-    validation: ReturnType<T["safeParse"]> | null;
+    fields: FieldChain<SchemaToObject<Schema>>;
+    errors: ErrorFieldChain<SchemaToObject<Schema>>;
+    validate(): ReturnType<Schema["safeParse"]>;
+    validation: ReturnType<Schema["safeParse"]> | null;
 }

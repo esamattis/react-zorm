@@ -1,11 +1,11 @@
 {
   "name": "react-zorm",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
-      "url": "https://npmjs.com/package/react-zorm"
+    "url": "https://npmjs.com/package/react-zorm"
   },
   "files": [
     "src",

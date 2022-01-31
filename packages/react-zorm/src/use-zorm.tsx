@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from "react";
-import { ZodObject, z } from "zod";
+import { useMemo, useRef, useState } from "react";
+import type { ZodObject } from "zod";
 import { createErrorChain } from "./error-path-chain";
 import { createFields, safeParseForm } from "./parse-form";
 import { Zorm } from "./types";
@@ -14,51 +14,53 @@ export function useZorm<Schema extends ZodObject<any>>(
     const formRef = useRef<HTMLFormElement>(null);
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
-    const validate = useCallback(() => {
-        if (!formRef.current) {
-            throw new Error(
-                "[@valu/zod-form] Ref not passed to form correctly",
-            );
-        }
+    return useMemo(() => {
+        const issues = !validation?.success
+            ? validation?.error.issues
+            : undefined;
+        const errors = createErrorChain(issues);
+        const fields = createFields(formName, schema);
 
-        const res = safeParseForm(schema, formRef.current);
+        const validate = () => {
+            if (!formRef.current) {
+                throw new Error("[react-zorm] ref not passed to the form");
+            }
 
-        setValidation(res);
+            const res = safeParseForm(schema, formRef.current);
 
-        return res;
-    }, []);
+            setValidation(res);
 
-    const issues = !validation?.success ? validation?.error.issues : undefined;
-    const errors = createErrorChain(issues);
-    const fields = createFields(formName, schema);
+            return res;
+        };
 
-    return {
-        ref: formRef,
-        validate,
-        validation,
-        fields,
-        errors,
-        props(props) {
-            return {
-                ref: formRef,
-                onSubmit(e) {
-                    const res = validate();
+        return {
+            ref: formRef,
+            validate,
+            validation,
+            fields,
+            errors,
+            props(overrides) {
+                return {
+                    ref: formRef,
+                    onSubmit(e) {
+                        const res = validate();
 
-                    if (!res.success) {
-                        e.preventDefault();
-                    }
+                        if (!res.success) {
+                            e.preventDefault();
+                        }
 
-                    hasSubmittedOnce.current = true;
+                        hasSubmittedOnce.current = true;
 
-                    return props?.onSubmit?.(e);
-                },
-                onBlur(e) {
-                    if (hasSubmittedOnce.current) {
-                        validate();
-                    }
-                    return props?.onBlur?.(e);
-                },
-            };
-        },
-    };
+                        return overrides?.onSubmit?.(e);
+                    },
+                    onBlur(e) {
+                        if (hasSubmittedOnce.current) {
+                            validate();
+                        }
+                        return overrides?.onBlur?.(e);
+                    },
+                };
+            },
+        };
+    }, [formName, schema, validation]);
 }

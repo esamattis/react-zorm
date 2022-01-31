@@ -1,4 +1,4 @@
-import { ZodIssue, ZodObject } from "zod";
+import type { ZodIssue, ZodObject } from "zod";
 
 export interface ArrayIndexSetter<T> {
     (type?: "id" | "name"): string;

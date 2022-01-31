@@ -21,15 +21,15 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
 }
 
 export function parseForm<P extends SimpleSchema>(
-    parser: P,
+    schema: P,
     form: HTMLFormElement | FormData,
 ): ReturnType<P["parse"]> {
-    return parser.parse(parseFormAny(form));
+    return schema.parse(parseFormAny(form));
 }
 
 export function safeParseForm<P extends SimpleSchema>(
-    parser: P,
+    schema: P,
     form: HTMLFormElement | FormData,
 ): ReturnType<P["safeParse"]> {
-    return parser.safeParse(parseFormAny(form));
+    return schema.safeParse(parseFormAny(form));
 }

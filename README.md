@@ -54,12 +54,12 @@ function Signup() {
                 // Generate name attribute by invoking the field on the "fields chain"
                 name={zo.fields.email()}
                 // Add "errored" class when the field has a validation error by
-                // invoking the "errors chain". This is convenience for
-                // .email() ? "errored"  : undefined
+                // invoking the "errors chain".
+                // This is convenience for .email() ? "errored" : undefined
                 className={zo.errors.email("errored")}
             />
             {zo.errors.email((e) => (
-                // Add function argument to call on error
+                // Use function for streamlined error message rendering
                 <ErrorMessage message={e.message} />
             ))}
             Password:

@@ -174,6 +174,32 @@ export let action: ActionFunction = async ({ request }) => {
 
 ## When Zorm validates?
 
+On the form submits and on blurs after the first submit attempt.
+
+If you want total control over this, just don't spread the `props()`, but set
+the `ref` and call `validate()` manually when you need.
+
+```tsx
+function Signup() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        <form
+            ref={zo.ref}
+            onSubmit={(e) => {
+                const validation = zo.validate();
+
+                if (!validation.success) {
+                    e.preventDefault();
+                }
+            }}
+        >
+            ...
+        </form>
+    );
+}
+```
+
 ## API
 
 Tools available for importing from `"react-zorm"`
@@ -188,10 +214,12 @@ Create a form `Validator`
 -   `props(overrides: Props)`: Get spreadable props for `<form>`
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
-    [`safeParse()`](https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse)
+    [`safeParse()`](safeParse)
 -   `validate(): SafeParseReturnType`: Manually invoke validation
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErrorFieldChain`: The error chain
+
+[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
 
 ### `Zorm` Type
 

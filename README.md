@@ -29,35 +29,37 @@ Also on [Codesandbox!](https://codesandbox.io/s/react-zorm-signup-form-example-i
 
 ```tsx
 import { z } from "zod";
-import { createValidator } from "react-zorm";
+import { useZorm } from "react-zorm";
 
-const FormValues = z.object({
+const FormSchema = z.object({
     email: z.string().min(1),
     password: z.string().min(8),
 });
 
-const { useValidation, fields } = createValidator("signup", FormValues);
-
 function Signup() {
-    const { validation, props, errors } = useValidation();
+    const zo = useZorm("signup", FormSchema);
 
     return (
         <form
-            {...props({
-                // custom form props
-                onSubmit(e) {},
+            {...zo.props({
+                // Zorm assigns onSubmit and onBlur.
+                // Add your handlers here if you need them
+                onSubmit() {},
+                onBlur() {},
             })}
         >
             Email:
             <input
                 type="text"
-                // Generate name attribute by calling the method
-                name={fields.email()}
-                // Add "errored" class when the field has a validation error
-                className={errors.email("errored")}
+                // Generate name attribute by invoking the field on the "fields chain"
+                name={zo.fields.email()}
+                // Add "errored" class when the field has a validation error by
+                // invoking the "errors chain". This is convenience for
+                // .email() ? "errored"  : undefined
+                className={zo.errors.email("errored")}
             />
-            {errors.email((e) => (
-                // Rendered when the field has an error
+            {zo.errors.email((e) => (
+                // Add function argument to call on error
                 <ErrorMessage message={e.message} />
             ))}
             Password:
@@ -66,7 +68,7 @@ function Signup() {
                 name={fields.password()}
                 className={errors.password("errored")}
             />
-            {errors.password((e) => (
+            {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
             <button type="submit">Signup!</button>
@@ -77,12 +79,14 @@ function Signup() {
 
 Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library.
 
-## Objects
+## Nested data
+
+### Objects
 
 Create a Zod type with a nested object
 
 ```tsx
-const FormValues = z.object({
+const FormSchema = z.object({
     user: z.object({
         email: z.string().min(1),
         password: z.string().min(8),
@@ -93,18 +97,16 @@ const FormValues = z.object({
 and just create the input names with `.user.`:
 
 ```tsx
-<input type="text" name={fields.user.email()} />;
-<input type="password" name={fields.user.password()} />;
+<input type="text" name={zo.fields.user.email()} />;
+<input type="password" name={zo.fields.user.password()} />;
 ```
 
-And all this is type checked 👌
-
-## Arrays
+### Arrays
 
 Array of user objects for example:
 
 ```tsx
-const FormValues = z.object({
+const FormSchema = z.object({
     users: z.array(
         z.object({
             email: z.string().min(1),
@@ -120,14 +122,18 @@ and put the array index to `users(index)`:
 users.map((user, index) => {
     return (
         <>
-            <input type="text" name={fields.users(index).email()} />
-            <input type="password" name={fields.users(index).password()} />
+            <input type="text" name={zo.fields.users(index).email()} />
+            <input type="password" name={zo.fields.users(index).password()} />
         </>
     );
 });
 ```
 
-See the [TODOs example][todos] for more deatails
+And all this is type checked 👌
+
+See the [TODOs example][todos] for more details
+
+## The Chains
 
 ## Server-side validation
 

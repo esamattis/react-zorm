@@ -1,6 +1,5 @@
-import { fieldChain } from "./chains";
 import { setIn } from "./set-in";
-import { FieldsFromSchema, SimpleSchema } from "./types";
+import { SimpleSchema } from "./types";
 
 export function parseFormAny(form: HTMLFormElement | FormData) {
     let data: FormData;

@@ -171,7 +171,7 @@ import { parseForm } from "react-zorm";
 export let action: ActionFunction = async ({ request }) => {
     const form = await request.formData();
     // Get validated and typed form object. This throw on validation errors.
-    const data = parseForm(FormValues, form);
+    const data = parseForm(FormSchema, form);
 };
 ```
 

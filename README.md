@@ -9,7 +9,7 @@ Features / opinions
 
 -   No controlled inputs
 -   No React components, just a React hook
--   Validation on the client and the server
+-   Validation on the client [and the server](#server-side-validation)
     -   When your server supports `FormData` like [Remix!](https://remix.run/)
 -   Nested / array / object fields
 -   Tiny: Less than 3kb (minified & gzipped, not including Zod)

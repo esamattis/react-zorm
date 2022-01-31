@@ -4,6 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "repository": {
+      "url": "https://npmjs.com/package/react-zorm"
+  },
   "files": [
     "src",
     "dist"
@@ -38,6 +41,7 @@
   "scripts": {
     "esbuild": "esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify",
     "build": "tsc -p tsconfig.build.json",
+    "publish-build": "cp ../../README.md . && pnpm run build",
     "watch": "tsc -w -p tsconfig.build.json",
     "eslint": "eslint --max-warnings 0 \"src/**\"",
     "jest": "jest",

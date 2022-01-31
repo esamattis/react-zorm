@@ -5,7 +5,7 @@ export interface FieldGetter {
 }
 
 export interface ErrorRender {
-    (): boolean;
+    (): ZodIssue | null;
     (str: string): string;
     (render: (issue: ZodIssue) => any): any;
 }

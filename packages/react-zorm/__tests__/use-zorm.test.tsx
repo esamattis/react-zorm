@@ -148,3 +148,27 @@ test("class name shortcut", () => {
 
     expect(screen.queryByTestId("input")).toHaveClass("errored");
 });
+
+test("can get the validation object", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input name={zo.fields.thing()} />
+
+                <div data-testid="error">{zo.errors.thing()?.code}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent("too_small");
+});

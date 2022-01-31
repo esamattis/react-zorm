@@ -72,7 +72,7 @@ function _errorChain(
                 }
             }
 
-            return Boolean(issue);
+            return issue || null;
         },
 
         get(_target, prop) {

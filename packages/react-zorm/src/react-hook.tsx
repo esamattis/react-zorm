@@ -6,8 +6,9 @@ import React, {
     useState,
 } from "react";
 import { ZodObject } from "zod";
-import { createErrorChain, FieldErrors } from "./error-path-chain";
+import { createErrorChain } from "./error-path-chain";
 import { createFields, safeParseForm } from "./parse-form";
+import { ErrorFieldChain } from "./types";
 
 const ValidationContext = createContext<any>(null);
 
@@ -20,7 +21,7 @@ export function createValidator<T extends ZodObject<any>>(
     ns: string,
     FormParser: T,
 ) {
-    type ErrorsType = FieldErrors<ReturnType<typeof FormParser["parse"]>>;
+    type ErrorsType = ErrorFieldChain<ReturnType<typeof FormParser["parse"]>>;
     type ValidationResult = ReturnType<T["safeParse"]>;
 
     return {

@@ -1,27 +1,4 @@
 import { ZodIssue } from "zod";
-import { Parser } from "./parse-form";
-
-export interface ErrorRender {
-    (): boolean;
-    (className: string): string;
-    (render: (issue: ZodIssue) => any): any;
-}
-
-export type FieldErrors<T extends object> = {
-    [P in keyof T]: T[P] extends Array<any>
-        ? (
-              index: number,
-          ) => FieldErrors<T[P][0]> extends string
-              ? ErrorRender
-              : FieldErrors<T[P][0]>
-        : T[P] extends object
-        ? FieldErrors<T[P]>
-        : ErrorRender;
-};
-
-export type FieldsFromParser<T extends Parser> = FieldErrors<
-    ReturnType<T["parse"]>
->;
 
 function createErroPathGenerator(
     issues: ZodIssue[] | undefined,

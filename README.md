@@ -223,8 +223,6 @@ Create a form `Validator`
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErrorFieldChain`: The error chain
 
-[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
-
 ### `Zorm` Type
 
 The type of the object returned by `useZorm()`. This type object can be used to
@@ -253,4 +251,9 @@ function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
 
 Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
+### `safeParseForm(form, schame): SafeParseReturnType`
+
+Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
+
 [todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx
+[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse

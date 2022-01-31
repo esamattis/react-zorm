@@ -1,4 +1,4 @@
-import { initFieldPathChain } from "./chains";
+import { fieldChain } from "./chains";
 import { setIn } from "./set-in";
 import { FieldsFromSchema, SimpleSchema } from "./types";
 

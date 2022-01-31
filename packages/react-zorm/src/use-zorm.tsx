@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import type { ZodObject } from "zod";
-import { initErrorPathChain, initFieldPathChain } from "./chains";
+import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import { Zorm } from "./types";
 
@@ -18,8 +18,8 @@ export function useZorm<Schema extends ZodObject<any>>(
         const issues = !validation?.success
             ? validation?.error.issues
             : undefined;
-        const errors = initErrorPathChain(issues);
-        const fields = initFieldPathChain(formName);
+        const errors = errorChain(issues);
+        const fields = fieldChain(formName);
 
         const validate = () => {
             if (!formRef.current) {

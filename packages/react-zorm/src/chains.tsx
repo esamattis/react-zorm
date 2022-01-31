@@ -1,12 +1,12 @@
 import type { ZodIssue } from "zod";
 
-function fieldPathChain(ns: string, path: readonly string[]) {
+function _fieldChain(ns: string, path: readonly string[]) {
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
                 const last = path[path.length - 1];
 
-                return fieldPathChain(ns, [
+                return _fieldChain(ns, [
                     ...path.slice(0, -1),
                     `${last}[${args[0]}]`,
                 ]);
@@ -21,35 +21,35 @@ function fieldPathChain(ns: string, path: readonly string[]) {
 
         get(_target, prop) {
             if (typeof prop === "string") {
-                return fieldPathChain(ns, [...path, prop]);
+                return _fieldChain(ns, [...path, prop]);
             }
 
-            return fieldPathChain(ns, path);
+            return _fieldChain(ns, path);
         },
     });
 
     return proxy;
 }
 
-export function initFieldPathChain(ns: string): any {
+export function fieldChain(ns: string): any {
     return new Proxy(
         {},
         {
             get(_target, prop) {
-                return fieldPathChain(ns, [])[prop];
+                return _fieldChain(ns, [])[prop];
             },
         },
     );
 }
 
-function errorPathChain(
+function _errorChain(
     issues: ZodIssue[] | undefined,
     path: readonly (string | number)[],
 ) {
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                return errorPathChain(issues, [...path, args[0]]);
+                return _errorChain(issues, [...path, args[0]]);
             }
 
             const issue = issues?.find((issue) => {
@@ -77,22 +77,22 @@ function errorPathChain(
 
         get(_target, prop) {
             if (typeof prop === "string") {
-                return errorPathChain(issues, [...path, prop]);
+                return _errorChain(issues, [...path, prop]);
             }
 
-            return errorPathChain(issues, path);
+            return _errorChain(issues, path);
         },
     });
 
     return proxy;
 }
 
-export function initErrorPathChain(issues: ZodIssue[] | undefined): any {
+export function errorChain(issues: ZodIssue[] | undefined): any {
     return new Proxy(
         {},
         {
             get(target, prop) {
-                return errorPathChain(issues, [])[prop];
+                return _errorChain(issues, [])[prop];
             },
         },
     );

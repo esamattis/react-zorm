@@ -10,7 +10,7 @@ import React, {
     useState,
 } from "react";
 import { ZodObject } from "zod";
-import { initErrorPathChain, initFieldPathChain } from "./chains";
+import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import { ErrorFieldChain } from "./types";
 
@@ -32,7 +32,7 @@ export function createValidator<T extends ZodObject<any>>(
     type ValidationResult = ReturnType<T["safeParse"]>;
 
     return {
-        fields: initFieldPathChain(ns),
+        fields: fieldChain(ns),
         useValidationContext: () => {
             const context = useContext(ValidationContext);
 
@@ -81,7 +81,7 @@ export function createValidator<T extends ZodObject<any>>(
                     ? validation?.error.issues
                     : undefined;
 
-                const errors = initErrorPathChain(issues) as any as ErrorsType;
+                const errors = errorChain(issues) as any as ErrorsType;
                 return (
                     <ValidationContext.Provider value={{ errors, validation }}>
                         {props.children}
@@ -89,7 +89,7 @@ export function createValidator<T extends ZodObject<any>>(
                 );
             }, []);
 
-            const errors = initErrorPathChain(issues) as any as ErrorsType;
+            const errors = errorChain(issues) as any as ErrorsType;
 
             return {
                 errors,

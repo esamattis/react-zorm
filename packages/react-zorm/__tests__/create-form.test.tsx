@@ -3,13 +3,13 @@ import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
 import { parseForm } from "../src/parse-form";
 import { FieldsFromSchema, SimpleSchema } from "../src/types";
-import { initFieldPathChain } from "../src/chains";
+import { fieldChain } from "../src/chains";
 
 function createFields<Schema extends SimpleSchema>(
     formName: string,
     schema: Schema,
 ): FieldsFromSchema<Schema> {
-    return initFieldPathChain(formName);
+    return fieldChain(formName);
 }
 
 test("single field", () => {

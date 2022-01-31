@@ -1,12 +1,13 @@
 import type { ZodIssue, ZodObject } from "zod";
 
-export interface ArrayIndexSetter<T> {
-    (type?: "id" | "name"): string;
-    [key: string]: T;
-}
-
 export interface FieldGetter {
     (type?: "id" | "name"): string;
+}
+
+export interface ErrorRender {
+    (): boolean;
+    (str: string): string;
+    (render: (issue: ZodIssue) => any): any;
 }
 
 export type FieldChain<T extends object> = {
@@ -32,12 +33,6 @@ export interface SimpleSchema {
 export type FieldsFromSchema<T extends SimpleSchema> = FieldChain<
     ReturnType<T["parse"]>
 >;
-
-export interface ErrorRender {
-    (): boolean;
-    (className: string): string;
-    (render: (issue: ZodIssue) => any): any;
-}
 
 export type ErrorFieldChain<T extends object> = {
     [P in keyof T]: T[P] extends Array<any>

@@ -15,7 +15,7 @@ Features / opinions
     -   When your server supports `FormData` like [Remix!](https://remix.run/)
 -   🤯 Nested / array / object fields
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
--   💎 Type safe
+-   💎 Type-safe
     -   `name` and `id` attribute generation
     -   Error referencing
 

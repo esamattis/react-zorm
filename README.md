@@ -4,17 +4,15 @@ Type-safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
 
 Features / opinions
 
+-   💎 Type-safe
+-   🤯 Nested object and array fields
+-   ✅ Validation on the client [and the server](#server-side-validation)
+    -   When your server supports `FormData` like [Remix!](https://remix.run/)
+-   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
 -   🛑 No controlled inputs
     -   🚀 As performant as React form libraries can get!
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
--   ✅ Validation on the client [and the server](#server-side-validation)
-    -   When your server supports `FormData` like [Remix!](https://remix.run/)
--   🤯 Nested / array / object fields
--   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
--   💎 Type-safe
-    -   `name` and `id` attribute generation
-    -   Field error getters
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

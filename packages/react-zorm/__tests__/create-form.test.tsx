@@ -2,13 +2,13 @@ import React from "react";
 import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
 import { parseForm } from "../src/parse-form";
-import { FieldsFromSchema, SimpleSchema } from "../src/types";
+import { FieldChainFromSchema, SimpleSchema } from "../src/types";
 import { fieldChain } from "../src/chains";
 
 function createFields<Schema extends SimpleSchema>(
     formName: string,
     schema: Schema,
-): FieldsFromSchema<Schema> {
+): FieldChainFromSchema<Schema> {
     return fieldChain(formName);
 }
 

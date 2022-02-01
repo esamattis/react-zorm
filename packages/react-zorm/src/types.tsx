@@ -1,5 +1,13 @@
 import type { ZodIssue, ZodObject } from "zod";
 
+/**
+ * Something like Zod schema
+ */
+export interface SimpleSchema {
+    parse: (arg: any) => any;
+    safeParse: (arg: any) => any;
+}
+
 export interface FieldGetter {
     (type?: "id" | "name"): string;
 }
@@ -16,15 +24,7 @@ export type FieldChain<T extends object> = {
         : FieldGetter;
 };
 
-/**
- * Something like Zod schema
- */
-export interface SimpleSchema {
-    parse: (arg: any) => any;
-    safeParse: (arg: any) => any;
-}
-
-export type FieldsFromSchema<T extends SimpleSchema> = FieldChain<
+export type FieldChainFromSchema<T extends SimpleSchema> = FieldChain<
     ReturnType<T["parse"]>
 >;
 
@@ -64,7 +64,7 @@ export type ErrorChain<T extends object> = {
         : ErrorGetter;
 };
 
-export type ErrorFieldsFromSchema<T extends SimpleSchema> = ErrorChain<
+export type ErrorChainFromSchema<T extends SimpleSchema> = ErrorChain<
     ReturnType<T["parse"]>
 >;
 

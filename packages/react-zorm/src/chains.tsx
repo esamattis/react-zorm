@@ -1,5 +1,16 @@
 import type { ZodIssue } from "zod";
-import { SimpleSchema, ErrorFieldsFromSchema } from "./types";
+import { SimpleSchema, ErrorChainFromSchema } from "./types";
+
+export function fieldChain(ns: string): any {
+    return new Proxy(
+        {},
+        {
+            get(_target, prop) {
+                return _fieldChain(ns, [])[prop];
+            },
+        },
+    );
+}
 
 function _fieldChain(ns: string, path: readonly string[]) {
     const proxy: any = new Proxy(() => {}, {
@@ -32,14 +43,25 @@ function _fieldChain(ns: string, path: readonly string[]) {
     return proxy;
 }
 
-export function fieldChain(ns: string): any {
+export function errorChain<T extends SimpleSchema>(
+    issues: ZodIssue[] | undefined,
+): ErrorChainFromSchema<T> {
     return new Proxy(
         {},
         {
             get(_target, prop) {
-                return _fieldChain(ns, [])[prop];
+                return _errorChain(issues, [])[prop];
             },
         },
+    ) as any;
+}
+
+function arrayEquals(a: readonly any[], b: readonly any[]) {
+    return (
+        a.length === b.length &&
+        a.every((item, index) => {
+            return item === b[index];
+        })
     );
 }
 
@@ -90,26 +112,4 @@ function _errorChain(
     });
 
     return proxy;
-}
-
-export function errorChain<T extends SimpleSchema>(
-    issues: ZodIssue[] | undefined,
-): ErrorFieldsFromSchema<T> {
-    return new Proxy(
-        {},
-        {
-            get(target, prop) {
-                return _errorChain(issues, [])[prop];
-            },
-        },
-    ) as any;
-}
-
-function arrayEquals(a: readonly any[], b: readonly any[]) {
-    return (
-        a.length === b.length &&
-        a.every((item, index) => {
-            return item === b[index];
-        })
-    );
 }

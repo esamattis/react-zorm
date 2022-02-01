@@ -148,7 +148,7 @@ There few other option for invoking the chain:
 Return values for different invocation types
 
 -   `("name"): string` - The `name` attribute value
--   `("id"): string` - Unique `id` attribute value to be used with `aria-describedby`
+-   `("id"): string` - Unique `id` attribute value to be used with labels and `aria-describedby`
 -   `(): string` - The default, same as `"name"`
 -   `(index: number): Chain` - Special case for setting array indices
 

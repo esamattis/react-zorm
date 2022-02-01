@@ -2,9 +2,9 @@ import { useMemo, useRef, useState } from "react";
 import type { ZodObject } from "zod";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
-import { Zorm } from "./types";
+import { SimpleSchema, Zorm } from "./types";
 
-export function useZorm<Schema extends ZodObject<any>>(
+export function useZorm<Schema extends SimpleSchema>(
     formName: string,
     schema: Schema,
 ): Zorm<Schema> {

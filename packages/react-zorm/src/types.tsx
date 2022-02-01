@@ -81,13 +81,13 @@ export type SafeParseResult<Schema extends SimpleSchema> = ReturnType<
     Schema["safeParse"]
 >;
 
-export interface Zorm<Schema extends ZodObject<any>> {
+export interface Zorm<Schema extends SimpleSchema> {
     ref: React.RefObject<HTMLFormElement>;
     props(override?: OverrideFormProps): {
         ref: React.RefObject<HTMLFormElement>;
     } & OverrideFormProps;
     fields: FieldChain<SchemaToObject<Schema>>;
-    errors: ErrorChain<SchemaToObject<Schema>>;
+    errors: ErrorChain<SchemaToObject<Schema>> & ErrorGetter;
     validate(): SafeParseResult<Schema>;
     validation: SafeParseResult<Schema> | null;
 }

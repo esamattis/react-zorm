@@ -1,5 +1,5 @@
 import type { ZodIssue } from "zod";
-import { SimpleSchema, ErrorChainFromSchema } from "./types";
+import { SimpleSchema, ErrorChainFromSchema, ErrorGetter } from "./types";
 
 export function fieldChain(ns: string): any {
     return new Proxy(
@@ -43,19 +43,6 @@ function _fieldChain(ns: string, path: readonly string[]) {
     return proxy;
 }
 
-export function errorChain<T extends SimpleSchema>(
-    issues: ZodIssue[] | undefined,
-): ErrorChainFromSchema<T> {
-    return new Proxy(
-        {},
-        {
-            get(_target, prop) {
-                return _errorChain(issues, [])[prop];
-            },
-        },
-    ) as any;
-}
-
 function arrayEquals(a: readonly any[], b: readonly any[]) {
     return (
         a.length === b.length &&
@@ -65,14 +52,15 @@ function arrayEquals(a: readonly any[], b: readonly any[]) {
     );
 }
 
-function _errorChain(
+export function errorChain<Schema extends SimpleSchema>(
     issues: ZodIssue[] | undefined,
-    path: readonly (string | number)[],
-) {
+    _path?: readonly (string | number)[],
+): ErrorChainFromSchema<Schema> & ErrorGetter {
+    let path = _path || [];
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                return _errorChain(issues, [...path, args[0]]);
+                return errorChain(issues, [...path, args[0]]);
             }
 
             const issue = issues?.find((issue) => {
@@ -104,10 +92,10 @@ function _errorChain(
 
         get(_target, prop) {
             if (typeof prop === "string") {
-                return _errorChain(issues, [...path, prop]);
+                return errorChain(issues, [...path, prop]);
             }
 
-            return _errorChain(issues, path);
+            return errorChain(issues, path);
         },
     });
 

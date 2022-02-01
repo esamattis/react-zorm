@@ -217,3 +217,46 @@ test("can validate multiple dependent fields", () => {
         "passwords to not match",
     );
 });
+
+test("can validate multiple dependent root fields", () => {
+    const Schema = z
+        .object({
+            pw1: z.string(),
+            pw2: z.string(),
+        })
+        .refine(
+            (pw) => {
+                return pw.pw1 === pw.pw2;
+            },
+            { message: "passwords to not match" },
+        );
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input
+                    name={zo.fields.pw1()}
+                    data-testid={zo.fields.pw1("id")}
+                />
+                <input
+                    name={zo.fields.pw2()}
+                    data-testid={zo.fields.pw2("id")}
+                />
+
+                <div data-testid="error">{zo.errors()?.message}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    userEvent.type(screen.getByTestId("form:pw1"), "foo");
+    userEvent.type(screen.getByTestId("form:pw2"), "bar");
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "passwords to not match",
+    );
+});

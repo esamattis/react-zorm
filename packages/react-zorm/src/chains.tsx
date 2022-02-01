@@ -1,4 +1,5 @@
 import type { ZodIssue } from "zod";
+import { SimpleSchema, ErrorFieldsFromSchema } from "./types";
 
 function _fieldChain(ns: string, path: readonly string[]) {
     const proxy: any = new Proxy(() => {}, {
@@ -87,7 +88,9 @@ function _errorChain(
     return proxy;
 }
 
-export function errorChain(issues: ZodIssue[] | undefined): any {
+export function errorChain<T extends SimpleSchema>(
+    issues: ZodIssue[] | undefined,
+): ErrorFieldsFromSchema<T> {
     return new Proxy(
         {},
         {
@@ -95,7 +98,7 @@ export function errorChain(issues: ZodIssue[] | undefined): any {
                 return _errorChain(issues, [])[prop];
             },
         },
-    );
+    ) as any;
 }
 
 function arrayEquals(a: readonly any[], b: readonly any[]) {

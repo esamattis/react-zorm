@@ -18,7 +18,7 @@ export function useZorm<Schema extends ZodObject<any>>(
         const issues = !validation?.success
             ? validation?.error.issues
             : undefined;
-        const errors = errorChain(issues);
+        const errors = errorChain<Schema>(issues);
         const fields = fieldChain(formName);
 
         const validate = () => {

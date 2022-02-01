@@ -40,9 +40,9 @@ export type ErrorFieldChain<T extends object> = {
               index: number,
           ) => ErrorFieldChain<T[P][0]> extends string
               ? ErrorRender
-              : ErrorFieldChain<T[P][0]>
+              : ErrorFieldChain<T[P][0]> & ErrorRender
         : T[P] extends object
-        ? ErrorFieldChain<T[P]>
+        ? ErrorFieldChain<T[P]> & ErrorRender
         : ErrorRender;
 };
 
@@ -55,7 +55,13 @@ export interface OverrideFormProps {
     onBlur?(e: React.FormEvent<HTMLFormElement>): any;
 }
 
-type SchemaToObject<Schema extends SimpleSchema> = ReturnType<Schema["parse"]>;
+export type SchemaToObject<Schema extends SimpleSchema> = ReturnType<
+    Schema["parse"]
+>;
+
+export type SafeParseResult<Schema extends SimpleSchema> = ReturnType<
+    Schema["safeParse"]
+>;
 
 export interface Zorm<Schema extends ZodObject<any>> {
     ref: React.RefObject<HTMLFormElement>;
@@ -64,6 +70,6 @@ export interface Zorm<Schema extends ZodObject<any>> {
     } & OverrideFormProps;
     fields: FieldChain<SchemaToObject<Schema>>;
     errors: ErrorFieldChain<SchemaToObject<Schema>>;
-    validate(): ReturnType<Schema["safeParse"]>;
-    validation: ReturnType<Schema["safeParse"]> | null;
+    validate(): SafeParseResult<Schema>;
+    validation: SafeParseResult<Schema> | null;
 }

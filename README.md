@@ -157,8 +157,8 @@ Return values for different invocation types
 -   `(): ZodIssue | undefined` - Possible ZodIssue object
 -   `(value: T): T | undefined` - Return the passed value on error. Useful for
     setting class names for example
--   `(value: Boolean): boolean` - Return `true` when there's an error and false
-    when it is ok. Example `.field(Boolea)`.
+-   `(value: typeof Boolean): boolean` - Return `true` when there's an error and false
+    when it is ok. Example `.field(Boolean)`.
 -   `<T>(render: (issue: ZodIssue) => T): T | undefined` - Invoke the passed
     function with the `ZodIssue` and return its return value. When there's no error
     a `undefined` is returned. Useful for rendering error message components

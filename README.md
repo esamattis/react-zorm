@@ -14,7 +14,7 @@ Features / opinions
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
 -   💎 Type-safe
     -   `name` and `id` attribute generation
-    -   Error referencing
+    -   Field error getters
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

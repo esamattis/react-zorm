@@ -154,10 +154,12 @@ Return values for different invocation types
 
 ### `errors` invocation
 
--   `(): ZodIssue | null` - Possible ZodIssue object
--   `(str: string): string | undefined` - Return the passed string on error
--   `(render: (issue: ZodIssue) => any): any` - Invoke the passed function and
-    return its return value. When there's no error a `null` is returned.
+-   `(): ZodIssue | undefined` - Possible ZodIssue object
+-   `(value: T): T | undefined` - Return the passed value on error. Useful for
+    setting class names for example
+-   `<T>(render: (issue: ZodIssue) => T): T | undefined` - Invoke the passed
+    function with the `ZodIssue` and return its return value. When there's no error
+    a `undefined` is returned. Useful for rendering error message components
 
 ## Server-side validation
 

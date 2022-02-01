@@ -4,12 +4,6 @@ export interface FieldGetter {
     (type?: "id" | "name"): string;
 }
 
-export interface ErrorRender {
-    (): ZodIssue | null;
-    (str: string): string;
-    (render: (issue: ZodIssue) => any): any;
-}
-
 export type FieldChain<T extends object> = {
     [P in keyof T]: T[P] extends Array<any>
         ? (
@@ -34,19 +28,43 @@ export type FieldsFromSchema<T extends SimpleSchema> = FieldChain<
     ReturnType<T["parse"]>
 >;
 
-export type ErrorFieldChain<T extends object> = {
+export interface ErrorGetter {
+    /**
+     * Get the Zod Issue
+     */
+    (): ZodIssue | undefined;
+
+    /**
+     * Return true when there is an error
+     */
+    (bool: typeof Boolean): boolean;
+
+    /**
+     * Call the function on error and return its value
+     */
+    <Fn extends (error: ZodIssue) => any>(render: Fn):
+        | ReturnType<Fn>
+        | undefined;
+
+    /**
+     * Return the given value on error
+     */
+    <T>(value: T): T | undefined;
+}
+
+export type ErrorChain<T extends object> = {
     [P in keyof T]: T[P] extends Array<any>
         ? (
               index: number,
-          ) => ErrorFieldChain<T[P][0]> extends string
-              ? ErrorRender
-              : ErrorFieldChain<T[P][0]> & ErrorRender
+          ) => ErrorChain<T[P][0]> extends string
+              ? ErrorGetter
+              : ErrorChain<T[P][0]> & ErrorGetter
         : T[P] extends object
-        ? ErrorFieldChain<T[P]> & ErrorRender
-        : ErrorRender;
+        ? ErrorChain<T[P]> & ErrorGetter
+        : ErrorGetter;
 };
 
-export type ErrorFieldsFromSchema<T extends SimpleSchema> = ErrorFieldChain<
+export type ErrorFieldsFromSchema<T extends SimpleSchema> = ErrorChain<
     ReturnType<T["parse"]>
 >;
 
@@ -69,7 +87,7 @@ export interface Zorm<Schema extends ZodObject<any>> {
         ref: React.RefObject<HTMLFormElement>;
     } & OverrideFormProps;
     fields: FieldChain<SchemaToObject<Schema>>;
-    errors: ErrorFieldChain<SchemaToObject<Schema>>;
+    errors: ErrorChain<SchemaToObject<Schema>>;
     validate(): SafeParseResult<Schema>;
     validation: SafeParseResult<Schema> | null;
 }

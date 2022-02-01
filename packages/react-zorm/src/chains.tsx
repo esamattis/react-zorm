@@ -57,15 +57,19 @@ function _errorChain(
                 return arrayEquals(issue.path, path);
             });
 
+            if (args[0] === Boolean) {
+                return Boolean(issue);
+            }
+
             if (typeof args[0] === "function") {
                 if (issue) {
                     return args[0](issue);
                 }
 
-                return null;
+                return undefined;
             }
 
-            if (typeof args[0] === "string") {
+            if (args[0]) {
                 if (issue) {
                     return args[0];
                 } else {
@@ -73,7 +77,7 @@ function _errorChain(
                 }
             }
 
-            return issue || null;
+            return issue || undefined;
         },
 
         get(_target, prop) {

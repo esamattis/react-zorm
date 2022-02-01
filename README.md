@@ -150,7 +150,7 @@ Return values for different invocation types
 -   `("name"): string` - The `name` attribute value
 -   `("id"): string` - Unique `id` attribute value to be used with labels and `aria-describedby`
 -   `(): string` - The default, same as `"name"`
--   `(index: number): Chain` - Special case for setting array indices
+-   `(index: number): FieldChain` - Special case for setting array indices
 
 ### `errors` invocation
 
@@ -162,6 +162,7 @@ Return values for different invocation types
 -   `<T>(render: (issue: ZodIssue) => T): T | undefined` - Invoke the passed
     function with the `ZodIssue` and return its return value. When there's no error
     a `undefined` is returned. Useful for rendering error message components
+-   `(index: number): ErrorChain` - Special case for accessing array element
 
 ## Server-side validation
 
@@ -225,7 +226,7 @@ Create a form `Validator`
     [`safeParse()`][safeparse]
 -   `validate(): SafeParseReturnType`: Manually invoke validation
 -   `fields: FieldChain`: The fields chain
--   `errors: ErrorFieldChain`: The error chain
+-   `errors: ErroChain`: The error chain
 
 ### `Zorm` Type
 

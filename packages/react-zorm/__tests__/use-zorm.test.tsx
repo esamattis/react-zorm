@@ -172,3 +172,48 @@ test("can get the validation object", () => {
 
     expect(screen.queryByTestId("error")).toHaveTextContent("too_small");
 });
+
+test("can validate multiple dependent fields", () => {
+    const Schema = z.object({
+        password: z
+            .object({
+                pw1: z.string(),
+                pw2: z.string(),
+            })
+            .refine(
+                (pw) => {
+                    return pw.pw1 === pw.pw2;
+                },
+                { message: "passwords to not match" },
+            ),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input
+                    name={zo.fields.password.pw1()}
+                    data-testid={zo.fields.password.pw1("id")}
+                />
+                <input
+                    name={zo.fields.password.pw2()}
+                    data-testid={zo.fields.password.pw2("id")}
+                />
+
+                <div data-testid="error">{zo.errors.password()?.message}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    userEvent.type(screen.getByTestId("form:password.pw1"), "foo");
+    userEvent.type(screen.getByTestId("form:password.pw2"), "bar");
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "passwords to not match",
+    );
+});

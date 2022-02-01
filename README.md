@@ -162,7 +162,7 @@ Return values for different invocation types
 -   `<T>(render: (issue: ZodIssue) => T): T | undefined` - Invoke the passed
     function with the `ZodIssue` and return its return value. When there's no error
     a `undefined` is returned. Useful for rendering error message components
--   `(index: number): ErrorChain` - Special case for accessing array element
+-   `(index: number): ErrorChain` - Special case for accessing array elements
 
 ## Server-side validation
 

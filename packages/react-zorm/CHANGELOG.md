@@ -1,3 +1,10 @@
+## v0.1.3
+
+2022-02-01
+
+-   Add support for dependent field validation via Zod `.refine()`
+-   Add support for errors in any object
+
 ## v0.1.2
 
 2022-02-01

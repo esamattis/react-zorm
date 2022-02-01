@@ -49,6 +49,7 @@ function Signup() {
                 onBlur() {},
             })}
         >
+        
             Email:
             <input
                 type="text"
@@ -63,6 +64,7 @@ function Signup() {
                 // Use function for streamlined error message rendering
                 <ErrorMessage message={e.message} />
             ))}
+            
             Password:
             <input
                 type="password"
@@ -72,6 +74,7 @@ function Signup() {
             {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
+            
             <button type="submit" disabled={disabled} >Signup!</button>
         </form>
     );

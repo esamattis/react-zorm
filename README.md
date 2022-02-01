@@ -38,6 +38,7 @@ const FormSchema = z.object({
 
 function Signup() {
     const zo = useZorm("signup", FormSchema);
+    const disabled = zo.validation?.success === false;
 
     return (
         <form
@@ -71,7 +72,7 @@ function Signup() {
             {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
-            <button type="submit">Signup!</button>
+            <button type="submit" disabled={disabled} >Signup!</button>
         </form>
     );
 }

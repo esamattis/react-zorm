@@ -1,4 +1,4 @@
-# 🪱 React Zorm
+# <img src="https://raw.githubusercontent.com/esamattis/react-zorm/react-zorm-logo-svg-logo/react-zorm.svg?sanitize=true" height="60px"/> React Zorm
 
 Type-safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
 

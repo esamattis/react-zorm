@@ -19,7 +19,7 @@ export function useZorm<Schema extends SimpleSchema>(
             ? validation?.error.issues
             : undefined;
         const errors = errorChain<Schema>(issues);
-        const fields = fieldChain(formName);
+        const fields = fieldChain<Schema>(formName);
 
         const validate = () => {
             if (!formRef.current) {

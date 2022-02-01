@@ -1,7 +1,15 @@
 import type { ZodIssue } from "zod";
-import { SimpleSchema, ErrorChainFromSchema, ErrorGetter } from "./types";
+import {
+    SimpleSchema,
+    ErrorChainFromSchema,
+    ErrorGetter,
+    FieldChain,
+    FieldChainFromSchema,
+} from "./types";
 
-export function fieldChain(ns: string): any {
+export function fieldChain<T extends SimpleSchema>(
+    ns: string,
+): FieldChainFromSchema<T> {
     return new Proxy(
         {},
         {
@@ -9,7 +17,7 @@ export function fieldChain(ns: string): any {
                 return _fieldChain(ns, [])[prop];
             },
         },
-    );
+    ) as any;
 }
 
 function _fieldChain(ns: string, path: readonly string[]) {

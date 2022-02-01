@@ -1,3 +1,12 @@
+## v0.1.4
+
+2022-02-01
+
+-   Remove ?? usage
+-   Add array tests
+-   Allow dependent root field validation
+-   Add contributing.md
+
 ## v0.1.3
 
 2022-02-01

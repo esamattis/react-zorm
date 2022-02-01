@@ -204,6 +204,6 @@ export const setIn = (
         0,
         toPath(key),
         value,
-        destroyArrays ?? false,
+        destroyArrays == null ? false : true,
     ) as any;
 };

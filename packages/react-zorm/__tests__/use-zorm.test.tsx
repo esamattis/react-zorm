@@ -260,3 +260,67 @@ test("can validate multiple dependent root fields", () => {
         "passwords to not match",
     );
 });
+
+test("can parse array of strings", () => {
+    const Schema = z.object({
+        strings: z.array(z.string().min(2)),
+    });
+
+    const spy = jest.fn();
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        if (zo.validation?.success) {
+            spy(zo.validation.data);
+        }
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input
+                    name={zo.fields.strings(0)("name")}
+                    defaultValue="ding"
+                />
+                <input
+                    name={zo.fields.strings(1)("name")}
+                    defaultValue="dong"
+                />
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(spy).toHaveBeenCalledWith({ strings: ["ding", "dong"] });
+});
+
+test("can validate array of strings", () => {
+    const Schema = z.object({
+        strings: z.array(z.string().min(2)),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input
+                    name={zo.fields.strings(0)("name")}
+                    defaultValue="ding"
+                />
+                <input name={zo.fields.strings(1)("name")} defaultValue="d" />
+                <div data-testid="error">{zo.errors.strings(1)()?.message}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "Should be at least 2 characters",
+    );
+});

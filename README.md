@@ -49,7 +49,6 @@ function Signup() {
                 onBlur() {},
             })}
         >
-        
             Email:
             <input
                 type="text"
@@ -64,7 +63,6 @@ function Signup() {
                 // Use function for streamlined error message rendering
                 <ErrorMessage message={e.message} />
             ))}
-            
             Password:
             <input
                 type="password"
@@ -74,8 +72,9 @@ function Signup() {
             {zo.errors.password((e) => (
                 <ErrorMessage message={e.message} />
             ))}
-            
-            <button type="submit" disabled={disabled} >Signup!</button>
+            <button type="submit" disabled={disabled}>
+                Signup!
+            </button>
         </form>
     );
 }
@@ -182,35 +181,6 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
-## When Zorm validates?
-
-When the form submits and on blurs after the first submit attempt.
-
-If you want total control over this, just don't spread the `props()`, but set
-the `ref` and call `validate()` manually when you need. Note that then you
-need to manually prevent submitting when the form is invalid.
-
-```tsx
-function Signup() {
-    const zo = useZorm("signup", FormSchema);
-
-    return (
-        <form
-            ref={zo.ref}
-            onSubmit={(e) => {
-                const validation = zo.validate();
-
-                if (!validation.success) {
-                    e.preventDefault();
-                }
-            }}
-        >
-            ...
-        </form>
-    );
-}
-```
-
 ## API
 
 Tools available for importing from `"react-zorm"`
@@ -264,3 +234,42 @@ Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 
 [todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx
 [safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
+
+## FAQ
+
+### When Zorm validates?
+
+When the form submits and on blurs after the first submit attempt.
+
+If you want total control over this, just don't spread the `props()`, but set
+the `ref` and call `validate()` manually when you need. Note that then you
+need to manually prevent submitting when the form is invalid.
+
+```tsx
+function Signup() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        <form
+            ref={zo.ref}
+            onSubmit={(e) => {
+                const validation = zo.validate();
+
+                if (!validation.success) {
+                    e.preventDefault();
+                }
+            }}
+        >
+            ...
+        </form>
+    );
+}
+```
+
+### How to handle controlled components
+
+See <https://twitter.com/esamatti/status/1488785537309847558>
+
+### How validate dependent fields like password confirm?
+
+See <https://twitter.com/esamatti/status/1488553690613039108>

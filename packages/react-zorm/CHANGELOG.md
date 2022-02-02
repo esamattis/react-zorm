@@ -1,3 +1,9 @@
+## v0.1.5
+
+2022-02-02
+
+-   Add support for getting array validation
+
 ## v0.1.4
 
 2022-02-01

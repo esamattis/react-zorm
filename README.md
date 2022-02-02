@@ -270,6 +270,6 @@ function Signup() {
 
 See <https://twitter.com/esamatti/status/1488785537309847558>
 
-### How validate dependent fields like password confirm?
+### How to validate dependent fields like password confirm?
 
 See <https://twitter.com/esamatti/status/1488553690613039108>

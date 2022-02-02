@@ -296,7 +296,7 @@ test("can parse array of strings", () => {
     expect(spy).toHaveBeenCalledWith({ strings: ["ding", "dong"] });
 });
 
-test("can validate array of strings", () => {
+test("can validate array of strings on individual items", () => {
     const Schema = z.object({
         strings: z.array(z.string().min(2)),
     });
@@ -322,5 +322,33 @@ test("can validate array of strings", () => {
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
         "Should be at least 2 characters",
+    );
+});
+
+test("can validate array of strings", () => {
+    const Schema = z.object({
+        strings: z.array(z.string()).min(2),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input
+                    name={zo.fields.strings(0)("name")}
+                    defaultValue="ding"
+                />
+                <div data-testid="error">{zo.errors.strings()?.message}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "Should have at least 2 items",
     );
 });

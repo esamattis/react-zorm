@@ -2,7 +2,7 @@ import { z } from "zod";
 import { assertIs, assertNotNil } from "@valu/assert";
 import { errorChain } from "../src/chains";
 import { assertNotAny } from "./test-helpers";
-import { ErrorChain } from "../src/types";
+import { ErrorChain, ErrorGetter } from "../src/types";
 
 test("can get error", () => {
     const Schema = z.object({
@@ -122,10 +122,15 @@ export function typeChecks() {
 
         const chain = errorChain<typeof Schema>(undefined);
 
-        // @ts-expect-error
-        chain.list();
+        const arrayIssue: z.ZodIssue | undefined = chain.list();
+        assertNotAny(chain.list());
+        chain.list()?.message;
 
-        chain.list(0)();
+        const itemIssue: z.ZodIssue | undefined = chain.list(0)();
+        assertNotAny(chain.list(0)());
+
+        const hmm: ErrorGetter = chain.list(0);
+        assertNotAny(chain.list(0));
 
         {
             // Returns the number on normal field

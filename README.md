@@ -266,7 +266,7 @@ function Signup() {
 }
 ```
 
-### How to handle controlled components
+### How to handle controlled components?
 
 See <https://twitter.com/esamatti/status/1488785537309847558>
 

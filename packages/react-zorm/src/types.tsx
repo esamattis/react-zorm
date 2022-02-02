@@ -52,13 +52,17 @@ export interface ErrorGetter {
     <T>(value: T): T | undefined;
 }
 
+export interface ArrayErrorGetter<T> extends ErrorGetter {
+    (index: number): T;
+}
+
 export type ErrorChain<T extends object> = {
     [P in keyof T]: T[P] extends Array<any>
-        ? (
-              index: number,
-          ) => ErrorChain<T[P][0]> extends string
-              ? ErrorGetter
-              : ErrorChain<T[P][0]> & ErrorGetter
+        ? ArrayErrorGetter<
+              ErrorChain<T[P][0]> extends string
+                  ? ErrorGetter
+                  : ErrorChain<T[P][0]> & ErrorGetter
+          >
         : T[P] extends object
         ? ErrorChain<T[P]> & ErrorGetter
         : ErrorGetter;

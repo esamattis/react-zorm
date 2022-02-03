@@ -181,6 +181,8 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
+Not using Remix? No problem! Check [this out](#how-to-do-server-side-validation-without-remix).
+
 ## API
 
 Tools available for importing from `"react-zorm"`
@@ -306,9 +308,13 @@ const zo = useZorm("todos", FormSchema, {
 });
 ```
 
-If you need loading states [React Query Mutations][react-query] can be cool:
+If you need loading states [React Query][react-query] mutations can be cool:
 
 ```ts
+import { useMutation } from "react-query";
+
+// ...
+
 const formPost = useMutation((data) => {
     return fetch("/api/form-handler", {
         headers: {

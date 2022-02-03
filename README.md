@@ -185,9 +185,16 @@ export let action: ActionFunction = async ({ request }) => {
 
 Tools available for importing from `"react-zorm"`
 
-### `useZorm(formName: string, schema: ZodObject): Zorm`
+### `useZorm(formName: string, schema: ZodObject, options?: UseZormOptions): Zorm`
 
 Create a form `Validator`
+
+#### `UseZormOptions`
+
+-   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
+    -   `ValidSubmitEvent#data`: Zod validated and parsed data
+    -   `ValidSubmitEvent#target`: The form HTML Element
+    -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
 
 #### `Zorm` properties
 
@@ -273,3 +280,52 @@ See <https://twitter.com/esamatti/status/1488785537309847558>
 ### How to validate dependent fields like password confirm?
 
 See <https://twitter.com/esamatti/status/1488553690613039108>
+
+### How to do server-side validation without Remix?
+
+If your server does not support parsing form data to the standard `FormData` you
+can post the form as JSON and just use `.parse()` from the Zod schema. See the
+next section for JSON posting.
+
+### How submit the form as JSON?
+
+Prevent the default submission in `onValidSubmit()` and use `fetch()`:
+
+```ts
+const zo = useZorm("todos", FormSchema, {
+    onValidSubmit: async (event) => {
+        event.preventDefault();
+        await fetch("/api/form-handler", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(event.data),
+        });
+    },
+});
+```
+
+If you need loading states [React Query Mutations][react-query] can be cool:
+
+```ts
+const formPost = useMutation((data) => {
+    return fetch("/api/form-handler", {
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+});
+
+const zo = useZorm("todos", FormSchema, {
+    onValidSubmit: async (event) => {
+        event.preventDefault();
+        formPost.mutate(event.data);
+    },
+});
+
+return mutation.isLoading ? "Sending..." : null;
+```
+
+[react-query]: https://react-query.tanstack.com/

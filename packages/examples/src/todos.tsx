@@ -54,7 +54,13 @@ function TodoItem(props: { zorm: Zorm<typeof FormSchema>; index: number }) {
 }
 
 function TodoList() {
-    const zo = useZorm("todos", FormSchema);
+    const zo = useZorm("todos", FormSchema, {
+        onValidSubmit: (event) => {
+            event.preventDefault();
+            alert(JSON.stringify(event.data, null, 2));
+        },
+    });
+
     const canSubmit = !zo.validation || zo.validation?.success === true;
     const [todos, setTodos] = useState(1);
     const addTodo = () => setTodos((n) => n + 1);
@@ -64,16 +70,7 @@ function TodoList() {
         .map((_, i) => i);
 
     return (
-        <form
-            {...zo.props({
-                onSubmit(e) {
-                    e.preventDefault();
-                    if (zo.validation?.success) {
-                        alert("Form ok!");
-                    }
-                },
-            })}
-        >
+        <form {...zo.props()}>
             <h1>Todo List</h1>
             List name
             <br />

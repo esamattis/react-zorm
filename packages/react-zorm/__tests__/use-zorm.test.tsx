@@ -352,3 +352,63 @@ test("can validate array of strings", () => {
         "Should have at least 2 items",
     );
 });
+
+test("onOnValidSubmit is called on first valid submit", () => {
+    const spy = jest.fn();
+
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            onValidSubmit(e) {
+                spy(e.data);
+            },
+        });
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input data-testid="input" name={zo.fields.thing()} />
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    userEvent.type(screen.getByTestId("input"), "content");
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledWith({ thing: "content" });
+});
+
+test("onOnValidSubmit is not called on error submit", () => {
+    const spy = jest.fn();
+
+    const Schema = z.object({
+        thing: z.string().min(10),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            onValidSubmit() {
+                spy();
+            },
+        });
+
+        return (
+            <form data-testid="form" {...zo.props()}>
+                <input data-testid="input" name={zo.fields.thing()} />
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    userEvent.type(screen.getByTestId("input"), "short");
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledTimes(0);
+
+    userEvent.type(screen.getByTestId("input"), "looooooooooooooooooooooong");
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledTimes(1);
+});

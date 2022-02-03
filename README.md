@@ -300,7 +300,7 @@ const zo = useZorm("todos", FormSchema, {
         await fetch("/api/form-handler", {
             method: "POST",
             headers: {
-                "Content-type": "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(event.data),
         });
@@ -318,7 +318,7 @@ import { useMutation } from "react-query";
 const formPost = useMutation((data) => {
     return fetch("/api/form-handler", {
         headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
     });
@@ -331,7 +331,7 @@ const zo = useZorm("todos", FormSchema, {
     },
 });
 
-return mutation.isLoading ? "Sending..." : null;
+return formPost.isLoading ? "Sending..." : null;
 ```
 
 [react-query]: https://react-query.tanstack.com/

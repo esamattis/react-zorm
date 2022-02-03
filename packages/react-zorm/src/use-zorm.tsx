@@ -37,9 +37,9 @@ export function useZorm<Schema extends SimpleSchema>(
 
     const hasSubmittedOnce = useRef(false);
     const formRef = useRef<HTMLFormElement>(null);
-    const submitRef = useRef<OnValidSubmit<ValidationResult> | undefined>(
-        options?.onValidSubmit,
-    );
+    const submitRef = useRef<
+        UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
+    >(options?.onValidSubmit);
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
     return useMemo(() => {

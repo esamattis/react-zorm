@@ -7,7 +7,7 @@ Features / opinions
 -   💎 Type-safe
 -   🤯 Nested object and array fields
 -   ✅ Validation on the client [and the server](#server-side-validation)
-    -   When your server supports `FormData` like [Remix!](https://remix.run/)
+    -   Via FormData ([Remix](https://remix.run/)!) and JSON
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
 -   🛑 No controlled inputs
     -   🚀 As performant as React form libraries can get!
@@ -169,7 +169,7 @@ Return values for different invocation types
 
 This is Remix but React Zorm does not actually use any Remix APIs so this method
 can be adapted for example to Cloudflare Workers and any other tools using the
-web platform APIs.
+web platform APIs (`FormData`).
 
 ```tsx
 import { parseForm } from "react-zorm";
@@ -181,7 +181,7 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
-Not using Remix? No problem! Check [this out](#how-to-do-server-side-validation-without-remix).
+Not using Remix? No problem! Use JSON. Check [this out](#how-to-do-server-side-validation-without-remix).
 
 ## API
 

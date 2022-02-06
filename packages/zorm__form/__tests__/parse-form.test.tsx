@@ -87,6 +87,30 @@ describe("with any", () => {
             ],
         });
     });
+
+    test("field with dot", () => {
+        const form = makeForm(
+            <form>
+                <input name="['ding.dong']" defaultValue="value" />
+            </form>,
+        );
+
+        expect(parseForm(form)).toEqual({
+            "ding.dong": "value",
+        });
+    });
+
+    test("field with space", () => {
+        const form = makeForm(
+            <form>
+                <input name="['ding dong']" defaultValue="value" />
+            </form>,
+        );
+
+        expect(parseForm(form)).toEqual({
+            "ding dong": "value",
+        });
+    });
 });
 
 describe("combine chains with parsing", () => {

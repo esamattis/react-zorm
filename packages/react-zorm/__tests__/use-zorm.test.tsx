@@ -5,6 +5,7 @@ import React from "react";
 import { z } from "zod";
 
 import { useZorm } from "../src";
+import { assertNotAny } from "./test-helpers";
 
 test("single field validation", () => {
     const Schema = z.object({
@@ -15,7 +16,7 @@ test("single field validation", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input name={zo.fields.thing()} />
 
                 {zo.errors.thing((e) => (
@@ -41,7 +42,7 @@ test("first blur does not trigger error", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
 
                 {zo.errors.thing() ? (
@@ -69,7 +70,7 @@ test("form is validated on blur after the first submit", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
 
                 {zo.errors.thing() ? (
@@ -107,7 +108,7 @@ test("form data is validated", () => {
         }
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
             </form>
         );
@@ -130,7 +131,7 @@ test("class name shortcut", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     data-testid="input"
                     name={zo.fields.thing()}
@@ -158,7 +159,7 @@ test("can get the validation object", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input name={zo.fields.thing()} />
 
                 <div data-testid="error">{zo.errors.thing()?.code}</div>
@@ -192,7 +193,7 @@ test("can validate multiple dependent fields", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     name={zo.fields.password.pw1()}
                     data-testid={zo.fields.password.pw1("id")}
@@ -235,11 +236,12 @@ test("can validate multiple dependent root fields", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     name={zo.fields.pw1()}
                     data-testid={zo.fields.pw1("id")}
                 />
+
                 <input
                     name={zo.fields.pw2()}
                     data-testid={zo.fields.pw2("id")}
@@ -276,7 +278,7 @@ test("can parse array of strings", () => {
         }
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     name={zo.fields.strings(0)("name")}
                     defaultValue="ding"
@@ -305,7 +307,7 @@ test("can validate array of strings on individual items", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     name={zo.fields.strings(0)("name")}
                     defaultValue="ding"
@@ -334,7 +336,7 @@ test("can validate array of strings", () => {
         const zo = useZorm("form", Schema);
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input
                     name={zo.fields.strings(0)("name")}
                     defaultValue="ding"
@@ -368,7 +370,7 @@ test("onOnValidSubmit is called on first valid submit", () => {
         });
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
             </form>
         );
@@ -390,13 +392,20 @@ test("onOnValidSubmit is not called on error submit", () => {
 
     function Test() {
         const zo = useZorm("form", Schema, {
-            onValidSubmit() {
+            onValidSubmit(e) {
+                assertNotAny(e.data);
+                assertNotAny(e.data.thing);
+                const val: string = e.data.thing;
+
+                // @ts-expect-error
+                e.data.bad;
+
                 spy();
             },
         });
 
         return (
-            <form data-testid="form" {...zo.props()}>
+            <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
             </form>
         );
@@ -411,4 +420,47 @@ test("onOnValidSubmit is not called on error submit", () => {
     userEvent.type(screen.getByTestId("input"), "looooooooooooooooooooooong");
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(1);
+});
+
+test("setupListeners: false", () => {
+    const spy = jest.fn();
+
+    const Schema = z.object({
+        thing: z.string().min(10),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            setupListeners: false,
+            onValidSubmit() {
+                spy();
+            },
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" name={zo.fields.thing()} />
+                <div data-testid="status">
+                    {zo.errors.thing() ? "error" : "ok"}
+                </div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    // Does not update ok status to error because no listeners
+    userEvent.type(screen.getByTestId("input"), "short");
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledTimes(0);
+    expect(screen.getByTestId("status")).toHaveTextContent("ok");
+
+    // No change here
+    userEvent.type(screen.getByTestId("input"), "looooooooooooooooooooooong");
+    fireEvent.blur(screen.getByTestId("input"));
+    expect(screen.getByTestId("status")).toHaveTextContent("ok");
+
+    // Or here
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledTimes(0);
 });

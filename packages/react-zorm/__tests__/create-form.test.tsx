@@ -2,22 +2,14 @@ import React from "react";
 import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
 import { parseForm } from "../src/parse-form";
-import { FieldChainFromSchema, GenericSchema } from "../src/types";
 import { fieldChain } from "../src/chains";
-
-function createFields<Schema extends GenericSchema>(
-    formName: string,
-    schema: Schema,
-): FieldChainFromSchema<Schema> {
-    return fieldChain(formName, schema);
-}
 
 test("single field", () => {
     const Schema = z.object({
         ding: z.string(),
     });
 
-    const fields = createFields("test", Schema);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -42,7 +34,7 @@ test("object", () => {
         }),
     });
 
-    const fields = createFields("test", Schema);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -70,7 +62,7 @@ test("array of objects", () => {
         ),
     });
 
-    const fields = createFields("test", Schema);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -97,7 +89,7 @@ test("array of strings", () => {
         }),
     });
 
-    const fields = createFields("test", Schema);
+    const fields = fieldChain("test", Schema);
     const form = makeForm(
         <form>
             <input name={fields.ob.strings(0)()} defaultValue="value1" />
@@ -122,7 +114,7 @@ test("types", () => {
         }),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", FormValues);
 
     assertNotAny(fields.ob);
     assertNotAny(fields.value());

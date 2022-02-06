@@ -198,7 +198,7 @@ string within your forms.
 
 Zod schema to parse the form with.
 
-#### param `options: UseZormOptions`
+#### param `options?: UseZormOptions`
 
 -   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
     -   `ValidSubmitEvent#data`: The Zod parsed form data

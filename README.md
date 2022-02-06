@@ -169,7 +169,7 @@ import { parseForm } from "react-zorm";
 
 export let action: ActionFunction = async ({ request }) => {
     const form = await request.formData();
-    // Get validated and typed form object. This throw on validation errors.
+    // Get parsed and typed form object. This throw on validation errors.
     const data = parseForm(FormSchema, form);
 };
 ```
@@ -187,7 +187,7 @@ Create a form `Validator`
 #### `UseZormOptions`
 
 -   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
-    -   `ValidSubmitEvent#data`: Zod validated and parsed data
+    -   `ValidSubmitEvent#data`: The Zod parsed form data
     -   `ValidSubmitEvent#target`: The form HTML Element
     -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
 -   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be

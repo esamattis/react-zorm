@@ -2,8 +2,8 @@
 
 2022-02-06
 
--   Remove `.props()` now just `.ref` and setup listeners on that directly
--   Pass `setupListeners: false` to disable the default validating behaviour
+-   Remove `.props()`. There's only `.ref` now which is used to setup the event listeners
+-   Pass `setupListeners: false` to disable the default validating behaviour via the event listeners
 -   Remove old prototype API
 -   More tests
 

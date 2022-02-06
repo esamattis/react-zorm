@@ -1,7 +1,13 @@
 {
     "name": "@zorm/form",
+    "version": "0.0.0",
+    "files": [
+        "dist"
+    ],
+    "typings": "dist/index.d.ts",
+    "main": "dist/index.js",
     "scripts": {
-        "build": "rm -f dist && tsc -p tsconfig.build.json",
+        "build": "rm -fr dist && tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json --declarationMap",
         "test": "tsc && jest",
         "tsc": "tsc",

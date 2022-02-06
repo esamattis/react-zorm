@@ -18,20 +18,16 @@ function ErrorMessage(props: { message: string }) {
 }
 
 function Signup() {
-    const zo = useZorm("signup", FormFields);
+    const zo = useZorm("signup", FormFields, {
+        onValidSubmit(e) {
+            e.preventDefault();
+            alert("Form ok!");
+        },
+    });
     const canSubmit = !zo.validation || zo.validation?.success === true;
 
     return (
-        <form
-            {...zo.props({
-                onSubmit(e) {
-                    e.preventDefault();
-                    if (zo.validation?.success) {
-                        alert("Form ok!");
-                    }
-                },
-            })}
-        >
+        <form ref={zo.ref}>
             <br />
             Email: <br />
             <input

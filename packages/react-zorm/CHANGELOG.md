@@ -1,3 +1,12 @@
+## v0.2.0
+
+2022-02-06
+
+-   Remove `.props()` now just `.ref` and setup listeners on that directly
+-   Pass `setupListeners: false` to disable the default validating behaviour
+-   Remove old prototype API
+-   More tests
+
 ## v0.1.6
 
 2022-02-03

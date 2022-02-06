@@ -1,4 +1,4 @@
-import type { ZodIssue } from "zod";
+import type { ZodIssue, ZodType } from "zod";
 
 export interface GenericIssue {
     path: (string | number)[];
@@ -81,24 +81,16 @@ export type ErrorChainFromSchema<T extends GenericSchema> = ErrorChain<
     ZodIssue
 >;
 
-export interface OverrideFormProps {
-    onSubmit?(e: React.FormEvent<HTMLFormElement>): any;
-    onBlur?(e: React.FormEvent<HTMLFormElement>): any;
-}
-
 export type SchemaToObject<Schema extends GenericSchema> = ReturnType<
     Schema["parse"]
 >;
 
 export type SafeParseResult<Schema extends GenericSchema> = ReturnType<
-    Schema["safeParse"]
+    ZodType<Schema>["safeParse"]
 >;
 
 export interface Zorm<Schema extends GenericSchema> {
     ref: React.RefObject<HTMLFormElement>;
-    props(override?: OverrideFormProps): {
-        ref: React.RefObject<HTMLFormElement>;
-    } & OverrideFormProps;
     fields: FieldChain<SchemaToObject<Schema>>;
     errors: ErrorChain<SchemaToObject<Schema>, ZodIssue> &
         ErrorGetter<ZodIssue>;

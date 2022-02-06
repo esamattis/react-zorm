@@ -27,29 +27,16 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
     return ret;
 }
 
-export function parseForm(form: HTMLFormElement | FormData): any;
-
 export function parseForm<P extends GenericSchema>(
+    schema: P,
     form: HTMLFormElement | FormData,
-    schema?: P,
-): ReturnType<P["parse"]>;
-
-export function parseForm<P extends GenericSchema>(
-    form: HTMLFormElement | FormData,
-    schema?: P,
 ): ReturnType<P["parse"]> {
-    const data = parseFormAny(form);
-
-    if (schema) {
-        return schema.parse(data);
-    }
-
-    return data;
+    return schema.parse(parseFormAny(form));
 }
 
 export function safeParseForm<P extends GenericSchema>(
-    form: HTMLFormElement | FormData,
     schema: P,
+    form: HTMLFormElement | FormData,
 ): ReturnType<P["safeParse"]> {
     return schema.safeParse(parseFormAny(form));
 }

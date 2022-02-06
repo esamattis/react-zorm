@@ -117,7 +117,7 @@ export function useZorm<Schema extends GenericSchema>(
     }, []);
 
     const validate = useCallback(() => {
-        const res = safeParseForm(getForm(), schema);
+        const res = safeParseForm(schema, getForm());
         setValidation(res);
         return res;
     }, [getForm, schema]);

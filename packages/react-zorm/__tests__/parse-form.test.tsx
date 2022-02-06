@@ -1,5 +1,5 @@
 import React from "react";
-import { parseForm } from "../src/parse-form";
+import { parseForm, parseFormAny } from "../src/parse-form";
 import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
 import { fieldChain } from "../src/chains";
@@ -16,7 +16,7 @@ describe("parse with schema", () => {
             </form>,
         );
 
-        const res = parseForm(form, Schema);
+        const res = parseForm(Schema, form);
 
         assertNotAny(res);
 
@@ -37,7 +37,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             ding: "dong",
         });
     });
@@ -50,7 +50,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             ding: { dong: "value" },
         });
     });
@@ -63,7 +63,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             ding: ["value1", "value2"],
         });
     });
@@ -79,7 +79,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             nest: [
                 //
                 { ding: "value1", dong: "value2" },
@@ -95,7 +95,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             "ding.dong": "value",
         });
     });
@@ -107,7 +107,7 @@ describe("with any", () => {
             </form>,
         );
 
-        expect(parseForm(form)).toEqual({
+        expect(parseFormAny(form)).toEqual({
             "ding dong": "value",
         });
     });
@@ -129,7 +129,7 @@ describe("combine chains with parsing", () => {
             </form>,
         );
 
-        const res = parseForm(form, Schema);
+        const res = parseForm(Schema, form);
 
         expect(res).toEqual({
             ding: {

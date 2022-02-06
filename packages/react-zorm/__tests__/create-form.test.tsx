@@ -17,7 +17,7 @@ test("single field", () => {
         </form>,
     );
 
-    const values = parseForm(form, Schema);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ding: "dong",
@@ -43,7 +43,7 @@ test("object", () => {
         </form>,
     );
 
-    const values = parseForm(form, Schema);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ob: {
@@ -71,7 +71,7 @@ test("array of objects", () => {
         </form>,
     );
 
-    const values = parseForm(form, Schema);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         things: [
@@ -97,7 +97,7 @@ test("array of strings", () => {
         </form>,
     );
 
-    const values = parseForm(form, Schema);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ob: {

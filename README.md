@@ -37,7 +37,12 @@ const FormSchema = z.object({
 });
 
 function Signup() {
-    const zo = useZorm("signup", FormSchema);
+    const zo = useZorm("signup", FormSchema, {
+        onValidSubmit(e) {
+            e.preventDefault();
+            console.log(e.data); // { email: "me@example.test", password: "secretpassword" }
+        },
+    });
     const disabled = zo.validation?.success === false;
 
     return (
@@ -184,17 +189,26 @@ Tools available for importing from `"react-zorm"`
 
 Create a form `Validator`
 
-#### `UseZormOptions`
+#### param `formName: string`
+
+The form name. This used for the input id generation so it should be unique
+string within your forms.
+
+#### param `schema: ZodObject`
+
+Zod schema to parse the form with.
+
+#### param `options: UseZormOptions`
 
 -   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
     -   `ValidSubmitEvent#data`: The Zod parsed form data
     -   `ValidSubmitEvent#target`: The form HTML Element
     -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
 -   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be
-    called nor the submission is automatically prevented. This give total control
-    when to validate the form. Set your own `onSubmit` on the form etc. Default to `true`.
+    called nor the submission is automatically prevented. This gives total control
+    when to validate the form. Set your own `onSubmit` on the form etc. Defaults to `true`.
 
-#### `Zorm` properties
+#### return `Zorm`
 
 -   `ref`: HTMLFormElement ref for the `<form>` element
 -   `validation: SafeParseReturnType | null`: The current Zod validation status

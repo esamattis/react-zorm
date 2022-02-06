@@ -1,0 +1,5 @@
+{
+    "extends": "@zorm/dev/tsconfig",
+    "exclude": ["dist"],
+    "include": ["__tests__", "src", "example"]
+}

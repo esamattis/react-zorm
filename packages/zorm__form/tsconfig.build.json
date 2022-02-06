@@ -1,0 +1,5 @@
+{
+    "extends": "@zorm/dev/tsconfig",
+    "compilerOptions": { "noEmit": false, "outDir": "dist" },
+    "include": ["src"]
+}

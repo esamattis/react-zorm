@@ -1,0 +1,23 @@
+{
+    "name": "@zorm/form",
+    "scripts": {
+        "build": "rm -f dist && tsc -p tsconfig.build.json",
+        "watch": "tsc -w -p tsconfig.build.json --declarationMap",
+        "test": "tsc && jest",
+        "tsc": "tsc",
+        "jest": "jest"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^12.1.2",
+        "@types/react": "^17.0.38",
+        "@types/react-dom": "^17.0.11",
+        "@valu/assert": "^1.2.0",
+        "@zorm/dev": "workspace:*",
+        "babel-jest": "^27.4.6",
+        "jest": "^27.4.7",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "typescript": "^4.5.5",
+        "zod": "^3.11.6"
+    }
+}

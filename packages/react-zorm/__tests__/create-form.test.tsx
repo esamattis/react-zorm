@@ -2,22 +2,14 @@ import React from "react";
 import { assertNotAny, makeForm } from "./test-helpers";
 import { z } from "zod";
 import { parseForm } from "../src/parse-form";
-import { FieldChainFromSchema, SimpleSchema } from "../src/types";
 import { fieldChain } from "../src/chains";
 
-function createFields<Schema extends SimpleSchema>(
-    formName: string,
-    schema: Schema,
-): FieldChainFromSchema<Schema> {
-    return fieldChain(formName);
-}
-
 test("single field", () => {
-    const FormValues = z.object({
+    const Schema = z.object({
         ding: z.string(),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -25,7 +17,7 @@ test("single field", () => {
         </form>,
     );
 
-    const values = parseForm(FormValues, form);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ding: "dong",
@@ -35,14 +27,14 @@ test("single field", () => {
 });
 
 test("object", () => {
-    const FormValues = z.object({
+    const Schema = z.object({
         ob: z.object({
             ding: z.string(),
             dong: z.string(),
         }),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -51,7 +43,7 @@ test("object", () => {
         </form>,
     );
 
-    const values = parseForm(FormValues, form);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ob: {
@@ -62,7 +54,7 @@ test("object", () => {
 });
 
 test("array of objects", () => {
-    const FormValues = z.object({
+    const Schema = z.object({
         things: z.array(
             z.object({
                 ding: z.string(),
@@ -70,7 +62,7 @@ test("array of objects", () => {
         ),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", Schema);
 
     const form = makeForm(
         <form>
@@ -79,7 +71,7 @@ test("array of objects", () => {
         </form>,
     );
 
-    const values = parseForm(FormValues, form);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         things: [
@@ -91,13 +83,13 @@ test("array of objects", () => {
 });
 
 test("array of strings", () => {
-    const FormValues = z.object({
+    const Schema = z.object({
         ob: z.object({
             strings: z.array(z.string()),
         }),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", Schema);
     const form = makeForm(
         <form>
             <input name={fields.ob.strings(0)()} defaultValue="value1" />
@@ -105,7 +97,7 @@ test("array of strings", () => {
         </form>,
     );
 
-    const values = parseForm(FormValues, form);
+    const values = parseForm(Schema, form);
 
     expect(values).toEqual({
         ob: {
@@ -122,7 +114,7 @@ test("types", () => {
         }),
     });
 
-    const fields = createFields("test", FormValues);
+    const fields = fieldChain("test", FormValues);
 
     assertNotAny(fields.ob);
     assertNotAny(fields.value());

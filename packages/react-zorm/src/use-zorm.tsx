@@ -1,8 +1,7 @@
-import { useMemo, useRef, useState } from "react";
-import type { ZodObject } from "zod";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
-import { SimpleSchema, Zorm } from "./types";
+import { GenericSchema, SafeParseResult, Zorm } from "./types";
 
 export interface ValidSubmitEvent<Data> {
     /**
@@ -26,40 +25,122 @@ export interface UseZormOptions<Data> {
      * Called when the form is submitted with valid data
      */
     onValidSubmit?: (event: ValidSubmitEvent<Data>) => any;
+
+    setupListeners?: boolean;
 }
 
-export function useZorm<Schema extends SimpleSchema>(
+export interface FormListener {
+    getForm(): HTMLFormElement;
+    validate(): SafeParseResult<any>;
+    onValidSubmit(event: ValidSubmitEvent<any>): any;
+    _isSubmittedOnce?: boolean;
+}
+
+/**
+ * Setup form listeners on the document element
+ */
+function setupFormListener() {
+    const listeners = new Set<FormListener>();
+
+    if (typeof document !== undefined) {
+        document.addEventListener("change", (e) => {
+            const el = e.target;
+            if (!(el instanceof HTMLElement)) {
+                return;
+            }
+            listeners.forEach((listener) => {
+                if (
+                    listener._isSubmittedOnce &&
+                    listener.getForm().contains(el)
+                ) {
+                    listener.validate();
+                }
+            });
+        });
+
+        document.addEventListener("submit", (e) => {
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) {
+                return;
+            }
+
+            listeners.forEach((listener) => {
+                if (listener.getForm() === e.target) {
+                    listener._isSubmittedOnce = true;
+                    const res = listener.validate();
+                    if (res.success) {
+                        listener.onValidSubmit({
+                            data: res.data,
+                            preventDefault: () => e.preventDefault(),
+                            target: form,
+                        });
+                    } else {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    }
+
+    return {
+        listen(listener: FormListener) {
+            listeners.add(listener);
+
+            return () => {
+                listeners.delete(listener);
+            };
+        },
+    };
+}
+
+const forms = setupFormListener();
+
+export function useZorm<Schema extends GenericSchema>(
     formName: string,
     schema: Schema,
     options?: UseZormOptions<ReturnType<Schema["parse"]>>,
 ): Zorm<Schema> {
     type ValidationResult = ReturnType<Schema["safeParse"]>;
 
-    const hasSubmittedOnce = useRef(false);
     const formRef = useRef<HTMLFormElement>(null);
     const submitRef = useRef<
         UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
     >(options?.onValidSubmit);
+
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
+    const getForm = useCallback(() => {
+        if (!formRef.current) {
+            throw new Error("[react-zorm]: Form ref not passed");
+        }
+        return formRef.current;
+    }, []);
+
+    const validate = useCallback(() => {
+        const res = safeParseForm(schema, getForm());
+        setValidation(res);
+        return res;
+    }, [getForm, schema]);
+
+    useEffect(() => {
+        if (options?.setupListeners === false) {
+            return;
+        }
+
+        return forms.listen({
+            getForm,
+            validate,
+            onValidSubmit: (e) => {
+                submitRef.current?.(e);
+            },
+        });
+    }, [getForm, options?.setupListeners, validate]);
+
     return useMemo(() => {
-        const issues = !validation?.success
-            ? validation?.error.issues
-            : undefined;
-        const errors = errorChain<Schema>(issues);
-        const fields = fieldChain<Schema>(formName);
+        const error = !validation?.success ? validation?.error : undefined;
 
-        const validate = () => {
-            if (!formRef.current) {
-                throw new Error("[react-zorm] ref not passed to the form");
-            }
-
-            const res = safeParseForm(schema, formRef.current);
-
-            setValidation(res);
-
-            return res;
-        };
+        const errors = errorChain(schema, error);
+        const fields = fieldChain(formName, schema);
 
         return {
             ref: formRef,
@@ -67,42 +148,6 @@ export function useZorm<Schema extends SimpleSchema>(
             validation,
             fields,
             errors,
-            props(overrides) {
-                return {
-                    ref: formRef,
-                    onSubmit(e) {
-                        const res = validate();
-
-                        if (res.success) {
-                            if (!formRef.current) {
-                                throw new Error(
-                                    "[react-zorm] ref not passed to the form",
-                                );
-                            }
-
-                            submitRef.current?.({
-                                data: res.data,
-                                preventDefault: () => {
-                                    e.preventDefault();
-                                },
-                                target: formRef.current,
-                            });
-                        } else {
-                            e.preventDefault();
-                        }
-
-                        hasSubmittedOnce.current = true;
-
-                        return overrides?.onSubmit?.(e);
-                    },
-                    onBlur(e) {
-                        if (hasSubmittedOnce.current) {
-                            validate();
-                        }
-                        return overrides?.onBlur?.(e);
-                    },
-                };
-            },
         };
-    }, [formName, schema, validation]);
+    }, [formName, schema, validate, validation]);
 }

@@ -70,7 +70,7 @@ function TodoList() {
         .map((_, i) => i);
 
     return (
-        <form {...zo.props()}>
+        <form ref={zo.ref}>
             <h1>Todo List</h1>
             List name
             <br />

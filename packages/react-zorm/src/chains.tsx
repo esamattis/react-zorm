@@ -1,15 +1,15 @@
-import type { ZodIssue } from "zod";
 import {
-    SimpleSchema,
+    GenericSchema,
     ErrorChainFromSchema,
     ErrorGetter,
-    FieldChain,
     FieldChainFromSchema,
+    GenericError,
 } from "./types";
 
-export function fieldChain<T extends SimpleSchema>(
+export function fieldChain<Schema extends GenericSchema>(
     ns: string,
-): FieldChainFromSchema<T> {
+    schema: Schema,
+): FieldChainFromSchema<Schema> {
     return new Proxy(
         {},
         {
@@ -51,27 +51,22 @@ function _fieldChain(ns: string, path: readonly string[]) {
     return proxy;
 }
 
-function arrayEquals(a: readonly any[], b: readonly any[]) {
-    return (
-        a.length === b.length &&
-        a.every((item, index) => {
-            return item === b[index];
-        })
-    );
-}
-
-export function errorChain<Schema extends SimpleSchema>(
-    issues: ZodIssue[] | undefined,
+export function errorChain<
+    Schema extends GenericSchema,
+    ChainError extends GenericError,
+>(
+    schema: Schema,
+    error?: ChainError | undefined,
     _path?: readonly (string | number)[],
-): ErrorChainFromSchema<Schema> & ErrorGetter {
+): ErrorChainFromSchema<Schema> & ErrorGetter<ChainError["issues"][0]> {
     let path = _path || [];
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                return errorChain(issues, [...path, args[0]]);
+                return errorChain(schema, error, [...path, args[0]]);
             }
 
-            const issue = issues?.find((issue) => {
+            const issue = error?.issues.find((issue) => {
                 return arrayEquals(issue.path, path);
             });
 
@@ -100,12 +95,21 @@ export function errorChain<Schema extends SimpleSchema>(
 
         get(_target, prop) {
             if (typeof prop === "string") {
-                return errorChain(issues, [...path, prop]);
+                return errorChain(schema, error, [...path, prop]);
             }
 
-            return errorChain(issues, path);
+            return errorChain(schema, error, path);
         },
     });
 
     return proxy;
+}
+
+function arrayEquals(a: readonly any[], b: readonly any[]) {
+    return (
+        a.length === b.length &&
+        a.every((item, index) => {
+            return item === b[index];
+        })
+    );
 }

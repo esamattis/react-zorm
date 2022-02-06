@@ -1,9 +1,17 @@
-import type { ZodIssue, ZodObject } from "zod";
+import type { ZodIssue, ZodType } from "zod";
+
+export interface GenericIssue {
+    path: (string | number)[];
+}
+
+export interface GenericError {
+    issues: GenericIssue[];
+}
 
 /**
  * Something like Zod schema
  */
-export interface SimpleSchema {
+export interface GenericSchema {
     parse: (arg: any) => any;
     safeParse: (arg: any) => any;
 }
@@ -24,15 +32,15 @@ export type FieldChain<T extends object> = {
         : FieldGetter;
 };
 
-export type FieldChainFromSchema<T extends SimpleSchema> = FieldChain<
+export type FieldChainFromSchema<T extends GenericSchema> = FieldChain<
     ReturnType<T["parse"]>
 >;
 
-export interface ErrorGetter {
+export interface ErrorGetter<Issue extends GenericIssue> {
     /**
      * Get the Zod Issue
      */
-    (): ZodIssue | undefined;
+    (): Issue | undefined;
 
     /**
      * Return true when there is an error
@@ -42,9 +50,7 @@ export interface ErrorGetter {
     /**
      * Call the function on error and return its value
      */
-    <Fn extends (error: ZodIssue) => any>(render: Fn):
-        | ReturnType<Fn>
-        | undefined;
+    <Fn extends (error: Issue) => any>(render: Fn): ReturnType<Fn> | undefined;
 
     /**
      * Return the given value on error
@@ -52,46 +58,42 @@ export interface ErrorGetter {
     <T>(value: T): T | undefined;
 }
 
-export interface ArrayErrorGetter<T> extends ErrorGetter {
+export interface ArrayErrorGetter<T, Issue extends GenericIssue>
+    extends ErrorGetter<Issue> {
     (index: number): T;
 }
 
-export type ErrorChain<T extends object> = {
+export type ErrorChain<T extends object, Issue extends GenericIssue> = {
     [P in keyof T]: T[P] extends Array<any>
         ? ArrayErrorGetter<
-              ErrorChain<T[P][0]> extends string
-                  ? ErrorGetter
-                  : ErrorChain<T[P][0]> & ErrorGetter
+              ErrorChain<T[P][0], Issue> extends string
+                  ? ErrorGetter<Issue>
+                  : ErrorChain<T[P][0], Issue> & ErrorGetter<Issue>,
+              Issue
           >
         : T[P] extends object
-        ? ErrorChain<T[P]> & ErrorGetter
-        : ErrorGetter;
+        ? ErrorChain<T[P], Issue> & ErrorGetter<Issue>
+        : ErrorGetter<Issue>;
 };
 
-export type ErrorChainFromSchema<T extends SimpleSchema> = ErrorChain<
-    ReturnType<T["parse"]>
+export type ErrorChainFromSchema<T extends GenericSchema> = ErrorChain<
+    ReturnType<T["parse"]>,
+    ZodIssue
 >;
 
-export interface OverrideFormProps {
-    onSubmit?(e: React.FormEvent<HTMLFormElement>): any;
-    onBlur?(e: React.FormEvent<HTMLFormElement>): any;
-}
-
-export type SchemaToObject<Schema extends SimpleSchema> = ReturnType<
+export type SchemaToObject<Schema extends GenericSchema> = ReturnType<
     Schema["parse"]
 >;
 
-export type SafeParseResult<Schema extends SimpleSchema> = ReturnType<
-    Schema["safeParse"]
+export type SafeParseResult<Schema extends GenericSchema> = ReturnType<
+    ZodType<Schema>["safeParse"]
 >;
 
-export interface Zorm<Schema extends SimpleSchema> {
+export interface Zorm<Schema extends GenericSchema> {
     ref: React.RefObject<HTMLFormElement>;
-    props(override?: OverrideFormProps): {
-        ref: React.RefObject<HTMLFormElement>;
-    } & OverrideFormProps;
     fields: FieldChain<SchemaToObject<Schema>>;
-    errors: ErrorChain<SchemaToObject<Schema>> & ErrorGetter;
+    errors: ErrorChain<SchemaToObject<Schema>, ZodIssue> &
+        ErrorGetter<ZodIssue>;
     validate(): SafeParseResult<Schema>;
     validation: SafeParseResult<Schema> | null;
 }

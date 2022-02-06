@@ -41,14 +41,7 @@ function Signup() {
     const disabled = zo.validation?.success === false;
 
     return (
-        <form
-            {...zo.props({
-                // Zorm assigns onSubmit and onBlur.
-                // Add your handlers here if you need them
-                onSubmit() {},
-                onBlur() {},
-            })}
-        >
+        <form ref={zo.ref}>
             Email:
             <input
                 type="text"
@@ -197,11 +190,13 @@ Create a form `Validator`
     -   `ValidSubmitEvent#data`: Zod validated and parsed data
     -   `ValidSubmitEvent#target`: The form HTML Element
     -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
+-   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be
+    called nor the submission is automatically prevented. This give total control
+    when to validate the form. Set your own `onSubmit` on the form etc. Default to `true`.
 
 #### `Zorm` properties
 
--   `ref`: HTMLFormElement ref
--   `props(overrides: Props)`: Get spreadable props for `<form>`
+-   `ref`: HTMLFormElement ref for the `<form>` element
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
     [`safeParse()`][safeparse]

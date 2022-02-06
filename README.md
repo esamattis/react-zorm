@@ -243,15 +243,15 @@ Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 
 ### When Zorm validates?
 
-When the form submits and on blurs after the first submit attempt.
+When the form submits and on input blurs after the first submit attempt.
 
-If you want total control over this, just don't spread the `props()`, but set
-the `ref` and call `validate()` manually when you need. Note that then you
-need to manually prevent submitting when the form is invalid.
+If you want total control over this, pass in `setupListeners: false` and call
+`validate()` manually when you need. Note that now you need to manually prevent
+submitting when the form is invalid.
 
 ```tsx
 function Signup() {
-    const zo = useZorm("signup", FormSchema);
+    const zo = useZorm("signup", FormSchema, { setupListeners: false });
 
     return (
         <form

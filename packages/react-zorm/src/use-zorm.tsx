@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from "react";
-import type { ZodObject } from "zod";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
-import { SimpleSchema, Zorm } from "./types";
+import { GenericSchema, Zorm } from "./types";
 
 export interface ValidSubmitEvent<Data> {
     /**
@@ -28,7 +27,7 @@ export interface UseZormOptions<Data> {
     onValidSubmit?: (event: ValidSubmitEvent<Data>) => any;
 }
 
-export function useZorm<Schema extends SimpleSchema>(
+export function useZorm<Schema extends GenericSchema>(
     formName: string,
     schema: Schema,
     options?: UseZormOptions<ReturnType<Schema["parse"]>>,
@@ -43,18 +42,17 @@ export function useZorm<Schema extends SimpleSchema>(
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
     return useMemo(() => {
-        const issues = !validation?.success
-            ? validation?.error.issues
-            : undefined;
-        const errors = errorChain<Schema>(issues);
-        const fields = fieldChain<Schema>(formName);
+        const error = !validation?.success ? validation?.error : undefined;
+
+        const errors = errorChain(schema, error);
+        const fields = fieldChain(formName, schema);
 
         const validate = () => {
             if (!formRef.current) {
                 throw new Error("[react-zorm] ref not passed to the form");
             }
 
-            const res = safeParseForm(schema, formRef.current);
+            const res = safeParseForm(formRef.current, schema);
 
             setValidation(res);
 

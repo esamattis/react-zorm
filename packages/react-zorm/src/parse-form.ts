@@ -1,5 +1,5 @@
 import { setIn } from "./set-in";
-import { SimpleSchema } from "./types";
+import { GenericSchema } from "./types";
 
 /**
  * Parse nested data from a form element or a FormData object.
@@ -27,16 +27,29 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
     return ret;
 }
 
-export function parseForm<P extends SimpleSchema>(
-    schema: P,
+export function parseForm(form: HTMLFormElement | FormData): any;
+
+export function parseForm<P extends GenericSchema>(
     form: HTMLFormElement | FormData,
+    schema?: P,
+): ReturnType<P["parse"]>;
+
+export function parseForm<P extends GenericSchema>(
+    form: HTMLFormElement | FormData,
+    schema?: P,
 ): ReturnType<P["parse"]> {
-    return schema.parse(parseFormAny(form));
+    const data = parseFormAny(form);
+
+    if (schema) {
+        return schema.parse(data);
+    }
+
+    return data;
 }
 
-export function safeParseForm<P extends SimpleSchema>(
-    schema: P,
+export function safeParseForm<P extends GenericSchema>(
     form: HTMLFormElement | FormData,
+    schema: P,
 ): ReturnType<P["safeParse"]> {
     return schema.safeParse(parseFormAny(form));
 }

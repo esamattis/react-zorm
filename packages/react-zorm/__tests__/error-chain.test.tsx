@@ -12,7 +12,7 @@ test("can get error", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain<typeof Schema>(res.error.issues);
+    const chain = errorChain(Schema, res.error);
 
     expect(chain.field()).toEqual({
         code: "invalid_type",
@@ -31,7 +31,7 @@ test("can get boolean true on error", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain<typeof Schema>(res.error.issues);
+    const chain = errorChain(Schema, res.error);
 
     expect(chain.field(Boolean)).toBe(true);
 });
@@ -41,7 +41,7 @@ test("can get boolean false on success", () => {
         field: z.string(),
     });
 
-    const chain = errorChain<typeof Schema>(undefined);
+    const chain = errorChain(Schema);
 
     expect(chain.field(Boolean)).toBe(false);
 });
@@ -54,7 +54,7 @@ test("can use custom value", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain<typeof Schema>(res.error.issues);
+    const chain = errorChain(Schema, res.error);
 
     expect(chain.field({ my: "thing" })).toEqual({
         my: "thing",
@@ -69,7 +69,7 @@ test("can use custom value in fn", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain<typeof Schema>(res.error.issues);
+    const chain = errorChain(Schema, res.error);
 
     expect(chain.field(() => ({ my: "thing" }))).toEqual({
         my: "thing",
@@ -99,7 +99,7 @@ test("can get refined object error", () => {
     });
     assertIs(res.success, false as const);
 
-    const chain = errorChain<typeof Schema>(res.error.issues);
+    const chain = errorChain(Schema, res.error);
 
     expect(chain.pw()).toEqual({
         code: "custom",
@@ -120,7 +120,7 @@ export function typeChecks() {
             ),
         });
 
-        const chain = errorChain<typeof Schema>(undefined);
+        const chain = errorChain(Schema, undefined);
 
         const arrayIssue: z.ZodIssue | undefined = chain.list();
         assertNotAny(chain.list());
@@ -129,18 +129,18 @@ export function typeChecks() {
         const itemIssue: z.ZodIssue | undefined = chain.list(0)();
         assertNotAny(chain.list(0)());
 
-        const hmm: ErrorGetter = chain.list(0);
+        const hmm: ErrorGetter<any> = chain.list(0);
         assertNotAny(chain.list(0));
 
         {
             // Returns the number on normal field
             // @ts-expect-error
-            const _: ErrorChain<any> = chain.field(3);
+            const _: ErrorChain<any, any> = chain.field(3);
         }
 
         {
             // array index set returns the chain again
-            const _: ErrorChain<any> = chain.objectList(3);
+            const _: ErrorChain<any, any> = chain.objectList(3);
             assertNotAny(chain.objectList(3));
         }
 

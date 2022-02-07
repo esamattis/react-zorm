@@ -183,3 +183,39 @@ export function typeChecks() {
         }
     }
 }
+
+test("can handle optional fields", () => {
+    const Schema = z.object({
+        field: z.string().optional(),
+    });
+
+    const chain = errorChain(Schema, undefined);
+
+    expect(chain.field()).toBeUndefined();
+});
+
+test("can handle nullish fields", () => {
+    const Schema = z.object({
+        field: z.string().nullish(),
+    });
+
+    const chain = errorChain(Schema, undefined);
+
+    expect(chain.field()).toBeUndefined();
+});
+
+test("can handle optional arrrays", () => {
+    const Schema = z.object({
+        things: z
+            .array(
+                z.object({
+                    field: z.string(),
+                }),
+            )
+            .optional(),
+    });
+
+    const chain = errorChain(Schema, undefined);
+
+    expect(chain.things(0).field()).toBeUndefined();
+});

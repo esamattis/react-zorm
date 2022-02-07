@@ -1,5 +1,13 @@
 import type { ZodIssue, ZodType } from "zod";
 
+type Primitive = string | number | boolean | bigint | symbol | undefined | null;
+
+export type DeepNonNullable<T> = T extends Primitive
+    ? NonNullable<T>
+    : T extends {}
+    ? { [K in keyof T]-?: DeepNonNullable<T[K]> }
+    : Required<T>;
+
 export interface GenericIssue {
     path: (string | number)[];
 }
@@ -33,7 +41,7 @@ export type FieldChain<T extends object> = {
 };
 
 export type FieldChainFromSchema<T extends GenericSchema> = FieldChain<
-    ReturnType<T["parse"]>
+    DeepNonNullable<ReturnType<T["parse"]>>
 >;
 
 export interface ErrorGetter<Issue extends GenericIssue> {
@@ -77,7 +85,7 @@ export type ErrorChain<T extends object, Issue extends GenericIssue> = {
 };
 
 export type ErrorChainFromSchema<T extends GenericSchema> = ErrorChain<
-    ReturnType<T["parse"]>,
+    DeepNonNullable<ReturnType<T["parse"]>>,
     ZodIssue
 >;
 

@@ -298,7 +298,7 @@ If your server does not support parsing form data to the standard `FormData` you
 can post the form as JSON and just use `.parse()` from the Zod schema. See the
 next section for JSON posting.
 
-### How submit the form as JSON?
+### How to submit the form as JSON?
 
 Prevent the default submission in `onValidSubmit()` and use `fetch()`:
 

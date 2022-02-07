@@ -16,6 +16,7 @@
         "zod": "^3.11.6"
     },
     "scripts": {
+        "example-checkbox-array": "parcel src/checkbox-array.html",
         "example-todos": "parcel src/todos.html",
         "example-signup": "parcel src/signup.html"
     },

@@ -185,12 +185,7 @@ const setInRecursor = (
     return array;
 };
 
-export const setIn = (
-    state: Object,
-    key: string,
-    value: any,
-    destroyArrays?: boolean,
-): Object => {
+export const setIn = (state: {}, key: string, value: any): any => {
     if (state === undefined || state === null) {
         throw new Error(`Cannot call setIn() with ${String(state)} state`);
     }
@@ -199,11 +194,5 @@ export const setIn = (
     }
     // Recursive function needs to accept and return State, but public API should
     // only deal with Objects
-    return setInRecursor(
-        state,
-        0,
-        toPath(key),
-        value,
-        destroyArrays == null ? false : true,
-    ) as any;
+    return setInRecursor(state, 0, toPath(key), value, false) as any;
 };

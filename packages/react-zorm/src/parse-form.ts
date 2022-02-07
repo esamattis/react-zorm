@@ -2,6 +2,32 @@ import { setIn } from "./set-in";
 import { GenericSchema } from "./types";
 
 /**
+ * Fix sparse array from nested objects. Puts undefineds to array holes.
+ */
+function fixHoles(ob: object | any[]) {
+    if (Array.isArray(ob)) {
+        const array = ob;
+        for (let index = 0, length = array.length; index < length; index++) {
+            if (!(index in array)) {
+                array[index] = undefined;
+            } else {
+                fixHoles(array[index]);
+            }
+        }
+    }
+
+    if (ob === null) {
+        return;
+    }
+
+    if (typeof ob === "object") {
+        for (const value of Object.values(ob)) {
+            fixHoles(value);
+        }
+    }
+}
+
+/**
  * Parse nested data from a form element or a FormData object.
  *
  * Ex. <input name="ding[0].dong" value="value" />
@@ -23,6 +49,10 @@ export function parseFormAny(form: HTMLFormElement | FormData) {
     for (const [key, value] of data.entries()) {
         ret = setIn(ret, key, value);
     }
+
+    // Remove sparse arrays as Zod does not like them.
+    // XXX Should probably just fix setIn() to avoid sparse arrays.
+    fixHoles(ret);
 
     return ret;
 }

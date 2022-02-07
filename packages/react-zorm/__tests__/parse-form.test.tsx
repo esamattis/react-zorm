@@ -27,6 +27,32 @@ describe("parse with schema", () => {
             ding: "dong",
         });
     });
+
+    test("handles sparse arrays", () => {
+        const Schema = z.object({
+            things: z.array(
+                z
+                    .object({
+                        ding: z.string(),
+                    })
+                    .nullish(),
+            ),
+        });
+
+        const form = makeForm(
+            <form>
+                <input name="things[1].ding" defaultValue="dong" />
+            </form>,
+        );
+
+        const res = parseForm(Schema, form);
+
+        assertNotAny(res);
+
+        expect(res).toEqual({
+            things: [undefined, { ding: "dong" }],
+        });
+    });
 });
 
 describe("with any", () => {
@@ -109,6 +135,24 @@ describe("with any", () => {
 
         expect(parseFormAny(form)).toEqual({
             "ding dong": "value",
+        });
+    });
+
+    test("handles sparse arrays", () => {
+        // Form with zero field
+        const form = makeForm(
+            <form>
+                <input name="things[1].ding" defaultValue="dong" />
+            </form>,
+        );
+
+        const res = parseFormAny(form);
+
+        // Assert there no hole the array
+        expect("0" in res.things).toBe(true);
+
+        expect(res).toEqual({
+            things: [undefined, { ding: "dong" }],
         });
     });
 });

@@ -234,6 +234,39 @@ test("optional fields", () => {
     };
 });
 
+test("nullable fields", () => {
+    const Schema = z.object({
+        field: z.string().nullable(),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.field()).toEqual("field");
+    expect(chain.field("name")).toEqual("field");
+    expect(chain.field("id")).toEqual("form:field");
+
+    {
+        const res: string = chain.field();
+        assertNotAny(chain.field());
+    }
+    {
+        const res: string = chain.field("id");
+        assertNotAny(chain.field("id"));
+    }
+    {
+        const res: string = chain.field("name");
+        assertNotAny(chain.field("name"));
+    }
+
+    () => {
+        // @ts-expect-error
+        chain.bad();
+
+        // @ts-expect-error
+        chain.field("crap");
+    };
+});
+
 test("nullish fields", () => {
     const Schema = z.object({
         field: z.string().nullish(),
@@ -270,6 +303,46 @@ test("nullish fields", () => {
 test("optional arrays", () => {
     const Schema = z.object({
         things: z.array(z.object({ ding: z.string() })).optional(),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.things(0).ding("name")).toEqual("things[0].ding");
+});
+
+test("nullish arrays", () => {
+    const Schema = z.object({
+        things: z.array(z.object({ ding: z.string() })).nullish(),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.things(0).ding("name")).toEqual("things[0].ding");
+});
+
+test("nullable arrays", () => {
+    const Schema = z.object({
+        things: z.array(z.object({ ding: z.string() })).nullable(),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.things(0).ding("name")).toEqual("things[0].ding");
+});
+
+test("nullable array items", () => {
+    const Schema = z.object({
+        things: z.array(z.object({ ding: z.string() }).nullable()),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.things(0).ding("name")).toEqual("things[0].ding");
+});
+
+test("nullish array items", () => {
+    const Schema = z.object({
+        things: z.array(z.object({ ding: z.string() }).nullish()),
     });
 
     const chain = fieldChain("form", Schema);

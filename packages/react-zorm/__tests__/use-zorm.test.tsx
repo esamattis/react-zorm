@@ -464,3 +464,68 @@ test("setupListeners: false", () => {
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(0);
 });
+
+test("checkbox arrays", async () => {
+    const spy = jest.fn();
+    interface Color {
+        name: string;
+        code: string;
+    }
+
+    const COLORS: Color[] = [
+        {
+            name: "Red",
+            code: "red",
+        },
+        {
+            name: "Green",
+            code: "green",
+        },
+        {
+            name: "Blue",
+            code: "blue",
+        },
+    ];
+
+    const FormSchema = z.object({
+        colors: z
+            .array(z.string().nullish())
+            .transform((a) => a.flatMap((item) => (item ? item : []))),
+    });
+
+    function Test() {
+        const zo = useZorm("signup", FormSchema, {
+            onValidSubmit(e) {
+                e.preventDefault();
+                spy(e.data);
+            },
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                {COLORS.map((color, index) => {
+                    return (
+                        <div key={color.code}>
+                            <input
+                                type="checkbox"
+                                id={zo.fields.colors(index)("id")}
+                                name={zo.fields.colors(index)("name")}
+                                defaultChecked={index === 1}
+                                value={color.code}
+                            />
+                            <label htmlFor={zo.fields.colors(index)("id")}>
+                                {color.name}
+                            </label>
+                        </div>
+                    );
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({ colors: ["green"] });
+});

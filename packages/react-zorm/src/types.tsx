@@ -89,19 +89,14 @@ export type ErrorChainFromSchema<T extends GenericSchema> = ErrorChain<
     ZodIssue
 >;
 
-export type SchemaToObject<Schema extends GenericSchema> = ReturnType<
-    Schema["parse"]
->;
-
 export type SafeParseResult<Schema extends GenericSchema> = ReturnType<
     ZodType<Schema>["safeParse"]
 >;
 
 export interface Zorm<Schema extends GenericSchema> {
     ref: React.RefObject<HTMLFormElement>;
-    fields: FieldChain<SchemaToObject<Schema>>;
-    errors: ErrorChain<SchemaToObject<Schema>, ZodIssue> &
-        ErrorGetter<ZodIssue>;
+    fields: FieldChainFromSchema<Schema>;
+    errors: ErrorChainFromSchema<Schema> & ErrorGetter<ZodIssue>;
     validate(): SafeParseResult<Schema>;
     validation: SafeParseResult<Schema> | null;
 }

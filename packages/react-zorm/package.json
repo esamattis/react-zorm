@@ -42,7 +42,7 @@
     "zod": "^3.11.6"
   },
   "scripts": {
-    "esbuild": "esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify",
+    "esbuild": "rm -rf out && esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify && gzip out/index.js && ls -lh out/index.js.gz",
     "build": "tsc -p tsconfig.build.json",
     "publish-build": "cp ../../README.md . && pnpm run build",
     "watch": "tsc -w -p tsconfig.build.json",

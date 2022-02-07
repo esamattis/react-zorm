@@ -7,7 +7,8 @@ Features / opinions
 -   💎 Type-safe
     -   Get form data as a typed object
     -   Typo safe `name` and `id` attribute generation
--   🤯 Nested object and array fields
+-   🤯 Simple nested object and array fields
+    - And still type-safe!  
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   Via FormData ([Remix](https://remix.run/)!) and JSON
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)

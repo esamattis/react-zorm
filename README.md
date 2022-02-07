@@ -292,6 +292,10 @@ See <https://twitter.com/esamatti/status/1488785537309847558>
 
 See <https://twitter.com/esamatti/status/1488553690613039108>
 
+### How to use checkboxes?
+
+See <https://twitter.com/esamatti/status/1490737602487595010>
+
 ### How to do server-side validation without Remix?
 
 If your server does not support parsing form data to the standard `FormData` you

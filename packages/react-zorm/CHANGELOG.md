@@ -1,3 +1,11 @@
+## v0.2.1
+
+2022-02-07
+
+-   Ensure no sparse arrays (avoids Zod crash)
+-   Better handling for .optional() and .nullish()
+-   Add sources maps to the npm package
+
 ## v0.2.0
 
 2022-02-06

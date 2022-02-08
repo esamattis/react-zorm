@@ -11,17 +11,26 @@ export function useValue<T>(opts: {
     const mapRef = useRef<((value: string) => T) | undefined>(opts.mapValue);
 
     useEffect(() => {
-        const input = opts.form.current?.querySelector(`[name="${opts.name}"]`);
-
-        const isValuedInput =
-            input instanceof HTMLInputElement ||
-            input instanceof HTMLTextAreaElement;
-
-        if (!isValuedInput) {
+        const form = opts.form.current;
+        if (!form) {
             return;
         }
 
-        const listener = () => {
+        const listener = (e: { target: {} | null }) => {
+            const input = e.target;
+
+            const isValuedInput =
+                input instanceof HTMLInputElement ||
+                input instanceof HTMLTextAreaElement;
+
+            if (!isValuedInput) {
+                return;
+            }
+
+            if (opts.name !== input.name) {
+                return;
+            }
+
             if (mapRef.current) {
                 setValue(mapRef.current(input.value));
             } else {
@@ -29,13 +38,17 @@ export function useValue<T>(opts: {
             }
         };
 
-        listener();
+        const initialInput = form.querySelector(`[name="${opts.name}"]`);
+
+        if (initialInput) {
+            listener({ target: initialInput });
+        }
 
         const event = opts.event ?? "input";
 
-        input.addEventListener(event, listener);
+        form.addEventListener(event, listener);
         return () => {
-            input.removeEventListener(event, listener);
+            form.removeEventListener(event, listener);
         };
     }, [opts.name, opts.form, opts.event]);
 

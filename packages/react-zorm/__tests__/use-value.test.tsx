@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 
 import { useZorm } from "../src";
@@ -19,6 +19,7 @@ test("can read value with useValue()", () => {
             name: zo.fields.thing(),
             form: zo.ref,
         });
+        assertNotAny(value);
 
         return (
             <form ref={zo.ref} data-testid="form">
@@ -85,7 +86,7 @@ test("renders default value", () => {
     function Test() {
         const zo = useZorm("form", Schema);
 
-        const value = useValue({
+        const value: string = useValue({
             name: zo.fields.thing(),
             form: zo.ref,
         });
@@ -105,4 +106,118 @@ test("renders default value", () => {
     render(<Test />);
 
     expect(screen.queryByTestId("value")).toHaveTextContent("defaultvalue");
+});
+
+test("can map value", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const value = useValue({
+            name: zo.fields.thing(),
+            form: zo.ref,
+            mapValue(value) {
+                return value.toUpperCase();
+            },
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input
+                    data-testid="input"
+                    name={zo.fields.thing()}
+                    defaultValue="value"
+                />
+                <div data-testid="value">{value}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("VALUE");
+});
+
+test("can map to custom type", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const value = useValue({
+            name: zo.fields.thing(),
+            form: zo.ref,
+            initialValue: 0,
+            mapValue(value) {
+                return value.length;
+            },
+        });
+
+        const _num: number = value;
+        assertNotAny(value);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input
+                    data-testid="input"
+                    name={zo.fields.thing()}
+                    defaultValue="value"
+                />
+                <div data-testid="value">{typeof value}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("number");
+});
+
+test("can read lazily rendered value", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+        const [showInput, setShowInput] = useState(false);
+
+        const value = useValue({
+            name: zo.fields.thing(),
+            form: zo.ref,
+            initialValue: "initialvalue",
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                {showInput && (
+                    <input data-testid="input" name={zo.fields.thing()} />
+                )}
+                <button
+                    type="button"
+                    onClick={() => {
+                        setShowInput(true);
+                    }}
+                >
+                    show
+                </button>
+                <div data-testid="value">{value}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("initialvalue");
+
+    fireEvent.click(screen.getByText("show"));
+
+    userEvent.type(screen.getByTestId("input"), "typed value");
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("typed value");
 });

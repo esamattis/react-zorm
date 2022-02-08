@@ -221,3 +221,57 @@ test("can read lazily rendered value", () => {
 
     expect(screen.queryByTestId("value")).toHaveTextContent("typed value");
 });
+
+test("can read lazily rendered default value", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+        const [showInput, setShowInput] = useState(false);
+
+        const value = useValue({
+            name: zo.fields.thing(),
+            form: zo.ref,
+            initialValue: "initialvalue",
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                {showInput && (
+                    <input
+                        data-testid="input"
+                        name={zo.fields.thing()}
+                        defaultValue="defaultvalue"
+                    />
+                )}
+                <button
+                    type="button"
+                    onClick={() => {
+                        setShowInput(true);
+                    }}
+                >
+                    show
+                </button>
+                <div data-testid="value">{value}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("initialvalue");
+
+    fireEvent.click(screen.getByText("show"));
+
+    // XXX requires change simulation to be picked up
+    const event = new Event("input", {
+        bubbles: true,
+        cancelable: true,
+    });
+    screen.getByTestId("input").dispatchEvent(event);
+    // fireEvent.input(screen.getByTestId("input"));
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("defaultvalue");
+});

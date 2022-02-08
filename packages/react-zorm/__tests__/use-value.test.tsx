@@ -270,7 +270,9 @@ test("can read lazily rendered default value", () => {
         bubbles: true,
         cancelable: true,
     });
-    screen.getByTestId("input").dispatchEvent(event);
+    act(() => {
+        screen.getByTestId("input").dispatchEvent(event);
+    });
     // fireEvent.input(screen.getByTestId("input"));
 
     expect(screen.queryByTestId("value")).toHaveTextContent("defaultvalue");

@@ -10,7 +10,7 @@ Features / opinions
 -   🤯 Simple nested object and array fields
     - And still type-safe!  
 -   ✅ Validation on the client [and the server](#server-side-validation)
-    -   Via FormData (👋 [Remix](https://remix.run/)!) and JSON
+    -   Via FormData (💜 [Remix](https://remix.run/)!) and JSON
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
 -   🛑 No controlled inputs
     -   🚀 As performant as React form libraries can get!

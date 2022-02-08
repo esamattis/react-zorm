@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import React, { useState } from "react";
@@ -274,4 +274,58 @@ test("can read lazily rendered default value", () => {
     // fireEvent.input(screen.getByTestId("input"));
 
     expect(screen.queryByTestId("value")).toHaveTextContent("defaultvalue");
+});
+
+test("can read checkbox", () => {
+    const Schema = z.object({
+        checkbox: z.string().optional(),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const value = useValue({
+            name: zo.fields.checkbox(),
+            form: zo.ref,
+            initialValue: false,
+            mapValue: (value) => {
+                console.log("map", value);
+                return Boolean(value);
+            },
+        });
+        const _bool: boolean = value;
+        assertNotAny(value);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="checkbox" name={zo.fields.checkbox()} />
+                <div data-testid="value">
+                    {typeof value}: {String(value)}
+                </div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("boolean: false");
+
+    // This does not emit bubbling input event like in browser
+    //     userEvent.click(screen.getByTestId("checkbox"));
+    // So simulate it manually:
+
+    const checkbox = screen.getByTestId("checkbox");
+    if (checkbox instanceof HTMLInputElement) {
+        checkbox.value = "on";
+    }
+
+    act(() => {
+        const event = new Event("input", {
+            bubbles: true,
+            cancelable: true,
+        });
+        checkbox.dispatchEvent(event);
+    });
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("boolean: true");
 });

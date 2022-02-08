@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { errorChain, fieldChain } from "./chains";
+import { errorChain, fieldChain, valueChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import { GenericSchema, SafeParseResult, Zorm } from "./types";
 
@@ -141,6 +141,7 @@ export function useZorm<Schema extends GenericSchema>(
 
         const errors = errorChain(schema, error);
         const fields = fieldChain(formName, schema);
+        const values = valueChain(formRef, schema);
 
         return {
             ref: formRef,
@@ -148,6 +149,7 @@ export function useZorm<Schema extends GenericSchema>(
             validation,
             fields,
             errors,
+            values,
         };
     }, [formName, schema, validate, validation]);
 }

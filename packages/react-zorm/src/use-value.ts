@@ -1,4 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from "react";
+import { isValuedElement } from "./utils";
 
 export function useValue<T>(opts: {
     name: string;
@@ -19,11 +20,7 @@ export function useValue<T>(opts: {
         const listener = (e: { target: {} | null }) => {
             const input = e.target;
 
-            const isValuedInput =
-                input instanceof HTMLInputElement ||
-                input instanceof HTMLTextAreaElement;
-
-            if (!isValuedInput) {
+            if (!isValuedElement(input)) {
                 return;
             }
 

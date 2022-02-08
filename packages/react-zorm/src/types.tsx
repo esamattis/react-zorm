@@ -44,6 +44,26 @@ export type FieldChainFromSchema<T extends GenericSchema> = FieldChain<
     DeepNonNullable<ReturnType<T["parse"]>>
 >;
 
+export interface ValueGetter {
+    (): string;
+}
+
+export type ValueChain<T extends object> = {
+    [P in keyof T]: T[P] extends Array<any>
+        ? (
+              index: number,
+          ) => FieldChain<T[P][0]> extends string
+              ? ValueGetter
+              : FieldChain<T[P][0]>
+        : T[P] extends object
+        ? FieldChain<T[P]>
+        : ValueGetter;
+};
+
+export type ValueChainFromSchema<T extends GenericSchema> = ValueChain<
+    DeepNonNullable<ReturnType<T["parse"]>>
+>;
+
 export interface ErrorGetter<Issue extends GenericIssue> {
     /**
      * Get the Zod Issue
@@ -97,6 +117,7 @@ export interface Zorm<Schema extends GenericSchema> {
     ref: React.RefObject<HTMLFormElement>;
     fields: FieldChainFromSchema<Schema>;
     errors: ErrorChainFromSchema<Schema> & ErrorGetter<ZodIssue>;
+    values: ValueChainFromSchema<Schema>;
     validate(): SafeParseResult<Schema>;
     validation: SafeParseResult<Schema> | null;
 }

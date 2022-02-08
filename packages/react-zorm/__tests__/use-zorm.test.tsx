@@ -580,6 +580,9 @@ test("can read nested value", () => {
                 ding: z.string().min(1),
             }),
         ),
+        nest: z.object({
+            dong: z.string(),
+        }),
     });
     const spy = jest.fn();
 
@@ -595,6 +598,10 @@ test("can read nested value", () => {
 
             // @ts-expect-error
             zo.values.things(0).bad;
+
+            // @ts-expect-error
+            zo.values.nest();
+            zo.values.nest.dong();
         };
 
         return (

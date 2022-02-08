@@ -9,6 +9,11 @@ import {
 } from "./types";
 import { isValuedElement } from "./utils";
 
+function addArrayIndex(path: readonly string[], index: number) {
+    const last = path[path.length - 1];
+    return [...path.slice(0, -1), `${last}[${index}]`];
+}
+
 export function fieldChain<Schema extends GenericSchema>(
     ns: string,
     schema: Schema,
@@ -27,12 +32,7 @@ function _fieldChain(ns: string, path: readonly string[]) {
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                const last = path[path.length - 1];
-
-                return _fieldChain(ns, [
-                    ...path.slice(0, -1),
-                    `${last}[${args[0]}]`,
-                ]);
+                return _fieldChain(ns, addArrayIndex(path, args[0]));
             }
 
             if (args[0] === "id") {
@@ -75,12 +75,7 @@ function _valueChain(
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                const last = path[path.length - 1];
-
-                return _valueChain(form, [
-                    ...path.slice(0, -1),
-                    `${last}[${args[0]}]`,
-                ]);
+                return _valueChain(form, addArrayIndex(path, args[0]));
             }
 
             const name = path.join(".");

@@ -289,7 +289,6 @@ test("can read checkbox", () => {
             form: zo.ref,
             initialValue: false,
             mapValue: (value) => {
-                console.log("map", value);
                 return Boolean(value);
             },
         });

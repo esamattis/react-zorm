@@ -16,6 +16,10 @@ Features / opinions
     -   🚀 As performant as React form libraries can get!
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
+-   🛑 No internal form state. The form state in the form
+    -   If you need to access the form values before validation use refs
+    -   ...or just create controlled inputs. Even if this library does not provide them it doesn't mean you cannot use them!
+
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

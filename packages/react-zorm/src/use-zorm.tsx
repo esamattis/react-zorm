@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ZodType } from "zod";
 import { errorChain, fieldChain, valueChain } from "./chains";
 import { safeParseForm } from "./parse-form";
-import { GenericSchema, SafeParseResult, Zorm } from "./types";
+import { Zorm } from "./types";
 
 export interface ValidSubmitEvent<Data> {
     /**
@@ -29,73 +30,7 @@ export interface UseZormOptions<Data> {
     setupListeners?: boolean;
 }
 
-export interface FormListener {
-    getForm(): HTMLFormElement;
-    validate(): SafeParseResult<any>;
-    onValidSubmit(event: ValidSubmitEvent<any>): any;
-    _isSubmittedOnce?: boolean;
-}
-
-/**
- * Setup form listeners on the document element
- */
-function setupFormListener() {
-    const listeners = new Set<FormListener>();
-
-    if (typeof document !== "undefined") {
-        document.addEventListener("change", (e) => {
-            const el = e.target;
-            if (!(el instanceof HTMLElement)) {
-                return;
-            }
-            listeners.forEach((listener) => {
-                if (
-                    listener._isSubmittedOnce &&
-                    listener.getForm().contains(el)
-                ) {
-                    listener.validate();
-                }
-            });
-        });
-
-        document.addEventListener("submit", (e) => {
-            const form = e.target;
-            if (!(form instanceof HTMLFormElement)) {
-                return;
-            }
-
-            listeners.forEach((listener) => {
-                if (listener.getForm() === e.target) {
-                    listener._isSubmittedOnce = true;
-                    const res = listener.validate();
-                    if (res.success) {
-                        listener.onValidSubmit({
-                            data: res.data,
-                            preventDefault: () => e.preventDefault(),
-                            target: form,
-                        });
-                    } else {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    }
-
-    return {
-        listen(listener: FormListener) {
-            listeners.add(listener);
-
-            return () => {
-                listeners.delete(listener);
-            };
-        },
-    };
-}
-
-const forms = setupFormListener();
-
-export function useZorm<Schema extends GenericSchema>(
+export function useZorm<Schema extends ZodType<any>>(
     formName: string,
     schema: Schema,
     options?: UseZormOptions<ReturnType<Schema["parse"]>>,
@@ -103,6 +38,7 @@ export function useZorm<Schema extends GenericSchema>(
     type ValidationResult = ReturnType<Schema["safeParse"]>;
 
     const formRef = useRef<HTMLFormElement>(null);
+    const submittedOnceRef = useRef(false);
     const submitRef = useRef<
         UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
     >(options?.onValidSubmit);
@@ -123,17 +59,47 @@ export function useZorm<Schema extends GenericSchema>(
     }, [getForm, schema]);
 
     useEffect(() => {
+        const form = formRef.current;
+        if (!form) {
+            return;
+        }
+
         if (options?.setupListeners === false) {
             return;
         }
 
-        return forms.listen({
-            getForm,
-            validate,
-            onValidSubmit: (e) => {
-                submitRef.current?.(e);
-            },
-        });
+        const submitHandler = (e: { preventDefault(): any }) => {
+            submittedOnceRef.current = true;
+            const validation = validate();
+
+            if (!validation.success) {
+                e.preventDefault();
+            } else {
+                submitRef.current?.({
+                    data: validation.data,
+                    target: getForm(),
+                    preventDefault: () => {
+                        e.preventDefault();
+                    },
+                });
+            }
+        };
+
+        const changeHandler = () => {
+            if (!submittedOnceRef.current) {
+                return;
+            }
+
+            validate();
+        };
+
+        form.addEventListener("change", changeHandler);
+        form.addEventListener("submit", submitHandler);
+
+        return () => {
+            form.removeEventListener("change", changeHandler);
+            form.removeEventListener("submit", submitHandler);
+        };
     }, [getForm, options?.setupListeners, validate]);
 
     return useMemo(() => {

@@ -6,7 +6,7 @@ Features / opinions
 
 -   💎 Type-safe
     -   Get form data as a typed object
-    -   Typo safe `name` and `id` attribute generation
+    -   Typo-safe `name` and `id` attribute generation
 -   🤯 Simple nested object and array fields
     - And still type-safe!  
 -   ✅ Validation on the client [and the server](#server-side-validation)

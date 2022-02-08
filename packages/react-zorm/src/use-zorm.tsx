@@ -42,7 +42,7 @@ export interface FormListener {
 function setupFormListener() {
     const listeners = new Set<FormListener>();
 
-    if (typeof document !== undefined) {
+    if (typeof document !== "undefined") {
         document.addEventListener("change", (e) => {
             const el = e.target;
             if (!(el instanceof HTMLElement)) {

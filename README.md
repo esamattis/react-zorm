@@ -236,100 +236,6 @@ Here's a
 [codesandox demonstrating](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/use-value?file=/src/App.tsx)
 these and vizualizing the renders.
 
-## API
-
-Tools available for importing from `"react-zorm"`
-
-### `useZorm(formName: string, schema: ZodObject, options?: UseZormOptions): Zorm`
-
-Create a form `Validator`
-
-#### param `formName: string`
-
-The form name. This used for the input id generation so it should be unique
-string within your forms.
-
-#### param `schema: ZodObject`
-
-Zod schema to parse the form with.
-
-#### param `options?: UseZormOptions`
-
--   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
-    -   `ValidSubmitEvent#data`: The Zod parsed form data
-    -   `ValidSubmitEvent#target`: The form HTML Element
-    -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
--   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be
-    called nor the submission is automatically prevented. This gives total control
-    when to validate the form. Set your own `onSubmit` on the form etc. Defaults to `true`.
-
-#### return `Zorm`
-
--   `ref`: HTMLFormElement ref for the `<form>` element
--   `validation: SafeParseReturnType | null`: The current Zod validation status
-    returned by
-    [`safeParse()`][safeparse]
--   `validate(): SafeParseReturnType`: Manually invoke validation
--   `fields: FieldChain`: The fields chain
--   `errors: ErroChain`: The error chain
-
-### `Zorm` Type
-
-The type of the object returned by `useZorm()`. This type object can be used to
-type component props if you want to split the form to multiple components and
-pass the `zorm` object around.
-
-```ts
-import type { Zorm } from "react-zorm";
-
-function MyForm() {
-    const zo = useZorm("signup", FormSchema);
-
-    return (
-        // ...
-        <SubComponent zorm={zo} />
-        //..
-    );
-}
-
-function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
-    // ...
-}
-```
-
-### `useValue(subscription: ValueSubscription): string`
-
-Get live raw value from the input.
-
-#### `ValueSubscription`
-
--   `form: RefObject<HTMLFormElement>`: The form ref from `zo.ref`
--   `initialValue: string`: Initial value on the first and ssr render
--   `transform(value: string): any`: Transform the value before setting it to
-    the internal state. The type can be also changed.
-
-### `Value: React.Component`
-
-Render prop version of the `useValue()` hook. The props are `ValueSubscription`.
-The render prop child is `(value: string) => ReactNode`.
-
-```tsx
-<Value form={zo.ref} name={zo.fields.input()}>
-    {(value) => <>value</>}
-</Value>
-```
-
-### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
-
-Parse `HTMLFormElement` or `FormData` with the given Zod schema.
-
-### `safeParseForm(form, schema): SafeParseReturnType`
-
-Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
-
-[todos]: https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/todos?file=/src/App.tsx
-[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
-
 ## FAQ
 
 ### When Zorm validates?
@@ -442,3 +348,97 @@ return formPost.isLoading ? "Sending..." : null;
 ```
 
 [react-query]: https://react-query.tanstack.com/
+
+## API
+
+Tools available for importing from `"react-zorm"`
+
+### `useZorm(formName: string, schema: ZodObject, options?: UseZormOptions): Zorm`
+
+Create a form `Validator`
+
+#### param `formName: string`
+
+The form name. This used for the input id generation so it should be unique
+string within your forms.
+
+#### param `schema: ZodObject`
+
+Zod schema to parse the form with.
+
+#### param `options?: UseZormOptions`
+
+-   `onValidSubmit(event: ValidSubmitEvent): any`: Called when the form is submitted with valid data
+    -   `ValidSubmitEvent#data`: The Zod parsed form data
+    -   `ValidSubmitEvent#target`: The form HTML Element
+    -   `ValidSubmitEvent#preventDefault()`: Prevent the default form submission
+-   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be
+    called nor the submission is automatically prevented. This gives total control
+    when to validate the form. Set your own `onSubmit` on the form etc. Defaults to `true`.
+
+#### return `Zorm`
+
+-   `ref`: HTMLFormElement ref for the `<form>` element
+-   `validation: SafeParseReturnType | null`: The current Zod validation status
+    returned by
+    [`safeParse()`][safeparse]
+-   `validate(): SafeParseReturnType`: Manually invoke validation
+-   `fields: FieldChain`: The fields chain
+-   `errors: ErroChain`: The error chain
+
+### `Zorm` Type
+
+The type of the object returned by `useZorm()`. This type object can be used to
+type component props if you want to split the form to multiple components and
+pass the `zorm` object around.
+
+```ts
+import type { Zorm } from "react-zorm";
+
+function MyForm() {
+    const zo = useZorm("signup", FormSchema);
+
+    return (
+        // ...
+        <SubComponent zorm={zo} />
+        //..
+    );
+}
+
+function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
+    // ...
+}
+```
+
+### `useValue(subscription: ValueSubscription): string`
+
+Get live raw value from the input.
+
+#### `ValueSubscription`
+
+-   `form: RefObject<HTMLFormElement>`: The form ref from `zo.ref`
+-   `initialValue: string`: Initial value on the first and ssr render
+-   `transform(value: string): any`: Transform the value before setting it to
+    the internal state. The type can be also changed.
+
+### `Value: React.Component`
+
+Render prop version of the `useValue()` hook. The props are `ValueSubscription`.
+The render prop child is `(value: string) => ReactNode`.
+
+```tsx
+<Value form={zo.ref} name={zo.fields.input()}>
+    {(value) => <>value</>}
+</Value>
+```
+
+### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
+
+Parse `HTMLFormElement` or `FormData` with the given Zod schema.
+
+### `safeParseForm(form, schema): SafeParseReturnType`
+
+Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
+
+[todos]: https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/todos?file=/src/App.tsx
+[safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse

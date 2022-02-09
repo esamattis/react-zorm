@@ -78,6 +78,42 @@ test("can read value with <Value/>", () => {
     expect(valueRenderSpy.mock.calls.length).toBeGreaterThan(5);
 });
 
+test("can transform the value with <Value/>", () => {
+    const renderSpy = jest.fn();
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        renderSpy();
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" name={zo.fields.thing()} />
+                <Value
+                    form={zo.ref}
+                    name={zo.fields.thing()}
+                    initialValue={0}
+                    mapValue={(value) => Number(value)}
+                >
+                    {(value) => {
+                        const _: number = value;
+                        assertNotAny(value);
+                        return <div data-testid="value">{typeof value}</div>;
+                    }}
+                </Value>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    userEvent.type(screen.getByTestId("input"), "value1");
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("number");
+});
+
 test("renders default value", () => {
     const Schema = z.object({
         thing: z.string().min(1),

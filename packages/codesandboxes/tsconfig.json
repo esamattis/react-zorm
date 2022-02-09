@@ -15,5 +15,5 @@
         "esModuleInterop": true,
         "declaration": true
     },
-    "include": ["__tests__", "src", "example"]
+    "include": ["signup"]
 }

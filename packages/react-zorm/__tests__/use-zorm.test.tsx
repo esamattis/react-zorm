@@ -529,3 +529,100 @@ test("checkbox arrays", async () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith({ colors: ["green"] });
 });
+
+test("can read input value with values chain", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+    const spy = jest.fn();
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        () => {
+            // @ts-expect-error
+            zo.values.bad();
+
+            // @ts-expect-error
+            zo.values.thing("bad");
+
+            // @ts-expect-error
+            zo.values.thing(3);
+        };
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} defaultValue="value" />
+                <button
+                    type="button"
+                    onClick={() => {
+                        assertNotAny(zo.values.thing());
+                        spy(zo.values.thing());
+                    }}
+                >
+                    click
+                </button>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.click(screen.getByText("click"));
+
+    expect(spy).toHaveBeenCalledWith("value");
+});
+
+test("can read nested value", () => {
+    const Schema = z.object({
+        things: z.array(
+            z.object({
+                ding: z.string().min(1),
+            }),
+        ),
+        nest: z.object({
+            dong: z.string(),
+        }),
+    });
+    const spy = jest.fn();
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        () => {
+            // @ts-expect-error
+            zo.values.things();
+
+            // @ts-expect-error
+            zo.values.things("");
+
+            // @ts-expect-error
+            zo.values.things(0).bad;
+
+            // @ts-expect-error
+            zo.values.nest();
+            zo.values.nest.dong();
+        };
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.things(0).ding()} defaultValue="value" />
+                <button
+                    type="button"
+                    onClick={() => {
+                        assertNotAny(zo.values.things(0).ding());
+                        spy(zo.values.things(0).ding());
+                    }}
+                >
+                    click
+                </button>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.click(screen.getByText("click"));
+
+    expect(spy).toHaveBeenCalledWith("value");
+});

@@ -6,14 +6,14 @@ export interface ValueSubscription<T> {
     form: RefObject<HTMLFormElement>;
     initialValue?: T;
     event?: string;
-    mapValue?: (value: string) => T;
+    transform?: (value: string) => T;
 }
 
 export function useValue<T>(
     opts: ValueSubscription<T>,
 ): undefined extends T ? string : T {
     const [value, setValue] = useState<any>(opts.initialValue ?? "");
-    const mapRef = useRef<((value: string) => T) | undefined>(opts.mapValue);
+    const mapRef = useRef<((value: string) => T) | undefined>(opts.transform);
 
     useEffect(() => {
         const form = opts.form.current;

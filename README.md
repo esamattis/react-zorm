@@ -17,9 +17,6 @@ Features / opinions
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
 -   🛑 No internal form state. The form state is just in the form
-    -   If you need to access the form values before validation use refs
-    -   ...or just create controlled inputs if you need a value in render. Even if this library does not provide them it doesn't mean you cannot use them! Use debounce/throttle if perf is an issue
-    -   Coming soon! `useValue()` hook for subscribing to input values
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊
@@ -185,7 +182,59 @@ export let action: ActionFunction = async ({ request }) => {
 };
 ```
 
-Not using Remix? No problem! Use JSON. Check [this out](#how-to-do-server-side-validation-without-remix).
+## Using input values during rendering
+
+The first tool you should reach is React. Just make the input controlled with
+`useState()`. This works just fine with checkboxes, radio buttons and even with
+text inputs when the form is small. React Zorm is not really interested how the
+inputs get on the form. It just reads the `value` attributes using the
+platform form APIs (FormData).
+
+But if you have a larger form where you need to read the input value and you
+find it too heavy to read it with just `useState()` you can use `useValue()`
+from Zorm.
+
+```ts
+import { useValue } from "react-zorm";
+
+function Form() {
+    const zo = useZorm("form", FormSchema);
+    const value = useValue({ form: zo.ref, name: zo.fields.input() });
+    return <form ref={zo.ref}>...</form>;
+}
+```
+
+`useValue()` works by subscribing to the input DOM events and syncing the value
+to a local state. But this does not yet fix the performance issue. You need to
+move the `useValue()` call to a subcomponent to avoid rendering the whole form
+on every input change. See the [Zorm type](#zorm-type) docs on how to do
+this.
+
+Alternatively you can use the `<Value>` wrapper which allows access to the input
+value via render prop:
+
+```ts
+import { Value } from "react-zorm";
+
+function Form() {
+    const zo = useZorm("form", FormSchema);
+    const value = useValue({ form: zo.ref, name: zo.fields.input() });
+    return (
+        <form ref={zo.ref}>
+            <input type="text" name={zo.fields.input()} />
+            <Value form={zo.ref} name={zo.fields.input()}>
+                {(value) => <span>Input value: {value}</span>}
+            </Value>
+        </form>
+    );
+}
+```
+
+This way only the inner `<span>` element renders on the input changes.
+
+Here's a
+[codesandox demonstrating](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/use-value?file=/src/App.tsx)
+these and vizualizing the renders.
 
 ## API
 
@@ -246,6 +295,28 @@ function MyForm() {
 function SubComponent(props: { zorm: Zorm<typeof FormSchema> }) {
     // ...
 }
+```
+
+### `useValue(subscription: ValueSubscription): string`
+
+Get live raw value from the input.
+
+#### `ValueSubscription`
+
+-   `form: RefObject<HTMLFormElement>`: The form ref from `zo.ref`
+-   `initialValue: string`: Initial value on the first and ssr render
+-   `transform(value: string): any`: Transform the value before setting it to
+    the internal state. The type can be also changed.
+
+### `Value: React.Component`
+
+Render prop version of the `useValue()` hook. The props are `ValueSubscription`.
+The render prop child is `(value: string) => ReactNode`.
+
+```tsx
+<Value form={zo.ref} name={zo.fields.input()}>
+    {(value) => <>value</>}
+</Value>
 ```
 
 ### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`

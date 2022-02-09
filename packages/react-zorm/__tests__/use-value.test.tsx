@@ -95,7 +95,7 @@ test("can transform the value with <Value/>", () => {
                     form={zo.ref}
                     name={zo.fields.thing()}
                     initialValue={0}
-                    mapValue={(value) => Number(value)}
+                    transform={(value) => Number(value)}
                 >
                     {(value) => {
                         const _: number = value;
@@ -144,7 +144,7 @@ test("renders default value", () => {
     expect(screen.queryByTestId("value")).toHaveTextContent("defaultvalue");
 });
 
-test("can map value", () => {
+test("can transform value", () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -155,7 +155,7 @@ test("can map value", () => {
         const value = useValue({
             name: zo.fields.thing(),
             form: zo.ref,
-            mapValue(value) {
+            transform(value) {
                 return value.toUpperCase();
             },
         });
@@ -177,7 +177,7 @@ test("can map value", () => {
     expect(screen.queryByTestId("value")).toHaveTextContent("VALUE");
 });
 
-test("can map to custom type", () => {
+test("can transform to custom type", () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -189,7 +189,7 @@ test("can map to custom type", () => {
             name: zo.fields.thing(),
             form: zo.ref,
             initialValue: 0,
-            mapValue(value) {
+            transform(value) {
                 return value.length;
             },
         });
@@ -326,7 +326,7 @@ test("can read checkbox", () => {
             name: zo.fields.checkbox(),
             form: zo.ref,
             initialValue: false,
-            mapValue: (value) => {
+            transform: (value) => {
                 return Boolean(value);
             },
         });

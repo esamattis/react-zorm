@@ -19,6 +19,7 @@ Features / opinions
 -   🛑 No internal form state. The form state is just in the form
     -   If you need to access the form values before validation use refs
     -   ...or just create controlled inputs if you need a value in render. Even if this library does not provide them it doesn't mean you cannot use them! Use debounce/throttle if perf is an issue
+    -   Coming soon! `useValue()` hook for subscribing to input values
 
 
 If you enjoy this lib a Twitter shout-out

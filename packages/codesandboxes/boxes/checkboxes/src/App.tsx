@@ -58,7 +58,7 @@ export default function SelectColors() {
         <form ref={zo.ref}>
             <h1>Checkboxes!</h1>
             <fieldset>
-                <legend>Select at least 2 colors</legend>
+                <legend>Select at least 3 colors</legend>
 
                 {COLORS.map((color, index) => {
                     return (

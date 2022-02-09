@@ -3,6 +3,7 @@
     "private": true,
     "scripts": {
         "signup": "parcel serve boxes/signup/parcel.html",
+        "use-value": "parcel serve boxes/use-value/parcel.html",
         "checkboxes": "parcel serve boxes/checkboxes/parcel.html",
         "todos": "parcel serve boxes/todos/parcel.html"
     },

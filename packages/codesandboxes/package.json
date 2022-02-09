@@ -3,12 +3,14 @@
     "private": true,
     "scripts": {
         "signup": "parcel serve boxes/signup/parcel.html",
+        "checkboxes": "parcel serve boxes/checkboxes/parcel.html",
         "todos": "parcel serve boxes/todos/parcel.html"
     },
     "devDependencies": {
         "@types/react": "^17.0.38",
         "@types/react-dom": "^17.0.11",
         "parcel": "^2.2.1",
+        "prettier": "^2.5.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-zorm": "workspace:*",

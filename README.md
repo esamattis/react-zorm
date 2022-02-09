@@ -300,7 +300,24 @@ See <https://twitter.com/esamatti/status/1488553690613039108>
 
 ### How to use checkboxes?
 
-See <https://twitter.com/esamatti/status/1490737602487595010>
+Checkboxes can result to simple booleans or arrays of selected values. These custom Zod types can help with them. See this [usage exampe](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/checkboxes?file=/src/App.tsx).
+
+```ts
+const booleanCheckbox = () =>
+    z
+        .string()
+        // Unchecked checkbox is just missing so it must be optional
+        .optional()
+        // Transform the value to boolean
+        .transform(Boolean);
+
+const arrayCheckbox = () =>
+    z
+        .array(z.string().nullish())
+        .nullish()
+        // Remove all nulls to ensure string[]
+        .transform((a) => (a ?? []).flatMap((item) => (item ? item : [])));
+```
 
 ### How to do server-side validation without Remix?
 

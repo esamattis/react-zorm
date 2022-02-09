@@ -15,5 +15,5 @@
         "esModuleInterop": true,
         "declaration": true
     },
-    "include": ["signup"]
+    "include": ["boxes"]
 }

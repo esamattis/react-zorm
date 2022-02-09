@@ -8,7 +8,7 @@ Features / opinions
     -   Get form data as a typed object
     -   Typo-safe `name` and `id` attribute generation
 -   🤯 Simple nested object and array fields
-    - And still type-safe!  
+    -   And still type-safe!
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   Via FormData ([Remix](https://remix.run/)! 💜) and JSON
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
@@ -21,7 +21,6 @@ Features / opinions
     -   ...or just create controlled inputs if you need a value in render. Even if this library does not provide them it doesn't mean you cannot use them! Use debounce/throttle if perf is an issue
     -   Coming soon! `useValue()` hook for subscribing to input values
 
-
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊
 
@@ -33,54 +32,53 @@ npm install react-zorm
 
 ## Example
 
-Also on [Codesandbox!](https://codesandbox.io/s/react-zorm-signup-form-example-inlub)
+Also on [Codesandbox!](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/signup?file=/src/App.tsx)
 
 ```tsx
 import { z } from "zod";
 import { useZorm } from "react-zorm";
 
 const FormSchema = z.object({
-    email: z.string().min(1),
-    password: z.string().min(8),
+    name: z.string().min(1),
+    age: z
+        .string()
+        .regex(/^[0-9]+$/)
+        .transform(Number),
 });
 
 function Signup() {
     const zo = useZorm("signup", FormSchema, {
         onValidSubmit(e) {
             e.preventDefault();
-            console.log(e.data); // { email: "me@example.test", password: "secretpassword" }
+            alert("Form ok!\n" + JSON.stringify(e.data, null, 2));
         },
     });
     const disabled = zo.validation?.success === false;
 
     return (
         <form ref={zo.ref}>
-            Email:
+            Name:
             <input
                 type="text"
-                // Generate name attribute by invoking the field on the "fields chain"
-                name={zo.fields.email()}
-                // Add "errored" class when the field has a validation error by
-                // invoking the "errors chain".
-                // This is convenience for .email() ? "errored" : undefined
-                className={zo.errors.email("errored")}
+                name={zo.fields.name()}
+                className={zo.errors.name("errored")}
             />
-            {zo.errors.email((e) => (
-                // Use function for streamlined error message rendering
+            {zo.errors.name((e) => (
                 <ErrorMessage message={e.message} />
             ))}
-            Password:
+            Age
             <input
-                type="password"
-                name={fields.password()}
-                className={errors.password("errored")}
+                type="text"
+                name={zo.fields.age()}
+                className={zo.errors.age("errored")}
             />
-            {zo.errors.password((e) => (
-                <ErrorMessage message={e.message} />
+            {zo.errors.age((e) => (
+                <ErrorMessage message="Age must a number" />
             ))}
-            <button type="submit" disabled={disabled}>
+            <button disabled={disabled} type="submit">
                 Signup!
             </button>
+            <pre>Validation status: {JSON.stringify(zo.validation, null, 2)}</pre>
         </form>
     );
 }

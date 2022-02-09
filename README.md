@@ -50,7 +50,7 @@ function Signup() {
     const zo = useZorm("signup", FormSchema, {
         onValidSubmit(e) {
             e.preventDefault();
-            alert("Form ok!\n" + JSON.stringify(e.data, null, 2));
+            alert("Form ok!");
         },
     });
     const disabled = zo.validation?.success === false;
@@ -78,7 +78,6 @@ function Signup() {
             <button disabled={disabled} type="submit">
                 Signup!
             </button>
-            <pre>Validation status: {JSON.stringify(zo.validation, null, 2)}</pre>
         </form>
     );
 }

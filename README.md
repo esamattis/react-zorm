@@ -218,7 +218,6 @@ import { Value } from "react-zorm";
 
 function Form() {
     const zo = useZorm("form", FormSchema);
-    const value = useValue({ form: zo.ref, name: zo.fields.input() });
     return (
         <form ref={zo.ref}>
             <input type="text" name={zo.fields.input()} />

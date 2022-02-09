@@ -2,7 +2,8 @@
     "name": "@zorm/codesandboxes",
     "private": true,
     "scripts": {
-        "signup": "parcel serve boxes/signup/parcel.html"
+        "signup": "parcel serve boxes/signup/parcel.html",
+        "todos": "parcel serve boxes/todos/parcel.html"
     },
     "devDependencies": {
         "@types/react": "^17.0.38",

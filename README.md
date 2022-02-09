@@ -266,9 +266,15 @@ function Signup() {
 }
 ```
 
-### How to handle controlled components?
+### How to handle 3rdparty components?
 
-See <https://twitter.com/esamatti/status/1488785537309847558>
+That do not create `<input>` elements?
+
+Since Zorm just works with the native `<form>` you must sync their state to
+`<input type="hidden">` elements in order for them to become actually part of
+the form.
+
+Here's a [Codesandbox example](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/3rdparty?file=/src/App.tsx) with `react-select`.
 
 ### How to validate dependent fields like password confirm?
 

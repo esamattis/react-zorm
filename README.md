@@ -16,7 +16,7 @@ Features / opinions
     -   🚀 As performant as React form libraries can get!
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
--   🛑 No internal form state. The form state is just in the form
+-   🛑 No internal form state. The form state is just in the `<form>`
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

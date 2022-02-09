@@ -205,7 +205,7 @@ function Form() {
 ```
 
 `useValue()` works by subscribing to the input DOM events and syncing the value
-to a local state. But this does not yet fix the performance issue. You need to
+to a local state. But this does not fix the performance issue yet. You need to
 move the `useValue()` call to a subcomponent to avoid rendering the whole form
 on every input change. See the [Zorm type](#zorm-type) docs on how to do
 this.

@@ -256,7 +256,7 @@ Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
 Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 
-[todos]: https://codesandbox.io/s/react-zorm-todos-form-example-ss5c6?file=/src/App.tsx
+[todos]: https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/todos?file=/src/App.tsx
 [safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
 
 ## FAQ

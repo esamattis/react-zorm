@@ -1,13 +1,17 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { isValuedElement } from "./utils";
 
-export function useValue<T>(opts: {
+export interface ValueSubscription<T> {
     name: string;
     form: RefObject<HTMLFormElement>;
     initialValue?: T;
     event?: string;
     mapValue?: (value: string) => T;
-}): undefined extends T ? string : T {
+}
+
+export function useValue<T>(
+    opts: ValueSubscription<T>,
+): undefined extends T ? string : T {
     const [value, setValue] = useState<any>(opts.initialValue ?? "");
     const mapRef = useRef<((value: string) => T) | undefined>(opts.mapValue);
 
@@ -52,14 +56,11 @@ export function useValue<T>(opts: {
     return value;
 }
 
-export function Value<T>(props: {
-    children: (value: undefined extends T ? string : T) => any;
-    form: RefObject<HTMLFormElement>;
-    name: string;
-    event?: string;
-    initialValue?: T;
-    mapValue?: (value: string) => T;
-}) {
+export function Value<T>(
+    props: ValueSubscription<T> & {
+        children: (value: undefined extends T ? string : T) => any;
+    },
+) {
     const value = useValue(props);
     return props.children(value);
 }

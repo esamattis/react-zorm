@@ -22,6 +22,26 @@ importers:
     devDependencies:
       prettier: 2.5.1
 
+  packages/codesandboxes:
+    specifiers:
+      '@types/react': 17.0.38
+      '@types/react-dom': 17.0.11
+      parcel: ^2.2.1
+      react: 17.0.2
+      react-dom: 17.0.2
+      react-zorm: workspace:*
+      typescript: 4.5.5
+      zod: 3.11.6
+    devDependencies:
+      '@types/react': 17.0.38
+      '@types/react-dom': 17.0.11
+      parcel: 2.2.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-zorm: link:../react-zorm
+      typescript: 4.5.5
+      zod: 3.11.6
+
   packages/examples:
     specifiers:
       '@types/react': 17.0.38

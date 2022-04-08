@@ -12,11 +12,13 @@ Features / opinions
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   Via FormData ([Remix](https://remix.run/)! 💜) and JSON
 -   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
--   🛑 No controlled inputs
+-   🛑 No controlled inputs required
     -   🚀 As performant as React form libraries can get!
+    -   You can still use your own controlled inputs if needed
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
--   🛑 No internal form state. The form is validated directly from the `<form>` element
+-   🛑 No internal form state
+    -   The form is validated directly from the `<form>` element
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

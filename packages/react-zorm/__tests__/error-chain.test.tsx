@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { assertIs, assertNotNil } from "@valu/assert";
+import { z, ZodIssue } from "zod";
+import { assertIs } from "@valu/assert";
 import { errorChain } from "../src/chains";
 import { assertNotAny } from "./test-helpers";
 import { ErrorChain, ErrorGetter } from "../src/types";
@@ -12,7 +12,7 @@ test("can get error", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain(Schema, res.error);
+    const chain = errorChain(Schema, res.error.issues);
 
     expect(chain.field()).toEqual({
         code: "invalid_type",
@@ -31,7 +31,7 @@ test("can get boolean true on error", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain(Schema, res.error);
+    const chain = errorChain(Schema, res.error.issues);
 
     expect(chain.field(Boolean)).toBe(true);
 });
@@ -41,7 +41,7 @@ test("can get boolean false on success", () => {
         field: z.string(),
     });
 
-    const chain = errorChain(Schema);
+    const chain = errorChain(Schema, []);
 
     expect(chain.field(Boolean)).toBe(false);
 });
@@ -54,7 +54,7 @@ test("can use custom value", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain(Schema, res.error);
+    const chain = errorChain(Schema, res.error.issues);
 
     expect(chain.field({ my: "thing" })).toEqual({
         my: "thing",
@@ -69,7 +69,7 @@ test("can use custom value in fn", () => {
     const res = Schema.safeParse({});
     assertIs(res.success, false as const);
 
-    const chain = errorChain(Schema, res.error);
+    const chain = errorChain(Schema, res.error.issues);
 
     expect(chain.field(() => ({ my: "thing" }))).toEqual({
         my: "thing",
@@ -99,7 +99,7 @@ test("can get refined object error", () => {
     });
     assertIs(res.success, false as const);
 
-    const chain = errorChain(Schema, res.error);
+    const chain = errorChain(Schema, res.error.issues);
 
     expect(chain.pw()).toEqual({
         code: "custom",
@@ -120,16 +120,16 @@ export function typeChecks() {
             ),
         });
 
-        const chain = errorChain(Schema, undefined);
+        const chain = errorChain(Schema, []);
 
-        const arrayIssue: z.ZodIssue | undefined = chain.list();
+        const arrayIssue: ZodIssue | undefined = chain.list();
         assertNotAny(chain.list());
         chain.list()?.message;
 
-        const itemIssue: z.ZodIssue | undefined = chain.list(0)();
+        const itemIssue: ZodIssue | undefined = chain.list(0)();
         assertNotAny(chain.list(0)());
 
-        const hmm: ErrorGetter<any> = chain.list(0);
+        const hmm: ErrorGetter = chain.list(0);
         assertNotAny(chain.list(0));
 
         {
@@ -140,7 +140,7 @@ export function typeChecks() {
 
         {
             // array index set returns the chain again
-            const _: ErrorChain<any, any> = chain.objectList(3);
+            const _: ErrorChain<any> = chain.objectList(3);
             assertNotAny(chain.objectList(3));
         }
 
@@ -189,7 +189,7 @@ test("can handle optional fields", () => {
         field: z.string().optional(),
     });
 
-    const chain = errorChain(Schema, undefined);
+    const chain = errorChain(Schema, []);
 
     expect(chain.field()).toBeUndefined();
 });
@@ -199,7 +199,7 @@ test("can handle nullish fields", () => {
         field: z.string().nullish(),
     });
 
-    const chain = errorChain(Schema, undefined);
+    const chain = errorChain(Schema, []);
 
     expect(chain.field()).toBeUndefined();
 });
@@ -215,7 +215,7 @@ test("can handle optional arrrays", () => {
             .optional(),
     });
 
-    const chain = errorChain(Schema, undefined);
+    const chain = errorChain(Schema, []);
 
     expect(chain.things(0).field()).toBeUndefined();
 });

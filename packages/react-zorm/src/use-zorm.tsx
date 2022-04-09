@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ZodType } from "zod";
+import { ZodType, ZodError, ZodCustomIssue, ZodIssue } from "zod";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import { Zorm } from "./types";
@@ -28,6 +28,8 @@ export interface UseZormOptions<Data> {
     onValidSubmit?: (event: ValidSubmitEvent<Data>) => any;
 
     setupListeners?: boolean;
+
+    customIssues?: ZodIssue[];
 }
 
 export function useZorm<Schema extends ZodType<any>>(
@@ -103,9 +105,14 @@ export function useZorm<Schema extends ZodType<any>>(
     }, [getForm, options?.setupListeners, validate]);
 
     return useMemo(() => {
-        const error = !validation?.success ? validation?.error : undefined;
+        let customIssues = options?.customIssues ?? [];
+        let error = !validation?.success ? validation?.error : undefined;
 
-        const errors = errorChain(schema, error);
+        const errors = errorChain(schema, [
+            ...(error?.issues ?? []),
+            ...customIssues,
+        ]);
+
         const fields = fieldChain(formName, schema);
 
         return {
@@ -114,6 +121,7 @@ export function useZorm<Schema extends ZodType<any>>(
             validation,
             fields,
             errors,
+            customIssues: customIssues,
         };
-    }, [formName, schema, validate, validation]);
+    }, [formName, options?.customIssues, schema, validate, validation]);
 }

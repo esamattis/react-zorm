@@ -31,7 +31,7 @@ async function validateUsername(username: string) {
     }
 
     return {
-        issues: issues.getIssues(),
+        issues: issues.toArray(),
     };
 }
 

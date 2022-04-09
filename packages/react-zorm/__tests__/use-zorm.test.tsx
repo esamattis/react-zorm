@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { z, ZodIssue } from "zod";
+import { z } from "zod";
 
 import { useZorm } from "../src";
 import { assertNotAny } from "./test-helpers";
@@ -558,6 +558,37 @@ test("can add custom issues", () => {
     render(<Test />);
 
     expect(screen.queryByTestId("error")).toHaveTextContent("custom issue");
+});
+
+test("can add custom issues with params", () => {
+    const Schema = z.object({
+        thing: z.string(),
+    });
+
+    const issues = createCustomIssues(Schema);
+    issues.thing("custom issue", { my: "thing" });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            customIssues: issues.toArray(),
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} />
+
+                {zo.errors.thing((e) => {
+                    if (e.code === "custom") {
+                        return <div data-testid="error">{e.params?.my}</div>;
+                    }
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("error")).toHaveTextContent("thing");
 });
 
 test("normal issues are rendered first", () => {

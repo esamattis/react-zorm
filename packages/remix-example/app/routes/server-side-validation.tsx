@@ -1,9 +1,7 @@
 // This code is live at https://react-zorm.vercel.app/server-side-validation
 import type { ActionFunction } from "remix";
-import { useTransition } from "remix";
-import { useActionData } from "remix";
-import { json } from "remix";
-import { Form } from "remix";
+import { Form, json } from "remix";
+import { useTransition, useActionData } from "remix";
 import type { ZodIssue } from "zod";
 import { z } from "zod";
 import { useZorm, parseForm, createCustomIssues } from "react-zorm";
@@ -60,8 +58,7 @@ export default function ZormFormExample() {
         customIssues: formResponse?.serverIssues,
     });
 
-    const transition = useTransition();
-    const submitting = transition.state === "submitting";
+    const submitting = useTransition().state === "submitting";
 
     return (
         <div>

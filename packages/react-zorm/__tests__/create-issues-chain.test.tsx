@@ -25,13 +25,13 @@ test("mutates inner state", () => {
 
     const chain = createCustomIssues(Schema);
 
-    expect(chain.getIssues()).toEqual([]);
+    expect(chain.toArray()).toEqual([]);
     expect(chain.hasIssues()).toBe(false);
 
     chain.field("custom server error");
 
     expect(chain.hasIssues()).toBe(true);
-    expect(chain.getIssues()).toEqual([
+    expect(chain.toArray()).toEqual([
         {
             code: "custom",
             message: "custom server error",
@@ -152,7 +152,7 @@ test("can convert to json", () => {
         },
     ]);
 
-    expect(chain.getIssues()).toEqual([
+    expect(chain.toArray()).toEqual([
         {
             code: "custom",
             message: "error",

@@ -541,7 +541,7 @@ test("can add custom issues", () => {
 
     function Test() {
         const zo = useZorm("form", Schema, {
-            customIssues: issues.getIssues(),
+            customIssues: issues.toArray(),
         });
 
         return (
@@ -570,7 +570,7 @@ test("normal issues are rendered first", () => {
 
     function Test() {
         const zo = useZorm("form", Schema, {
-            customIssues: issues.getIssues(),
+            customIssues: issues.toArray(),
         });
 
         return (
@@ -606,7 +606,7 @@ test("custom issues does not prevent submitting", () => {
 
     function Test() {
         const zo = useZorm("form", Schema, {
-            customIssues: issues.getIssues(),
+            customIssues: issues.toArray(),
             onValidSubmit() {
                 validSubmitSpy();
             },

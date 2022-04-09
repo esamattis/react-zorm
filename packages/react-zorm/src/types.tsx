@@ -128,9 +128,10 @@ export type IssueCreatorChain<T extends object> = {
 export type ZodCustomIssueWithMessage = ZodCustomIssue & { message: string };
 
 export interface IssueCreatorMethods {
-    toJSON(): ZodCustomIssueWithMessage[];
-    getIssues(): ZodCustomIssueWithMessage[];
     hasIssues(): boolean;
+    toArray(): ZodCustomIssueWithMessage[];
+    // For direct JSON.stringify(chain) support
+    toJSON(): ZodCustomIssueWithMessage[];
 }
 
 export type IssueCreatorFromSchema<T extends GenericSchema> = IssueCreatorChain<

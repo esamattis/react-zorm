@@ -155,7 +155,7 @@ export const action: ActionFunction = async ({ request }) => {
     // Respond with the issues if we have any
     if (issues.hasIssues()) {
         return json<FormResponse>(
-            { ok: false, serverIssues: issues.getIssues() },
+            { ok: false, serverIssues: issues.toArray() },
             { status: 400 },
         );
     }

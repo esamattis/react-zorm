@@ -124,7 +124,7 @@ export function createCustomIssues<Schema extends GenericSchema>(
      */
     const methods: IssueCreatorMethods = {
         toJSON: () => state.issues.slice(0),
-        getIssues: () => state.issues.slice(0),
+        toArray: () => state.issues.slice(0),
         hasIssues: () => state.issues.length > 0,
     };
 

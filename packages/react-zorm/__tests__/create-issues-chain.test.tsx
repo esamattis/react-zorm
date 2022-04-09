@@ -18,6 +18,29 @@ test("single field", () => {
     });
 });
 
+test("mutates inner state", () => {
+    const Schema = z.object({
+        field: z.string(),
+    });
+
+    const chain = createCustomIssues(Schema);
+
+    expect(chain.getIssues()).toEqual([]);
+    expect(chain.hasIssues()).toBe(false);
+
+    chain.field("custom server error");
+
+    expect(chain.hasIssues()).toBe(true);
+    expect(chain.getIssues()).toEqual([
+        {
+            code: "custom",
+            message: "custom server error",
+            params: {},
+            path: ["field"],
+        },
+    ]);
+});
+
 test("nested field", () => {
     const Schema = z.object({
         field: z.object({

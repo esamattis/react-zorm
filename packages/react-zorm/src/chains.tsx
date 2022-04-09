@@ -5,6 +5,8 @@ import {
     ErrorGetter,
     FieldChainFromSchema,
     IssueCreatorFromSchema,
+    IssueCreatorMethods,
+    ZodCustomIssueWithMessage,
 } from "./types";
 
 function addArrayIndex(path: readonly string[], index: number) {
@@ -105,7 +107,10 @@ export function errorChain<Schema extends GenericSchema>(
 
 export function createCustomIssues<Schema extends GenericSchema>(
     schema: Schema,
-    _state?: { path: (string | number)[]; issues: ZodCustomIssue[] },
+    _state?: {
+        path: (string | number)[];
+        issues: ZodCustomIssueWithMessage[];
+    },
 ): IssueCreatorFromSchema<Schema> {
     const state = _state
         ? _state
@@ -113,6 +118,15 @@ export function createCustomIssues<Schema extends GenericSchema>(
               path: [],
               issues: [],
           };
+
+    /**
+     * Methods that are available at the chain root
+     */
+    const methods: IssueCreatorMethods = {
+        toJSON: () => state.issues.slice(0),
+        getIssues: () => state.issues.slice(0),
+        hasIssues: () => state.issues.length > 0,
+    };
 
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
@@ -123,7 +137,7 @@ export function createCustomIssues<Schema extends GenericSchema>(
                 });
             }
 
-            const issue: ZodCustomIssue = {
+            const issue: ZodCustomIssueWithMessage = {
                 code: "custom",
                 path: state.path,
                 message: args[0],
@@ -136,14 +150,11 @@ export function createCustomIssues<Schema extends GenericSchema>(
         },
 
         get(_target, prop) {
-            if (typeof prop === "string") {
-                if (
-                    state.path.length === 0 &&
-                    (prop === "toJSON" || prop === "getIssues")
-                ) {
-                    return () => state.issues;
-                }
+            if (state.path.length === 0 && prop in methods) {
+                return (methods as any)[prop];
+            }
 
+            if (typeof prop === "string") {
                 return createCustomIssues(schema, {
                     ...state,
                     path: [...state.path, prop],

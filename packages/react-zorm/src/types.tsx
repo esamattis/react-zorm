@@ -125,9 +125,15 @@ export type IssueCreatorChain<T extends object> = {
         : IssueCreator;
 };
 
+export type ZodCustomIssueWithMessage = ZodCustomIssue & { message: string };
+
+export interface IssueCreatorMethods {
+    toJSON(): ZodCustomIssueWithMessage[];
+    getIssues(): ZodCustomIssueWithMessage[];
+    hasIssues(): boolean;
+}
+
 export type IssueCreatorFromSchema<T extends GenericSchema> = IssueCreatorChain<
     DeepNonNullable<ReturnType<T["parse"]>>
-> & {
-    toJSON(): (ZodCustomIssue & { message: string })[];
-    getIssues(): (ZodCustomIssue & { message: string })[];
-};
+> &
+    IssueCreatorMethods;

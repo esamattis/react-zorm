@@ -2,10 +2,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { z } from "zod";
+import { z, ZodIssue } from "zod";
 
 import { useZorm } from "../src";
 import { assertNotAny } from "./test-helpers";
+import { createCustomIssues } from "../src/chains";
 
 test("single field validation", () => {
     const Schema = z.object({
@@ -528,4 +529,154 @@ test("checkbox arrays", async () => {
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith({ colors: ["green"] });
+});
+
+test("can add custom issues", () => {
+    const Schema = z.object({
+        thing: z.string(),
+    });
+
+    const issues = createCustomIssues(Schema);
+    issues.thing("custom issue");
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            customIssues: issues.getIssues(),
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} />
+
+                {zo.errors.thing((e) => {
+                    return <div data-testid="error">{e.message}</div>;
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("error")).toHaveTextContent("custom issue");
+});
+
+test("normal issues are rendered first", () => {
+    const Schema = z.object({
+        thing: z.string().min(5),
+    });
+
+    const issues = createCustomIssues(Schema);
+    issues.thing("custom issue");
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            customIssues: issues.getIssues(),
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} />
+
+                {zo.errors.thing((e) => {
+                    return <div data-testid="error">{e.message}</div>;
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "Should be at least 5 characters",
+    );
+});
+
+test("custom issues does not prevent submitting", () => {
+    const validSubmitSpy = jest.fn();
+    const formSubmitSpy = jest.fn();
+
+    const Schema = z.object({
+        thing: z.string(),
+    });
+
+    const issues = createCustomIssues(Schema);
+    issues.thing("custom issue");
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            customIssues: issues.getIssues(),
+            onValidSubmit() {
+                validSubmitSpy();
+            },
+        });
+
+        return (
+            <form
+                ref={zo.ref}
+                data-testid="form"
+                onSubmit={(e) => {
+                    formSubmitSpy({ defaultPrevented: e.defaultPrevented });
+                }}
+            >
+                <input name={zo.fields.thing()} />
+
+                {zo.errors.thing((e) => {
+                    return <div data-testid="error">{e.message}</div>;
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(validSubmitSpy).toBeCalledTimes(1);
+
+    expect(formSubmitSpy).toBeCalledTimes(1);
+    expect(formSubmitSpy).toHaveBeenLastCalledWith({ defaultPrevented: false });
+});
+
+test("normal issues prevent submit", () => {
+    const validSubmitSpy = jest.fn();
+    const formSubmitSpy = jest.fn();
+
+    const Schema = z.object({
+        thing: z.string().min(50),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            onValidSubmit() {
+                validSubmitSpy();
+            },
+        });
+
+        return (
+            <form
+                ref={zo.ref}
+                data-testid="form"
+                onSubmit={(e) => {
+                    formSubmitSpy({ defaultPrevented: e.defaultPrevented });
+                }}
+            >
+                <input name={zo.fields.thing()} defaultValue="too short" />
+
+                {zo.errors.thing((e) => {
+                    return <div data-testid="error">{e.message}</div>;
+                })}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(validSubmitSpy).toBeCalledTimes(0);
+
+    expect(formSubmitSpy).toBeCalledTimes(1);
+    expect(formSubmitSpy).toHaveBeenLastCalledWith({ defaultPrevented: true });
 });

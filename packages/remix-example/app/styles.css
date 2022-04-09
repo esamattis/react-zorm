@@ -1,0 +1,24 @@
+input[type="text"],
+input[type="email"],
+input[type="password"],
+button {
+    display: block;
+}
+
+input[type="checkbox"] {
+    margin-top: 1rem;
+}
+
+button {
+    margin-top: 1rem;
+}
+
+.error {
+    color: red;
+}
+
+.ok {
+    color: rgb(153, 255, 0);
+    margin-top: 2rem;
+    font-size: 20pt;
+}

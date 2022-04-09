@@ -1,9 +1,12 @@
+import { ZodCustomIssue, ZodIssue } from "zod";
 import {
     GenericSchema,
     ErrorChainFromSchema,
     ErrorGetter,
     FieldChainFromSchema,
-    GenericError,
+    IssueCreatorFromSchema,
+    IssueCreatorMethods,
+    ZodCustomIssueWithMessage,
 } from "./types";
 
 function addArrayIndex(path: readonly string[], index: number) {
@@ -51,22 +54,19 @@ function _fieldChain(ns: string, path: readonly string[]) {
     return proxy;
 }
 
-export function errorChain<
-    Schema extends GenericSchema,
-    ChainError extends GenericError,
->(
+export function errorChain<Schema extends GenericSchema>(
     schema: Schema,
-    error?: ChainError | undefined,
+    issues: ZodIssue[],
     _path?: readonly (string | number)[],
-): ErrorChainFromSchema<Schema> & ErrorGetter<ChainError["issues"][0]> {
+): ErrorChainFromSchema<Schema> & ErrorGetter {
     let path = _path || [];
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                return errorChain(schema, error, [...path, args[0]]);
+                return errorChain(schema, issues, [...path, args[0]]);
             }
 
-            const issue = error?.issues.find((issue) => {
+            const issue = issues.find((issue) => {
                 return arrayEquals(issue.path, path);
             });
 
@@ -95,10 +95,73 @@ export function errorChain<
 
         get(_target, prop) {
             if (typeof prop === "string") {
-                return errorChain(schema, error, [...path, prop]);
+                return errorChain(schema, issues, [...path, prop]);
             }
 
-            return errorChain(schema, error, path);
+            return errorChain(schema, issues, path);
+        },
+    });
+
+    return proxy;
+}
+
+export function createCustomIssues<Schema extends GenericSchema>(
+    schema: Schema,
+    _state?: {
+        path: (string | number)[];
+        issues: ZodCustomIssueWithMessage[];
+    },
+): IssueCreatorFromSchema<Schema> {
+    const state = _state
+        ? _state
+        : {
+              path: [],
+              issues: [],
+          };
+
+    /**
+     * Methods that are available at the chain root
+     */
+    const methods: IssueCreatorMethods = {
+        toJSON: () => state.issues.slice(0),
+        getIssues: () => state.issues.slice(0),
+        hasIssues: () => state.issues.length > 0,
+    };
+
+    const proxy: any = new Proxy(() => {}, {
+        apply(_target, _thisArg, args) {
+            if (typeof args[0] === "number") {
+                return createCustomIssues(schema, {
+                    ...state,
+                    path: [...state.path, args[0]],
+                });
+            }
+
+            const issue: ZodCustomIssueWithMessage = {
+                code: "custom",
+                path: state.path,
+                message: args[0],
+                params: args[1] ?? {},
+            };
+
+            state.issues.push(issue);
+
+            return issue;
+        },
+
+        get(_target, prop) {
+            if (state.path.length === 0 && prop in methods) {
+                return (methods as any)[prop];
+            }
+
+            if (typeof prop === "string") {
+                return createCustomIssues(schema, {
+                    ...state,
+                    path: [...state.path, prop],
+                });
+            }
+
+            return createCustomIssues(schema, state);
         },
     });
 

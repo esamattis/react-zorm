@@ -1,0 +1,35 @@
+{
+    "name": "remix-template-vercel",
+    "private": true,
+    "description": "",
+    "license": "",
+    "sideEffects": false,
+    "scripts": {
+        "build": "remix build",
+        "dev": "remix dev"
+    },
+    "dependencies": {
+        "@remix-run/node": "^1.3.5",
+        "@remix-run/react": "^1.3.5",
+        "@remix-run/vercel": "^1.3.5",
+        "@vercel/node": "^1.14.0",
+        "prettier": "2.5.1",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-zorm": "workspace:*",
+        "remix": "^1.3.5",
+        "zod": "3.11.6"
+    },
+    "devDependencies": {
+        "@remix-run/dev": "^1.3.5",
+        "@remix-run/eslint-config": "^1.3.5",
+        "@remix-run/serve": "^1.3.5",
+        "@types/react": "^17.0.24",
+        "@types/react-dom": "^17.0.9",
+        "eslint": "^8.11.0",
+        "typescript": "^4.5.5"
+    },
+    "engines": {
+        "node": ">=14"
+    }
+}

@@ -1,13 +1,10 @@
-import { RefObject } from "react";
 import {
     GenericSchema,
     ErrorChainFromSchema,
     ErrorGetter,
     FieldChainFromSchema,
     GenericError,
-    ValueChainFromSchema,
 } from "./types";
-import { isValuedElement } from "./utils";
 
 function addArrayIndex(path: readonly string[], index: number) {
     const last = path[path.length - 1];
@@ -48,53 +45,6 @@ function _fieldChain(ns: string, path: readonly string[]) {
             }
 
             return _fieldChain(ns, path);
-        },
-    });
-
-    return proxy;
-}
-
-export function valueChain<Schema extends GenericSchema>(
-    form: RefObject<HTMLFormElement>,
-    schema: Schema,
-): ValueChainFromSchema<Schema> {
-    return new Proxy(
-        {},
-        {
-            get(_target, prop) {
-                return _valueChain(form, [])[prop];
-            },
-        },
-    ) as any;
-}
-
-function _valueChain(
-    form: RefObject<HTMLFormElement>,
-    path: readonly string[],
-) {
-    const proxy: any = new Proxy(() => {}, {
-        apply(_target, _thisArg, args) {
-            if (typeof args[0] === "number") {
-                return _valueChain(form, addArrayIndex(path, args[0]));
-            }
-
-            const name = path.join(".");
-
-            const input = form.current?.querySelector(`[name="${name}"]`);
-
-            if (isValuedElement(input)) {
-                return input.value ?? "";
-            }
-
-            return "";
-        },
-
-        get(_target, prop) {
-            if (typeof prop === "string") {
-                return _valueChain(form, [...path, prop]);
-            }
-
-            return _valueChain(form, path);
         },
     });
 

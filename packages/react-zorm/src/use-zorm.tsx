@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ZodType } from "zod";
-import { errorChain, fieldChain, valueChain } from "./chains";
+import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import { Zorm } from "./types";
 
@@ -107,7 +107,6 @@ export function useZorm<Schema extends ZodType<any>>(
 
         const errors = errorChain(schema, error);
         const fields = fieldChain(formName, schema);
-        const values = valueChain(formRef, schema);
 
         return {
             ref: formRef,
@@ -115,7 +114,6 @@ export function useZorm<Schema extends ZodType<any>>(
             validation,
             fields,
             errors,
-            values,
         };
     }, [formName, schema, validate, validation]);
 }

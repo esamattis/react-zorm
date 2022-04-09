@@ -1,9 +1,12 @@
 // This code is live at https://react-zorm.vercel.app/server-side-validation
-import type { ActionFunction } from "remix";
-import { Form, json } from "remix";
-import { useTransition, useActionData } from "remix";
-import type { ZodIssue } from "zod";
-import { z } from "zod";
+import {
+    type ActionFunction,
+    json,
+    Form,
+    useActionData,
+    useTransition,
+} from "remix";
+import { type ZodIssue, z } from "zod";
 import { useZorm, parseForm, createCustomIssues } from "react-zorm";
 
 /**

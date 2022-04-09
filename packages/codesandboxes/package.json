@@ -6,6 +6,7 @@
         "use-value": "parcel serve boxes/use-value/parcel.html",
         "checkboxes": "parcel serve boxes/checkboxes/parcel.html",
         "3rdparty": "parcel serve boxes/3rdparty/parcel.html",
+        "async-validation": "parcel serve boxes/async-validation/parcel.html",
         "todos": "parcel serve boxes/todos/parcel.html"
     },
     "devDependencies": {
@@ -15,6 +16,7 @@
         "prettier": "^2.5.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-query": "^3.34.19",
         "react-select": "^5.2.2",
         "react-zorm": "workspace:*",
         "typescript": "^4.5.5",

@@ -188,7 +188,7 @@ const zo = useZorm("signup", FormSchema, {
 });
 ```
 
-This can be used for:
+This code is very contrived but take a look at these examples:
 
 -   [Rendering field errors from the Remix Action Functions][remix-example]
 -   [Async validation via React Query](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/async-validation?file=/src/App.tsx)

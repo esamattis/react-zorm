@@ -22,3 +22,9 @@ button {
     margin-top: 2rem;
     font-size: 20pt;
 }
+
+footer {
+    max-width: 30rem;
+    padding: 1rem;
+    color: gray;
+}

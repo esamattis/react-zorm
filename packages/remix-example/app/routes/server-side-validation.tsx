@@ -1,3 +1,4 @@
+// This code is live at https://react-zorm.vercel.app/server-side-validation
 import type { ActionFunction } from "remix";
 import { useTransition } from "remix";
 import { useActionData } from "remix";
@@ -122,6 +123,15 @@ export default function ZormFormExample() {
                     ) : null}
                 </fieldset>
             </Form>
+            <footer>
+                The exists@test.invalid email is validated to be reserved on the
+                server. Just submit the form the see it in action. Checkout the
+                devtools network tab and the source of this{" "}
+                <a href="https://github.com/esamattis/react-zorm/blob/master/packages/remix-example/app/routes/server-side-validation.tsx">
+                    here
+                </a>
+                .
+            </footer>
         </div>
     );
 }

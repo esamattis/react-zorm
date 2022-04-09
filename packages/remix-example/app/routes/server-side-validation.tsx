@@ -8,6 +8,9 @@ import type { ZodIssue } from "zod";
 import { z } from "zod";
 import { useZorm, parseForm, createCustomIssues } from "react-zorm";
 
+/**
+ * Handle checkbox as boolean
+ */
 const booleanCheckbox = () =>
     z
         .string()
@@ -16,6 +19,9 @@ const booleanCheckbox = () =>
         // Transform the value to boolean
         .transform(Boolean);
 
+/**
+ * The form schema
+ */
 const SignupSchema = z.object({
     email: z.string().email(),
     password: z.string().min(5),
@@ -24,47 +30,34 @@ const SignupSchema = z.object({
     }),
 });
 
+/**
+ * Response type from the Remix Action Function
+ */
 interface FormResponse {
+    /**
+     * True when form was succesfully handled
+     */
     ok: boolean;
-    issues?: ZodIssue[];
+
+    /**
+     * Any server-side only issues
+     */
+    serverIssues?: ZodIssue[];
 }
 
-function Err(props: { children: string }) {
-    return <div className="error">{props.children}</div>;
-}
-
-export const action: ActionFunction = async ({ request }) => {
-    const form = await request.formData();
-    const data = parseForm(SignupSchema, form);
-
-    const issues = createCustomIssues(SignupSchema);
-
-    console.log("Validating...");
-    // Simulta slower database connection
-    await new Promise((r) => setTimeout(r, 1000));
-
-    // In reality you would make a real database check here or capture a
-    // constraint error from user insertion
-    if (data.email === "exists@test.invalid") {
-        issues.email("Account already exists with " + data.email);
-    }
-
-    if (issues.hasIssues()) {
-        return json<FormResponse>(
-            { ok: false, issues: issues.getIssues() },
-            { status: 400 },
-        );
-    }
-
-    console.log("Form ok. Saving...");
-
-    return json<FormResponse>({ ok: true });
-};
-
+/**
+ * The form route
+ */
 export default function ZormFormExample() {
+    /**
+     * The form response or undefined when the form is not submitted yet
+     */
     const formResponse = useActionData<FormResponse>();
+
     const zo = useZorm("signup", SignupSchema, {
-        customIssues: formResponse?.issues,
+        // Pass server issues to Zorm as custom issues. Zorm will handle them
+        // like any other Zod issues
+        customIssues: formResponse?.serverIssues,
     });
 
     const transition = useTransition();
@@ -83,6 +76,9 @@ export default function ZormFormExample() {
                             defaultValue="exists@test.invalid"
                         />
                         {zo.errors.email((err) => (
+                            // This will render client-side errors as well as
+                            // the server-side issues that where assigned to the
+                            // "email" field
                             <Err>{err.message}</Err>
                         ))}
                     </div>
@@ -134,4 +130,41 @@ export default function ZormFormExample() {
             </footer>
         </div>
     );
+}
+
+export const action: ActionFunction = async ({ request }) => {
+    // Read the form data and parse it with Zorm's parseForm() helper
+    const form = await request.formData();
+    const data = parseForm(SignupSchema, form);
+
+    const issues = createCustomIssues(SignupSchema);
+
+    console.log("Validating...");
+    // Simulate slower database/network connection
+    await new Promise((r) => setTimeout(r, 1000));
+
+    // In reality you would make a real database check here or capture a
+    // constraint error from user insertion
+    if (data.email === "exists@test.invalid") {
+        // Add an issue the email field. This generates a ZodCustomIssue
+        issues.email("Account already exists with " + data.email, {
+            anything: "Any extra params you want to pass to ZodCustomIssue",
+        });
+    }
+
+    // Respond with the issues if we have any
+    if (issues.hasIssues()) {
+        return json<FormResponse>(
+            { ok: false, serverIssues: issues.getIssues() },
+            { status: 400 },
+        );
+    }
+
+    console.log("Form ok. Saving...");
+
+    return json<FormResponse>({ ok: true });
+};
+
+function Err(props: { children: string }) {
+    return <div className="error">{props.children}</div>;
 }

@@ -35,6 +35,10 @@ async function validateUsername(username: string) {
     };
 }
 
+function Err(props: { children: string }) {
+    return <div className="error">{props.children}</div>;
+}
+
 function ZormFormExample() {
     const usernameValidation = useMutation(validateUsername);
 
@@ -119,8 +123,4 @@ export default function App() {
             <ZormFormExample />
         </QueryClientProvider>
     );
-}
-
-function Err(props: { children: string }) {
-    return <div className="error">{props.children}</div>;
 }

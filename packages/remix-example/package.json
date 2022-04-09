@@ -5,7 +5,7 @@
     "license": "",
     "sideEffects": false,
     "scripts": {
-        "build": "remix build",
+        "build": "remix setup node && remix build",
         "postinstall": "remix setup node",
         "dev": "remix dev"
     },

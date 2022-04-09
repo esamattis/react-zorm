@@ -83,7 +83,8 @@ function Signup() {
 }
 ```
 
-Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library.
+Also checkout [this classic TODOs example][todos] demonstrating almost every feature in the library and if you are
+in to Remix checkout [this server-side validation example][remix-example].
 
 ## Nested data
 
@@ -139,6 +140,59 @@ And all this is type checked 👌
 
 See the [TODOs example][todos] for more details
 
+## Server-side validation
+
+This is Remix but React Zorm does not actually use any Remix APIs so this method
+can be adapted for any JavaScript based server.
+
+```tsx
+import { parseForm } from "react-zorm";
+
+export let action: ActionFunction = async ({ request }) => {
+    const form = await request.formData();
+    // Get parsed and typed form object. This throws on validation errors.
+    const data = parseForm(FormSchema, form);
+};
+```
+
+### Server-side field errors
+
+The `useZorm()` hook can take in any additional `ZodIssue`s via the `customIssues` option:
+
+```ts
+const zo = useZorm("signup", FormSchema, {
+    customIssues: [
+        {
+            code: "custom",
+            path: ["username"],
+            message: "The username is already in use",
+        },
+    ],
+});
+```
+
+These issues can be generated anywhere. Most commonly on the server. The error
+chain will render these issues on the matching paths just like the errors coming
+from the schema.
+
+To make their generation type-safe react-zorm exports `createCustomIssues()`
+chain to make it easy:
+
+```ts
+const issues = createCustomIssues(FormSchema);
+
+issues.username("Username already in use");
+
+const zo = useZorm("signup", FormSchema, {
+    customIssues: issues.toArray(),
+});
+```
+
+This can be used for:
+
+-   [Rendering field errors from the Remix Action Functions][remix-example]
+-   [Async validation via React Query](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/async-validation?file=/src/App.tsx)
+
 ## The Chains
 
 The chains are a way to access the form validation state in a type safe way.
@@ -167,22 +221,6 @@ Return values for different invocation types
     function with the `ZodIssue` and return its return value. When there's no error
     a `undefined` is returned. Useful for rendering error message components
 -   `(index: number): ErrorChain` - Special case for accessing array elements
-
-## Server-side validation
-
-This is Remix but React Zorm does not actually use any Remix APIs so this method
-can be adapted for example to Cloudflare Workers and any other tools using the
-web platform APIs (`FormData`).
-
-```tsx
-import { parseForm } from "react-zorm";
-
-export let action: ActionFunction = async ({ request }) => {
-    const form = await request.formData();
-    // Get parsed and typed form object. This throw on validation errors.
-    const data = parseForm(FormSchema, form);
-};
-```
 
 ## Using input values during rendering
 
@@ -382,6 +420,8 @@ Zod schema to parse the form with.
 -   `setupListeners: boolean`: Do not setup any listeners. Ie. `onValidSubmit` won't be
     called nor the submission is automatically prevented. This gives total control
     when to validate the form. Set your own `onSubmit` on the form etc. Defaults to `true`.
+-   `customIssues: ZodIssue[]`: Any additional `ZodIssue` to be rendered within
+    the error chain. This is commonly used to handle server-side field validation
 
 #### return `Zorm`
 
@@ -449,3 +489,4 @@ Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 
 [todos]: https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/todos?file=/src/App.tsx
 [safeparse]: https://github.com/colinhacks/zod/blob/cc8ad1981ba580d1250520fde8878073d4b7d40a/README.md#safeparse
+[remix-example]: https://github.com/esamattis/react-zorm/blob/master/packages/remix-example/app/routes/server-side-validation.tsx

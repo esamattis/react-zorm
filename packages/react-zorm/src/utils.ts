@@ -6,3 +6,12 @@ export function isValuedElement(
         input instanceof HTMLTextAreaElement
     );
 }
+
+export function arrayEquals(a: readonly any[], b: readonly any[]) {
+    return (
+        a.length === b.length &&
+        a.every((item, index) => {
+            return item === b[index];
+        })
+    );
+}

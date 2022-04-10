@@ -8,6 +8,7 @@ import {
     IssueCreatorMethods,
     ZodCustomIssueWithMessage,
 } from "./types";
+import { arrayEquals } from "./utils";
 
 function addArrayIndex(path: readonly string[], index: number) {
     const last = path[path.length - 1];
@@ -166,13 +167,4 @@ export function createCustomIssues<Schema extends GenericSchema>(
     });
 
     return proxy;
-}
-
-function arrayEquals(a: readonly any[], b: readonly any[]) {
-    return (
-        a.length === b.length &&
-        a.every((item, index) => {
-            return item === b[index];
-        })
-    );
 }

@@ -18,7 +18,7 @@ Features / opinions
 -   🛑 No components, just a React hook
     -   🧳 Bring your own UI!
 -   🛑 No internal form state
-    -   The form is validated directly from the `<form>` element
+    -   The form is validated directly from the `<form>` DOM element
 
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊

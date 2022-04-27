@@ -1,3 +1,10 @@
+## v0.3.1
+
+2022-04-27
+
+-   Always update the onValidSubmit callback [89de1ff](https://github.com/esamattis/react-zorm/commit/89de1ff) - Esa-Matti Suuronen
+-   Extract arrayEquals [9134285](https://github.com/esamattis/react-zorm/commit/9134285) - Esa-Matti Suuronen
+
 ## v0.3.0
 
 2022-04-10
@@ -7,10 +14,10 @@ validation on any JavaScript server.
 
 Small changes:
 
--   Add declaration maps to npm [54d6daf](https://github.com/valu-digital/npm-packages/commit/54d6daf) - Esa-Matti Suuronen
+-   Add declaration maps to npm [54d6daf](https://github.com/esamattis/react-zorm/commit/54d6daf) - Esa-Matti Suuronen
     -   Enabled cmd+click navigation in VSCode directly to the react-zorm source
--   Remove broken remix tests [294eccc](https://github.com/valu-digital/npm-packages/commit/294eccc) - Esa-Matti Suuronen
--   Remove unused value chain [323026e](https://github.com/valu-digital/npm-packages/commit/323026e) - Esa-Matti Suuronen
+-   Remove broken remix tests [294eccc](https://github.com/esamattis/react-zorm/commit/294eccc) - Esa-Matti Suuronen
+-   Remove unused value chain [323026e](https://github.com/esamattis/react-zorm/commit/323026e) - Esa-Matti Suuronen
 
 ## v0.2.3
 

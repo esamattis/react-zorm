@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 
 import { useZorm } from "../src";
@@ -710,4 +710,45 @@ test("normal issues prevent submit", () => {
 
     expect(formSubmitSpy).toBeCalledTimes(1);
     expect(formSubmitSpy).toHaveBeenLastCalledWith({ defaultPrevented: true });
+});
+
+test("updates onValidSubmit() closure", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+    const spy = jest.fn();
+
+    function Test() {
+        const [ding, setDing] = useState("ding");
+
+        const zo = useZorm("form", Schema, {
+            onValidSubmit(e) {
+                spy(ding);
+                e.preventDefault();
+            },
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} defaultValue="ok" />
+
+                <button
+                    type="button"
+                    data-testid="button"
+                    onClick={() => {
+                        setDing("dong");
+                    }}
+                >
+                    dong
+                </button>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.click(screen.getByTestId("button"));
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(spy).toHaveBeenCalledWith("dong");
 });

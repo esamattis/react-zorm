@@ -44,6 +44,7 @@ export function useZorm<Schema extends ZodType<any>>(
     const submitRef = useRef<
         UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
     >(options?.onValidSubmit);
+    submitRef.current = options?.onValidSubmit;
 
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 

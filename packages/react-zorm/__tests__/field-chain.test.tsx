@@ -1,4 +1,4 @@
-import { fieldChain } from "../src/chains";
+import { errorChain, fieldChain } from "../src/chains";
 import { z } from "zod";
 import { assertNotAny } from "./test-helpers";
 import { FieldChain, FieldGetter } from "../src/types";
@@ -348,4 +348,18 @@ test("nullish array items", () => {
     const chain = fieldChain("form", Schema);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
+});
+
+test("date field", () => {
+    const Schema = z.object({
+        ding: z.string(),
+        date: z.date(),
+    });
+
+    const chain = fieldChain("form", Schema);
+
+    expect(chain.date()).toEqual("date");
+
+    // @ts-expect-error
+    const _notAny: number = chain.date();
 });

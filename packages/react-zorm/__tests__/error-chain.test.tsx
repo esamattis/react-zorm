@@ -219,3 +219,17 @@ test("can handle optional arrrays", () => {
 
     expect(chain.things(0).field()).toBeUndefined();
 });
+
+test("date field errors", () => {
+    const Schema = z.object({
+        ding: z.string(),
+        date: z.date(),
+    });
+
+    const chain = errorChain(Schema, []);
+
+    // @ts-expect-error
+    const _notAny: string = chain.date();
+
+    expect(chain.date()).toBeUndefined();
+});

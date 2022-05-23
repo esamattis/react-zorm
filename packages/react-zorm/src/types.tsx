@@ -1,8 +1,8 @@
-import type { ZodCustomIssue, ZodIssue, ZodType } from "zod";
+import { ZodCustomIssue, ZodIssue, ZodType } from "zod";
 
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
 
-export type DeepNonNullable<T> = T extends Primitive
+export type DeepNonNullable<T> = T extends Primitive | Date
     ? NonNullable<T>
     : T extends {}
     ? { [K in keyof T]-?: DeepNonNullable<T[K]> }
@@ -31,6 +31,8 @@ export type FieldChain<T extends object> = {
           ) => FieldChain<T[P][0]> extends string
               ? FieldGetter
               : FieldChain<T[P][0]>
+        : T[P] extends Date
+        ? FieldGetter
         : T[P] extends object
         ? FieldChain<T[P]>
         : FieldGetter;

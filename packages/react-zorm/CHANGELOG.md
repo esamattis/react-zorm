@@ -1,3 +1,9 @@
+## v0.3.2
+
+2022-05-23
+
+-   Add support z.date() [97276fc](https://github.com/esamattis/react-zorm/commit/97276fc) - Esa-Matti Suuronen
+
 ## v0.3.1
 
 2022-04-27

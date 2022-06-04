@@ -324,7 +324,7 @@ test("can validate array of strings on individual items", () => {
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
-        "Should be at least 2 characters",
+        "String must contain at least 2 character(s)",
     );
 });
 
@@ -352,7 +352,7 @@ test("can validate array of strings", () => {
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
-        "Should have at least 2 items",
+        "Array must contain at least 2 element(s",
     );
 });
 
@@ -620,7 +620,7 @@ test("normal issues are rendered first", () => {
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
-        "Should be at least 5 characters",
+        "String must contain at least 5 character(s)",
     );
 });
 

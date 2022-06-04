@@ -37,7 +37,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "typescript": "4.5.5",
-    "zod": "3.11.6"
+    "zod": "3.17.3"
   },
   "scripts": {
     "esbuild": "rm -rf out && esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify && gzip out/index.js && ls -lh out/index.js.gz",

@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 overrides:
   prettier: 2.5.1
-  zod: 3.11.6
+  zod: 3.17.3
   typescript: 4.5.5
   react: 17.0.2
   react-dom: 17.0.2
@@ -34,7 +34,7 @@ importers:
       react-select: ^5.2.2
       react-zorm: workspace:*
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
     devDependencies:
       '@types/react': 17.0.38
       '@types/react-dom': 17.0.11
@@ -46,7 +46,7 @@ importers:
       react-select: 5.2.2_b3482aaf5744fc7c2aeb7941b0e0a78f
       react-zorm: link:../react-zorm
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
 
   packages/examples:
     specifiers:
@@ -59,7 +59,7 @@ importers:
       react-dom: 17.0.2
       react-zorm: '*'
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
     devDependencies:
       '@types/react': 17.0.38
       '@types/react-dom': 17.0.11
@@ -70,7 +70,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-zorm: link:../react-zorm
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
 
   packages/react-zorm:
     specifiers:
@@ -99,7 +99,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
     devDependencies:
       '@babel/core': 7.17.9
       '@babel/preset-env': 7.16.11_@babel+core@7.17.9
@@ -126,7 +126,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
 
   packages/remix-example:
     specifiers:
@@ -146,7 +146,7 @@ importers:
       react-zorm: ^0.3.0
       remix: ^1.3.5
       typescript: 4.5.5
-      zod: 3.11.6
+      zod: 3.17.3
     dependencies:
       '@remix-run/node': 1.3.5_react-dom@17.0.2+react@17.0.2
       '@remix-run/react': 1.3.5_react-dom@17.0.2+react@17.0.2
@@ -157,7 +157,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-zorm: link:../react-zorm
       remix: 1.3.5
-      zod: 3.11.6
+      zod: 3.17.3
     devDependencies:
       '@remix-run/dev': 1.3.5_react-dom@17.0.2+react@17.0.2
       '@remix-run/eslint-config': 1.3.5_ad2cdf9c00824bda00bb5f05ada1ee00
@@ -12652,8 +12652,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /zod/3.11.6:
-    resolution: {integrity: sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==}
+  /zod/3.17.3:
+    resolution: {integrity: sha512-4oKP5zvG6GGbMlqBkI5FESOAweldEhSOZ6LI6cG+JzUT7ofj1ZOC0PJudpQOpT1iqOFpYYtX5Pw0+o403y4bcg==}
 
   /zwitch/2.0.2:
     resolution: {integrity: sha512-JZxotl7SxAJH0j7dN4pxsTV6ZLXoLdGME+PsjkL/DaBrVryK9kTGq06GfKrwcSOqypP+fdXGoCHE36b99fWVoA==}

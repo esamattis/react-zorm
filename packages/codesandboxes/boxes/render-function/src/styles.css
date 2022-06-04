@@ -1,0 +1,15 @@
+button[type="submit"] {
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.hoverable {
+    padding: 1rem;
+    margin: 2px;
+    display: inline;
+    border: 1px solid gray;
+}
+
+.hoverable:hover {
+    background-color: aliceblue;
+}

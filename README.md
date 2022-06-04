@@ -209,6 +209,8 @@ Return values for different invocation types
 -   `("id"): string` - Unique `id` attribute value to be used with labels and `aria-describedby`
 -   `(): string` - The default, same as `"name"`
 -   `(index: number): FieldChain` - Special case for setting array indices
+-   `(fn: RenderFunction): any` - Calls the function with `{name: string, id: string}` and renders the return value.
+    -   Can be used to create resuable fields. [Codesandbox example](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/render-function?file=/src/App.tsx).
 
 ### `errors` invocation
 

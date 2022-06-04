@@ -752,3 +752,67 @@ test("updates onValidSubmit() closure", () => {
 
     expect(spy).toHaveBeenCalledWith("dong");
 });
+
+test("can use function in the field chain", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const typeTest1: string = zo.fields.thing(() => "str");
+        const typeTest2: number = zo.fields.thing(() => 3);
+        assertNotAny(zo.fields.thing(() => 3));
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                {zo.fields.thing(
+                    (props) => `name=${props.name} id=${props.id}`,
+                )}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("form")).toHaveTextContent(
+        "name=thing id=form:thing",
+    );
+});
+
+test("function in field chain can return jsx", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function hidden(value: string) {
+        return (props: { name: string; id: string }) => (
+            <input
+                type="hidden"
+                name={props.name}
+                id={props.id}
+                data-testid="hidden"
+                defaultValue={value}
+            />
+        );
+    }
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                {zo.fields.thing(hidden("testvalue"))}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    const el = screen.getByTestId("hidden");
+
+    expect(el).toHaveAttribute("name", "thing");
+    expect(el).toHaveAttribute("id", "form:thing");
+    expect(el).toHaveAttribute("value", "testvalue");
+});

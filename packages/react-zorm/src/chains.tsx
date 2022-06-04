@@ -36,11 +36,18 @@ function _fieldChain(ns: string, path: readonly string[]) {
                 return _fieldChain(ns, addArrayIndex(path, args[0]));
             }
 
+            const name = path.join(".");
+            const id = ns + ":" + path.join(".");
+
             if (args[0] === "id") {
-                return ns + ":" + path.join(".");
+                return id;
             }
 
-            return path.join(".");
+            if (typeof args[0] === "function") {
+                return args[0]({ id, name });
+            }
+
+            return name;
         },
 
         get(_target, prop) {

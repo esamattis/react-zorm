@@ -5,6 +5,7 @@
         "signup": "parcel serve boxes/signup/parcel.html",
         "use-value": "parcel serve boxes/use-value/parcel.html",
         "checkboxes": "parcel serve boxes/checkboxes/parcel.html",
+        "render-function": "parcel serve boxes/render-function/parcel.html",
         "3rdparty": "parcel serve boxes/3rdparty/parcel.html",
         "async-validation": "parcel serve boxes/async-validation/parcel.html",
         "todos": "parcel serve boxes/todos/parcel.html"
@@ -21,5 +22,8 @@
         "react-zorm": "workspace:*",
         "typescript": "^4.5.5",
         "zod": "^3.11.6"
+    },
+    "volta": {
+        "node": "16.15.1"
     }
 }

@@ -1,4 +1,4 @@
-import { errorChain, fieldChain } from "../src/chains";
+import { fieldChain } from "../src/chains";
 import { z } from "zod";
 import { assertNotAny } from "./test-helpers";
 import { FieldChain, FieldGetter } from "../src/types";

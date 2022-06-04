@@ -2,7 +2,7 @@
 
 2022-06-04
 
--   Add support render function support [b82a268](https://github.com/esamattis/react-zorm/commit/b82a268) - Esa-Matti Suuronen
+-   Add render function support [b82a268](https://github.com/esamattis/react-zorm/commit/b82a268) - Esa-Matti Suuronen
 -   Test with Zod 3.17.3 [e1b5507](https://github.com/esamattis/react-zorm/commit/e1b5507) - Esa-Matti Suuronen
 
 ## v0.3.2

@@ -17,7 +17,7 @@ test("can read value with useValue()", () => {
         const zo = useZorm("form", Schema);
         const value = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
         });
         assertNotAny(value);
 
@@ -54,7 +54,7 @@ test("can read value with <Value/>", () => {
         return (
             <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
-                <Value form={zo.ref} name={zo.fields.thing()}>
+                <Value zorm={zo} name={zo.fields.thing()}>
                     {(value) => {
                         valueRenderSpy();
                         return <div data-testid="value">{value}</div>;
@@ -92,7 +92,7 @@ test("can transform the value with <Value/>", () => {
             <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
                 <Value
-                    form={zo.ref}
+                    zorm={zo}
                     name={zo.fields.thing()}
                     initialValue={0}
                     transform={(value) => Number(value)}
@@ -124,7 +124,7 @@ test("renders default value", () => {
 
         const value: string = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
         });
 
         return (
@@ -154,7 +154,7 @@ test("can transform value", () => {
 
         const value = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
             transform(value) {
                 return value.toUpperCase();
             },
@@ -187,7 +187,7 @@ test("can transform to custom type", () => {
 
         const value = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
             initialValue: 0,
             transform(value) {
                 return value.length;
@@ -225,7 +225,7 @@ test("can read lazily rendered value", () => {
 
         const value = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
             initialValue: "initialvalue",
         });
 
@@ -269,7 +269,7 @@ test("can read lazily rendered default value", () => {
 
         const value = useValue({
             name: zo.fields.thing(),
-            form: zo.ref,
+            zorm: zo,
             initialValue: "initialvalue",
         });
 
@@ -324,7 +324,7 @@ test("can read checkbox", () => {
 
         const value = useValue({
             name: zo.fields.checkbox(),
-            form: zo.ref,
+            zorm: zo,
             initialValue: false,
             transform: (value) => {
                 return Boolean(value);

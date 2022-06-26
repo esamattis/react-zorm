@@ -3,7 +3,9 @@ import { isValuedElement } from "./utils";
 
 export interface ValueSubscription<T> {
     name: string;
-    form: RefObject<HTMLFormElement>;
+    zorm: {
+        refObject: React.MutableRefObject<HTMLFormElement | undefined>;
+    };
     initialValue?: T;
     event?: string;
     transform?: (value: string) => T;
@@ -16,7 +18,7 @@ export function useValue<T>(
     const mapRef = useRef<((value: string) => T) | undefined>(opts.transform);
 
     useEffect(() => {
-        const form = opts.form.current;
+        const form = opts.zorm.refObject.current;
         if (!form) {
             return;
         }
@@ -51,7 +53,7 @@ export function useValue<T>(
         return () => {
             form.removeEventListener(event, listener);
         };
-    }, [opts.name, opts.form, opts.event]);
+    }, [opts.name, opts.zorm.refObject, opts.event]);
 
     return value;
 }

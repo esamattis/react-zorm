@@ -1,3 +1,49 @@
+## v0.5.0
+
+2022-07-01
+
+Add support for lazily created form DOM elements. Fixes
+[#15](https://github.com/esamattis/react-zorm/issues/15).
+
+## Breaking Changes!
+
+If you use the `useValue()` hook or the `<Value>` component or if you accessed
+the DOM element via `zo.ref`.
+
+The `zo.ref` is now a callback ref but the object ref is available at `ref.refObject`.
+
+## Migration
+
+`useValue()`:
+
+```ts
+const value = useValue({ form: zo.ref, name: zo.fields.input() });
+```
+
+to
+
+```ts
+const value = useValue({ zorm: zo, name: zo.fields.input() });
+```
+
+`<Value>`:
+
+```tsx
+<Value form={zo.ref} name={zo.fields.input()}>
+    {(value) => <span>Input value: {value}</span>}
+</Value>
+```
+
+to
+
+```tsx
+<Value zorm={zo} name={zo.fields.input()}>
+    {(value) => <span>Input value: {value}</span>}
+</Value>
+```
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.5.0...react-zorm/v0.4.0
+
 ## v0.4.0
 
 2022-06-04

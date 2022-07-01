@@ -39,7 +39,7 @@ export function useZorm<Schema extends ZodType<any>>(
 ): Zorm<Schema> {
     type ValidationResult = ReturnType<Schema["safeParse"]>;
 
-    const formRef = useRef<HTMLFormElement>(null);
+    const formRef = useRef<HTMLFormElement>();
     const submittedOnceRef = useRef(false);
     const submitRef = useRef<
         UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
@@ -61,17 +61,16 @@ export function useZorm<Schema extends ZodType<any>>(
         return res;
     }, [getForm, schema]);
 
-    useEffect(() => {
-        const form = formRef.current;
-        if (!form) {
+    const changeHandler = useCallback(() => {
+        if (!submittedOnceRef.current) {
             return;
         }
 
-        if (options?.setupListeners === false) {
-            return;
-        }
+        validate();
+    }, [validate]);
 
-        const submitHandler = (e: { preventDefault(): any }) => {
+    const submitHandler = useCallback(
+        (e: { preventDefault(): any }) => {
             submittedOnceRef.current = true;
             const validation = validate();
 
@@ -86,24 +85,33 @@ export function useZorm<Schema extends ZodType<any>>(
                     },
                 });
             }
-        };
+        },
+        [getForm, validate],
+    );
 
-        const changeHandler = () => {
-            if (!submittedOnceRef.current) {
-                return;
+    const callbackRef = useCallback(
+        (form: HTMLFormElement | null) => {
+            if (form !== formRef.current) {
+                if (formRef.current) {
+                    formRef.current.removeEventListener(
+                        "change",
+                        changeHandler,
+                    );
+                    formRef.current.removeEventListener(
+                        "submit",
+                        submitHandler,
+                    );
+                }
+
+                if (form && options?.setupListeners !== false) {
+                    form.addEventListener("change", changeHandler);
+                    form.addEventListener("submit", submitHandler);
+                }
+                formRef.current = form ?? undefined;
             }
-
-            validate();
-        };
-
-        form.addEventListener("change", changeHandler);
-        form.addEventListener("submit", submitHandler);
-
-        return () => {
-            form.removeEventListener("change", changeHandler);
-            form.removeEventListener("submit", submitHandler);
-        };
-    }, [getForm, options?.setupListeners, validate]);
+        },
+        [changeHandler, options?.setupListeners, submitHandler],
+    );
 
     return useMemo(() => {
         let customIssues = options?.customIssues ?? [];
@@ -117,12 +125,20 @@ export function useZorm<Schema extends ZodType<any>>(
         const fields = fieldChain(formName, schema);
 
         return {
-            ref: formRef,
+            ref: callbackRef,
+            refObject: formRef,
             validate,
             validation,
             fields,
             errors,
             customIssues: customIssues,
         };
-    }, [formName, options?.customIssues, schema, validate, validation]);
+    }, [
+        callbackRef,
+        formName,
+        options?.customIssues,
+        schema,
+        validate,
+        validation,
+    ]);
 }

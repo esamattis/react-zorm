@@ -816,3 +816,48 @@ test("function in field chain can return jsx", () => {
     expect(el).toHaveAttribute("id", "form:thing");
     expect(el).toHaveAttribute("value", "testvalue");
 });
+
+test("can bound to lazily created form", () => {
+    const spy = jest.fn();
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const [showForm, setShowForm] = useState(false);
+
+        const zo = useZorm("form", Schema, {
+            onValidSubmit(e) {
+                spy();
+                e.preventDefault();
+            },
+        });
+
+        if (!showForm) {
+            return (
+                <button
+                    type="button"
+                    data-testid="button"
+                    onClick={() => {
+                        setShowForm(true);
+                    }}
+                >
+                    show form
+                </button>
+            );
+        }
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input name={zo.fields.thing()} defaultValue="ok" />
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.click(screen.getByTestId("button"));
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(spy).toHaveBeenCalledTimes(1);
+});

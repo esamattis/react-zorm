@@ -106,7 +106,8 @@ export type SafeParseResult<Schema extends GenericSchema> = ReturnType<
 >;
 
 export interface Zorm<Schema extends GenericSchema> {
-    ref: React.RefObject<HTMLFormElement>;
+    refObject: React.MutableRefObject<HTMLFormElement | undefined>;
+    ref: (form: HTMLFormElement | null) => void;
     fields: FieldChainFromSchema<Schema>;
     errors: ErrorChainFromSchema<Schema> & ErrorGetter;
     validate(): SafeParseResult<Schema>;

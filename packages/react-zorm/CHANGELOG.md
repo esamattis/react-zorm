@@ -42,7 +42,7 @@ to
 </Value>
 ```
 
-All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.5.0...react-zorm/v0.4.0
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.4.0...react-zorm/v0.5.0
 
 ## v0.4.0
 

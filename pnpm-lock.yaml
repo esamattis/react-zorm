@@ -155,7 +155,7 @@ importers:
       prettier: 2.5.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-zorm: link:../react-zorm
+      react-zorm: 0.3.2
       remix: 1.3.5
       zod: 3.17.3
     devDependencies:
@@ -10829,6 +10829,10 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: true
+
+  /react-zorm/0.3.2:
+    resolution: {integrity: sha512-EYKZv2uWV+S2OpshlKAOaWQS6EIWv4arMwPslSdMGJZcSqR6EvySkJy9Tto9v4q+unJLcvOziaKVGeTbrDi+jw==}
+    dev: false
 
   /react/17.0.2:
     resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}

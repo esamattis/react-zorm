@@ -13,7 +13,7 @@ const FormSchema = z.object({
 
 function Subcomponent(props: { zo: Zorm<typeof FormSchema> }) {
     const value = useValue({
-        form: props.zo.ref,
+        zorm: props.zo,
         name: props.zo.fields.input4(),
     });
     return (
@@ -31,7 +31,7 @@ export default function Form() {
         },
     });
     const disabled = zo.validation?.success === false;
-    const input2Value = useValue({ form: zo.ref, name: zo.fields.input2() });
+    const input2Value = useValue({ zorm: zo, name: zo.fields.input2() });
 
     return (
         <VisualizeRenders>
@@ -63,7 +63,7 @@ export default function Form() {
                 <VisualizeRenders>
                     Input2 useValue(): {input2Value}
                 </VisualizeRenders>
-                <Value form={zo.ref} name={zo.fields.input3()}>
+                <Value zorm={zo} name={zo.fields.input3()}>
                     {(value) => (
                         <VisualizeRenders>
                             Input3 {"<Value>"}: {value}

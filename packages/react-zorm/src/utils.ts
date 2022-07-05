@@ -3,7 +3,8 @@ export function isValuedElement(
 ): input is HTMLInputElement | HTMLTextAreaElement {
     return (
         input instanceof HTMLInputElement ||
-        input instanceof HTMLTextAreaElement
+        input instanceof HTMLTextAreaElement ||
+        input instanceof HTMLSelectElement
     );
 }
 

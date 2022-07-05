@@ -2,7 +2,7 @@
 
 2022-07-05
 
--   Add useValue() test for <select> [03758cb](https://github.com/valu-digital/npm-packages/commit/03758cb) - Esa-Matti Suuronen
+-   Add useValue() test for `<select>` [03758cb](https://github.com/valu-digital/npm-packages/commit/03758cb) - Esa-Matti Suuronen
 -   Add supports for select to useValue [5b1c2ed](https://github.com/valu-digital/npm-packages/commit/5b1c2ed) - Giuseppe
 
 All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.5.0...react-zorm/v0.5.1

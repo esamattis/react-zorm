@@ -366,3 +366,40 @@ test("can read checkbox", () => {
 
     expect(screen.queryByTestId("value")).toHaveTextContent("boolean: true");
 });
+
+test("can read <select>", () => {
+    const Schema = z.object({
+        select: z.string().optional(),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const value = useValue({
+            name: zo.fields.select(),
+            zorm: zo,
+        });
+        return (
+            <form ref={zo.ref}>
+                <select name={zo.fields.select()} data-testid="select">
+                    <option value="ding">ding</option>
+                    <option value="dong" data-testid="dong">
+                        dong
+                    </option>
+                </select>
+                <div data-testid="value">{value}</div>
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("ding");
+
+    userEvent.selectOptions(
+        screen.getByTestId("select"),
+        screen.getByTestId("dong"),
+    );
+
+    expect(screen.queryByTestId("value")).toHaveTextContent("dong");
+});

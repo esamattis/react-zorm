@@ -241,7 +241,7 @@ import { useValue } from "react-zorm";
 
 function Form() {
     const zo = useZorm("form", FormSchema);
-    const value = useValue({ form: zo.ref, name: zo.fields.input() });
+    const value = useValue({ zorm: zo, name: zo.fields.input() });
     return <form ref={zo.ref}>...</form>;
 }
 ```
@@ -476,7 +476,7 @@ Render prop version of the `useValue()` hook. The props are `ValueSubscription`.
 The render prop child is `(value: string) => ReactNode`.
 
 ```tsx
-<Value form={zo.ref} name={zo.fields.input()}>
+<Value zorm={zo} name={zo.fields.input()}>
     {(value) => <>value</>}
 </Value>
 ```

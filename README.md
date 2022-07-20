@@ -481,11 +481,11 @@ The render prop child is `(value: string) => ReactNode`.
 </Value>
 ```
 
-### `parseForm(form: HTMLFormElement | FormData, schema: ZodObject): Type<ZodObject>`
+### `parseForm(schema: ZodObject, form: HTMLFormElement | FormData): Type<ZodObject>`
 
 Parse `HTMLFormElement` or `FormData` with the given Zod schema.
 
-### `safeParseForm(form, schema): SafeParseReturnType`
+### `safeParseForm(schema: ZodObject, form: HTMLFormElement | FormData): SafeParseReturnType`
 
 Like `parseForm()` but uses the [`safeParse()`][safeparse] method from Zod.
 

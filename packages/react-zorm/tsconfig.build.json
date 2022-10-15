@@ -2,6 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "sourceMap": true,
+        "module": "CommonJS",
         "declarationMap": true,
         "noEmit": false,
         "outDir": "dist"

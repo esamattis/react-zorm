@@ -3,6 +3,7 @@
         "module": "commonjs",
         "target": "esnext",
         "lib": ["es2018", "dom", "esnext", "DOM.Iterable"],
+        "types": ["jest", "@testing-library/jest-dom"],
         "moduleResolution": "node",
         "jsx": "react",
         "forceConsistentCasingInFileNames": true,

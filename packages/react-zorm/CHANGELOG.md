@@ -2,7 +2,7 @@
 
 2022-10-16
 
--   Publish as ESM to npm withe `"exports"` field
+-   Publish as ESM to npm with the `"exports"` field
     -   Dual packaging. CommonJS code is also published as previously.
 -   There should no behavioral changes. Only the packaging is improved to enable
     tree shaking etc.

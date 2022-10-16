@@ -1,0 +1,93 @@
+name: Test
+
+concurrency:
+    group: "test-${{ github.ref }}"
+    cancel-in-progress: true
+
+on:
+    push:
+        branches: [master]
+        paths:
+            - "packages/react-zorm/**"
+            - ".github/workflows/test.yml"
+            - "pnpm-lock.yaml"
+    pull_request:
+        paths:
+            - "packages/react-zorm/**"
+            - ".github/workflows/test.yml"
+            - "pnpm-lock.yaml"
+jobs:
+    test:
+        timeout-minutes: 20
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "16.x"
+
+            - uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: "7.x"
+
+            - name: Set pnpm store path
+              run: echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
+
+            - name: Cache pnpm modules
+              uses: actions/cache@v3
+              with:
+                  path: ${{ env.PNPM_STORE_PATH }}
+                  key: pnpm-test-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      pnpm-test-${{ runner.os }}-
+
+            - name: Cache playwright browsers
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      playwright-${{ runner.os }}-
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile --filter react-zorm
+
+            - name: Build
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run build
+
+            - name: Check types
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run tsc
+
+            - name: Check run tests
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run jest
+
+            - name: Check lints
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run eslint
+
+            - name: Install Playwright Browsers
+              run: cd packages/react-zorm && ./node_modules/.bin/playwright install --with-deps
+
+            - name: Run Playwright tests
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run playwright-test
+
+            - name: Run size-limit
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run size-limit

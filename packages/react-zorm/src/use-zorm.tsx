@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ZodType, ZodError, ZodCustomIssue, ZodIssue } from "zod";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
-import { Zorm } from "./types";
+import type { Zorm } from "./types";
 
 export interface ValidSubmitEvent<Data> {
     /**

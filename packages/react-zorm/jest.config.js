@@ -2,6 +2,7 @@ module.exports = {
     testEnvironment: "jsdom",
     testPathIgnorePatterns: ["/node_modules", "dist", ".build"],
     testRegex: "(/__tests__/.+\\.(test|spec))\\.[jt]sx?$",
+    setupFilesAfterEnv: ["<rootDir>/__tests__/setup-tests.ts"],
     transform: {
         "^.+\\.tsx?$": [
             "babel-jest",

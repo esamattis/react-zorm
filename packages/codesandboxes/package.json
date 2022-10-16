@@ -2,25 +2,21 @@
     "name": "@zorm/codesandboxes",
     "private": true,
     "scripts": {
-        "signup": "parcel serve boxes/signup/parcel.html",
-        "use-value": "parcel serve boxes/use-value/parcel.html",
-        "checkboxes": "parcel serve boxes/checkboxes/parcel.html",
-        "render-function": "parcel serve boxes/render-function/parcel.html",
-        "3rdparty": "parcel serve boxes/3rdparty/parcel.html",
-        "async-validation": "parcel serve boxes/async-validation/parcel.html",
-        "todos": "parcel serve boxes/todos/parcel.html"
+        "dev": "vite",
+        "upgrade-box-deps": "sh upgrade-deps.sh"
     },
     "devDependencies": {
-        "@types/react": "^17.0.38",
-        "@types/react-dom": "^17.0.11",
-        "parcel": "^2.2.1",
+        "@types/react": "18.0.21",
+        "@types/react-dom": "18.0.6",
+        "@vitejs/plugin-react": "^2.1.0",
         "prettier": "^2.5.1",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
         "react-query": "^3.34.19",
         "react-select": "^5.2.2",
         "react-zorm": "workspace:*",
         "typescript": "^4.5.5",
+        "vite": "^3.1.6",
         "zod": "^3.11.6"
     },
     "volta": {

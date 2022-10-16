@@ -27,9 +27,9 @@ jobs:
               with:
                   node-version: "16.x"
 
-            - uses: pnpm/action-setup@v2.0.1
+            - uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.13.2
+                  version: "7.x"
 
             - name: Set pnpm store path
               run: echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV

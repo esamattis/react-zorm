@@ -19,6 +19,11 @@
         "tsc": "tsc",
         "test": "tsc && jest && pnpm run eslint"
     },
+    "peerDependencies": {
+        "zod": ">=3.0.0",
+        "react": ">=17.0.0",
+        "react-dom": ">=17.0.0"
+    },
     "files": [
         "src",
         "dist"

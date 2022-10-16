@@ -1,6 +1,11 @@
-import { render } from "react-dom";
+import { createRoot } from "react-dom";
+import React from "react";
 
 import App from "./App";
 
 const rootElement = document.getElementById("root");
-render(<App />, rootElement);
+if (!rootElement) {
+    throw new Error("No root element found");
+}
+const root = createRoot(rootElement);
+root.render(<App />, rootElement);

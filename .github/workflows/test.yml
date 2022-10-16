@@ -85,3 +85,9 @@ jobs:
                   set -eu
                   cd packages/react-zorm
                   pnpm run playwright-test
+
+            - name: Run size-limit
+              run: |
+                  set -eu
+                  cd packages/react-zorm
+                  pnpm run size-limit

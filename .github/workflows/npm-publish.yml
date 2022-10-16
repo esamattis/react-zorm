@@ -11,6 +11,6 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Publish a npm package
-              uses: valu-digital/npm-packages/.github/release-action
+              uses: valu-digital/npm-packages/.github/release-action@master
               with:
                   npm_token: "${{ secrets.NPM_TOKEN }}"

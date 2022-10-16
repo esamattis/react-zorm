@@ -8,7 +8,7 @@ import { useZorm } from "../src";
 import { assertNotAny } from "./test-helpers";
 import { useValue, Value } from "../src/use-value";
 
-test("can read value with useValue()", () => {
+test("can read value with useValue()", async () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -31,16 +31,16 @@ test("can read value with useValue()", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "value1");
+    await userEvent.type(screen.getByTestId("input"), "value1");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("value1");
 
-    userEvent.type(screen.getByTestId("input"), "value2");
+    await userEvent.type(screen.getByTestId("input"), "value2");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("value1value2");
 });
 
-test("can read value with <Value/>", () => {
+test("can read value with <Value/>", async () => {
     const renderSpy = jest.fn();
     const valueRenderSpy = jest.fn();
     const Schema = z.object({
@@ -66,11 +66,11 @@ test("can read value with <Value/>", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "value1");
+    await userEvent.type(screen.getByTestId("input"), "value1");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("value1");
 
-    userEvent.type(screen.getByTestId("input"), "value2");
+    await userEvent.type(screen.getByTestId("input"), "value2");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("value1value2");
 
@@ -78,7 +78,7 @@ test("can read value with <Value/>", () => {
     expect(valueRenderSpy.mock.calls.length).toBeGreaterThan(5);
 });
 
-test("can transform the value with <Value/>", () => {
+test("can transform the value with <Value/>", async () => {
     const renderSpy = jest.fn();
     const Schema = z.object({
         thing: z.string().min(1),
@@ -109,7 +109,7 @@ test("can transform the value with <Value/>", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "value1");
+    await userEvent.type(screen.getByTestId("input"), "value1");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("number");
 });
@@ -214,7 +214,7 @@ test("can transform to custom type", () => {
     expect(screen.queryByTestId("value")).toHaveTextContent("number");
 });
 
-test("can read lazily rendered value", () => {
+test("can read lazily rendered value", async () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -253,7 +253,7 @@ test("can read lazily rendered value", () => {
 
     fireEvent.click(screen.getByText("show"));
 
-    userEvent.type(screen.getByTestId("input"), "typed value");
+    await userEvent.type(screen.getByTestId("input"), "typed value");
 
     expect(screen.queryByTestId("value")).toHaveTextContent("typed value");
 });
@@ -367,7 +367,7 @@ test("can read checkbox", () => {
     expect(screen.queryByTestId("value")).toHaveTextContent("boolean: true");
 });
 
-test("can read <select>", () => {
+test("can read <select>", async () => {
     const Schema = z.object({
         select: z.string().optional(),
     });
@@ -396,7 +396,7 @@ test("can read <select>", () => {
 
     expect(screen.queryByTestId("value")).toHaveTextContent("ding");
 
-    userEvent.selectOptions(
+    await userEvent.selectOptions(
         screen.getByTestId("select"),
         screen.getByTestId("dong"),
     );

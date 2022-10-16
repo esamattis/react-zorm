@@ -3,6 +3,7 @@
         "module": "commonjs",
         "target": "esnext",
         "lib": ["es2018", "dom", "esnext", "DOM.Iterable"],
+        "types": ["jest", "@testing-library/jest-dom"],
         "moduleResolution": "node",
         "jsx": "react",
         "forceConsistentCasingInFileNames": true,
@@ -15,5 +16,5 @@
         "esModuleInterop": true,
         "declaration": true
     },
-    "include": ["__tests__", "src", "example"]
+    "include": ["__tests__", "src", "example", "e2e"]
 }

@@ -62,7 +62,7 @@ test("first blur does not trigger error", () => {
     expect(screen.queryByTestId("ok")).toHaveTextContent("ok");
 });
 
-test("form is validated on blur after the first submit", () => {
+test("form is validated on blur after the first submit", async () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -88,13 +88,13 @@ test("form is validated on blur after the first submit", () => {
     fireEvent.submit(screen.getByTestId("form"));
     expect(screen.queryByTestId("error")).toHaveTextContent("error");
 
-    userEvent.type(screen.getByTestId("input"), "content");
+    await userEvent.type(screen.getByTestId("input"), "content");
     fireEvent.blur(screen.getByTestId("input"));
 
     expect(screen.queryByTestId("ok")).toHaveTextContent("ok");
 });
 
-test("form data is validated", () => {
+test("form data is validated", async () => {
     const Schema = z.object({
         thing: z.string().min(1),
     });
@@ -117,7 +117,7 @@ test("form data is validated", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "content");
+    await userEvent.type(screen.getByTestId("input"), "content");
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(spy).toHaveBeenCalledWith({ thing: "content" });
@@ -175,7 +175,7 @@ test("can get the validation object", () => {
     expect(screen.queryByTestId("error")).toHaveTextContent("too_small");
 });
 
-test("can validate multiple dependent fields", () => {
+test("can validate multiple dependent fields", async () => {
     const Schema = z.object({
         password: z
             .object({
@@ -211,8 +211,8 @@ test("can validate multiple dependent fields", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("form:password.pw1"), "foo");
-    userEvent.type(screen.getByTestId("form:password.pw2"), "bar");
+    await userEvent.type(screen.getByTestId("form:password.pw1"), "foo");
+    await userEvent.type(screen.getByTestId("form:password.pw2"), "bar");
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
@@ -220,7 +220,7 @@ test("can validate multiple dependent fields", () => {
     );
 });
 
-test("can validate multiple dependent root fields", () => {
+test("can validate multiple dependent root fields", async () => {
     const Schema = z
         .object({
             pw1: z.string(),
@@ -255,8 +255,8 @@ test("can validate multiple dependent root fields", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("form:pw1"), "foo");
-    userEvent.type(screen.getByTestId("form:pw2"), "bar");
+    await userEvent.type(screen.getByTestId("form:pw1"), "foo");
+    await userEvent.type(screen.getByTestId("form:pw2"), "bar");
     fireEvent.submit(screen.getByTestId("form"));
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
@@ -356,7 +356,7 @@ test("can validate array of strings", () => {
     );
 });
 
-test("onOnValidSubmit is called on first valid submit", () => {
+test("onOnValidSubmit is called on first valid submit", async () => {
     const spy = jest.fn();
 
     const Schema = z.object({
@@ -379,12 +379,12 @@ test("onOnValidSubmit is called on first valid submit", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "content");
+    await userEvent.type(screen.getByTestId("input"), "content");
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledWith({ thing: "content" });
 });
 
-test("onOnValidSubmit is not called on error submit", () => {
+test("onOnValidSubmit is not called on error submit", async () => {
     const spy = jest.fn();
 
     const Schema = z.object({
@@ -414,16 +414,19 @@ test("onOnValidSubmit is not called on error submit", () => {
 
     render(<Test />);
 
-    userEvent.type(screen.getByTestId("input"), "short");
+    await userEvent.type(screen.getByTestId("input"), "short");
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(0);
 
-    userEvent.type(screen.getByTestId("input"), "looooooooooooooooooooooong");
+    await userEvent.type(
+        screen.getByTestId("input"),
+        "looooooooooooooooooooooong",
+    );
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(1);
 });
 
-test("setupListeners: false", () => {
+test("setupListeners: false", async () => {
     const spy = jest.fn();
 
     const Schema = z.object({
@@ -451,13 +454,16 @@ test("setupListeners: false", () => {
     render(<Test />);
 
     // Does not update ok status to error because no listeners
-    userEvent.type(screen.getByTestId("input"), "short");
+    await userEvent.type(screen.getByTestId("input"), "short");
     fireEvent.submit(screen.getByTestId("form"));
     expect(spy).toHaveBeenCalledTimes(0);
     expect(screen.getByTestId("status")).toHaveTextContent("ok");
 
     // No change here
-    userEvent.type(screen.getByTestId("input"), "looooooooooooooooooooooong");
+    await userEvent.type(
+        screen.getByTestId("input"),
+        "looooooooooooooooooooooong",
+    );
     fireEvent.blur(screen.getByTestId("input"));
     expect(screen.getByTestId("status")).toHaveTextContent("ok");
 

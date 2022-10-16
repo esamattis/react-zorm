@@ -15,18 +15,22 @@ import { readdirSync } from "fs";
 
 export default defineConfig({
     root: __dirname + "/e2e",
-    // base: process.env.CI ? "/ui-examples/bundled/" : "",
     server: {
         port: 1934,
         strictPort: true,
     },
     build: {
-        outDir: __dirname + "/e2e-build",
+        outDir: __dirname + "/esm",
         emptyOutDir: true,
         minify: false,
         target: "es2020",
+        sourcemap: true,
         rollupOptions: {
-            // input,
+            external: ["react", "react-dom", "zod"],
+        },
+        lib: {
+            entry: __dirname + "/src/index.tsx",
+            formats: ["es"],
         },
     },
 });

@@ -9,7 +9,9 @@
     },
     "scripts": {
         "esbuild": "rm -rf out && esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify && gzip out/index.js && ls -lh out/index.js.gz",
-        "build": "tsc -p tsconfig.build.json",
+        "build": "run-p 'build:*'",
+        "build:tsc": "tsc -p tsconfig.build.json",
+        "build:vite": "vite build",
         "publish-build": "cp ../../README.md . && pnpm run build",
         "watch": "tsc -w -p tsconfig.build.json",
         "eslint": "eslint --max-warnings 0 \"src/**/*.ts\" \"src/**/*.tsx\" \"e2e/**/*.tsx\"  \"e2e/**/*.ts\" \"__tests__/**/*.tsx\"  \"__tests__/**/*.ts\"",

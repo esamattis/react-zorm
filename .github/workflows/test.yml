@@ -35,7 +35,7 @@ jobs:
               run: echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
 
             - name: Cache pnpm modules
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: ${{ env.PNPM_STORE_PATH }}
                   key: pnpm-test-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}

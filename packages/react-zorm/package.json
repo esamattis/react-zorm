@@ -2,6 +2,15 @@
     "name": "react-zorm",
     "version": "0.5.1",
     "description": "",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./esm/react-zorm.mjs",
+            "require": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "sideEffects": false,
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "repository": {
@@ -28,6 +37,7 @@
     },
     "files": [
         "src",
+        "esm",
         "dist"
     ],
     "devDependencies": {

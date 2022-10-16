@@ -24,22 +24,5 @@ pnpm test
 
 Hack around? Write tests and send you PR!
 
-## Examples
-
-Start the watcher in the react-zorm package
-
-```
-cd packages/react-zorm
-pnpm run watch
-```
-
-Go to the examples and start one those
-
-```
-cd packages/examples
-pnpm run example-signup
-# or
-pnpm run example-todos
-```
 
 [pnpm]: https://pnpm.io/

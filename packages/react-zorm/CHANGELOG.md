@@ -1,3 +1,19 @@
+## v0.6.0
+
+2022-10-16
+
+-   Publish as ESM to npm withe `"exports"` field
+    -   Dual packaging. CommonJS code is also published as previously.
+-   There should no behavioral changes. Only the packaging is improved to enable
+    tree shaking etc.
+-   Test against React.js 18 in strict mode
+-   Add Playwright test
+-   Run tests in Github actions
+-   Upgrade build and test deps
+-   Test with latest Zod
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.5.1...react-zorm/v0.6.0
+
 ## v0.5.1
 
 2022-07-05

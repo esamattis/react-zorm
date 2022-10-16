@@ -1,6 +1,6 @@
 ---
 name: Open an issue
-about: ''
+about: 'If you just have a question use the Discussions or ping @esamatti on twitter instead'
 title: ''
 labels: ''
 assignees: ''

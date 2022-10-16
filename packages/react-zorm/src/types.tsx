@@ -20,10 +20,7 @@ export interface GenericSchema {
     safeParse: (arg: any) => any;
 }
 
-// no-op function for getting the generic type without requiring to apply the
-// generic argument. TODO: Is is possible to make this without the runtime
-// value using "interface" or "type" keywords?
-declare function getter<
+export type FieldGetter = <
     Arg extends
         | undefined
         | "id"
@@ -31,13 +28,11 @@ declare function getter<
         | ((props: { name: string; id: string }) => any),
 >(
     arg?: Arg,
-): undefined extends Arg
+) => undefined extends Arg
     ? string
     : Arg extends (props: { name: string; id: string }) => any
     ? ReturnType<Arg>
     : string;
-
-export type FieldGetter = typeof getter;
 
 export type FieldChain<T extends object> = {
     [P in keyof T]: T[P] extends Array<any>

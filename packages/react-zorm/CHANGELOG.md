@@ -4,6 +4,7 @@
 
 -   Publish as ESM to npm with the `"exports"` field
     -   Dual packaging. CommonJS code is also published as previously.
+-   `zod` and `react` are now correctly peer deps
 -   There should no behavioral changes. Only the packaging is improved to enable
     tree shaking etc.
 -   Test against React.js 18 in strict mode

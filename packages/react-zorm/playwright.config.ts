@@ -62,7 +62,7 @@ const config: PlaywrightTestConfig = {
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: "pnpm run dev:viite",
+        command: "pnpm run dev:vite",
         url: "http://localhost:1934/",
         reuseExistingServer: !process.env.CI,
     },

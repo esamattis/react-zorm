@@ -128,6 +128,9 @@ export function useZorm<Schema extends ZodType<any>>(
             ref: callbackRef,
             refObject: formRef,
             validate,
+            get form() {
+                return formRef.current;
+            },
             validation,
             fields,
             errors,

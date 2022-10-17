@@ -27,8 +27,8 @@ export default function ReactSelectExample() {
     // Helper state for react-select
     const [values, setValues] = useState<string[]>(["CT"]);
 
-    // React does not seem to support <form onFormData /> se
-    // we need to workaround with a effect zo.form ref
+    // React does not seem to support <form onFormData /> so
+    // we need to workaround with an effect zo.form ref
     useEffect(() => {
         const form = zo.form;
 

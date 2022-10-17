@@ -45,7 +45,8 @@ pnpm run playwright-test --headed
 
 ## Packaging
 
-You need to run fork Zorm in your project you can build and package it:
+If you need to run fork of Zorm in your project you can build and package it
+with:
 
 ```
 cd packages/react-zorm

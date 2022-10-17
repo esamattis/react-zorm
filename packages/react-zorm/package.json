@@ -19,7 +19,6 @@
     "url": "https://github.com/esamattis/react-zorm/"
   },
   "scripts": {
-    "esbuild": "rm -rf out && esbuild --bundle src/index.tsx --outdir=out --target=es2021 '--external:./node_modules/*' --platform=node --minify && gzip out/index.js && ls -lh out/index.js.gz",
     "build": "run-p 'build:*'",
     "build:tsc": "tsc -p tsconfig.build.json",
     "build:vite": "vite build",

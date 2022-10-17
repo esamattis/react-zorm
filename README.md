@@ -427,7 +427,8 @@ Zod schema to parse the form with.
 
 #### return `Zorm`
 
--   `ref`: HTMLFormElement ref for the `<form>` element
+-   `ref`: A callback ref for the `<form>` element
+-   `form`: The current form element set by the callback ref
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
     [`safeParse()`][safeparse]

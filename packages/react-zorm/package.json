@@ -25,6 +25,7 @@
     "publish-build": "cp ../../README.md . && pnpm run build",
     "watch": "tsc -w -p tsconfig.build.json",
     "eslint": "eslint --max-warnings 0 \"src/**/*.ts\" \"src/**/*.tsx\" \"e2e/**/*.tsx\"  \"e2e/**/*.ts\" \"__tests__/**/*.tsx\"  \"__tests__/**/*.ts\"",
+    "dev": "run-p 'dev:*'",
     "dev:vite": "vite",
     "playwright-test": "playwright test",
     "jest": "jest",

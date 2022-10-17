@@ -30,6 +30,7 @@ importers:
       react-zorm: workspace:*
       typescript: 4.5.5
       vite: ^3.1.6
+      vite-plugin-list-directory-contents: ^1.1.1
       zod: 3.19.1
     devDependencies:
       '@types/react': 18.0.21
@@ -43,6 +44,7 @@ importers:
       react-zorm: link:../react-zorm
       typescript: 4.5.5
       vite: 3.1.8
+      vite-plugin-list-directory-contents: 1.1.1
       zod: 3.19.1
 
   packages/react-zorm:
@@ -10746,6 +10748,17 @@ packages:
       is-buffer: 2.0.5
       unist-util-stringify-position: 3.0.2
       vfile-message: 3.1.2
+    dev: true
+
+  /vite-plugin-list-directory-contents/1.1.1:
+    resolution: {integrity: sha512-ai6dLytYTYhQu0M3Kfo0KcFEJpWVUiB0tDyQsG9IlLzmfndrUL0N+wGvcIYOHyOo8rW7rMk/8zUybv2nd6TLUQ==}
+    dependencies:
+      vite: 3.1.8
+    transitivePeerDependencies:
+      - less
+      - sass
+      - stylus
+      - terser
     dev: true
 
   /vite/3.1.8:

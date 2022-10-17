@@ -21,7 +21,10 @@ importers:
     specifiers:
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
+      '@typescript-eslint/parser': 5.40.0
       '@vitejs/plugin-react': ^2.1.0
+      eslint: ^8.25.0
+      eslint-plugin-react-hooks: 4.6.0
       prettier: 2.5.1
       react: 18.2.0
       react-dom: 18.2.0
@@ -35,7 +38,10 @@ importers:
     devDependencies:
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
+      '@typescript-eslint/parser': 5.40.0_xvcshhxeosngsn5bmcucl2prs4
       '@vitejs/plugin-react': 2.1.0_vite@3.1.8
+      eslint: 8.25.0
+      eslint-plugin-react-hooks: 4.6.0_eslint@8.25.0
       prettier: 2.5.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0

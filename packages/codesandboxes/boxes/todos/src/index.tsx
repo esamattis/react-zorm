@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom";
+import { createRoot } from "react-dom/client";
 import React from "react";
 
 import App from "./App";
@@ -8,4 +8,4 @@ if (!rootElement) {
     throw new Error("No root element found");
 }
 const root = createRoot(rootElement);
-root.render(<App />, rootElement);
+root.render(<App />);

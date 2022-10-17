@@ -56,7 +56,7 @@ export default function ReactSelectExample() {
         return () => {
             form.removeEventListener("formdata", onFormData);
         };
-    }, [values]);
+    }, [values, zo.fields]);
 
     const disabled = zo.validation?.success === false;
 

@@ -1,3 +1,12 @@
+## v0.6.1
+
+2022-10-17
+
+-   Add zo.form property and deprecate refObject [9f51496](https://github.com/esamattis/react-zorm/commit/9f51496) - Esa-Matti Suuronen
+    -   The refObject was never documented to be a public
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.6.0...react-zorm/v0.6.1
+
 ## v0.6.0
 
 2022-10-16

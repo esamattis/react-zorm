@@ -22,7 +22,25 @@ cd packages/react-zorm
 pnpm test
 ```
 
-Hack around? Write tests and send you PR!
+Playwright tests
 
+```
+cd packages/react-zorm
+pnpm run playwright-test
+```
+
+To manually debug playwright tests start the script script
+
+```
+pnpm run dev
+```
+
+And run playwright as headed:
+
+```
+pnpm run playwright-test --headed
+```
+
+Hack around? Write tests and send you PR!
 
 [pnpm]: https://pnpm.io/

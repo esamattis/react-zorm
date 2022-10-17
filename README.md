@@ -11,7 +11,9 @@ Features / opinions
     -   And still type-safe!
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   Via FormData ([Remix](https://remix.run/)! 💜) and JSON
--   👍 Tiny: Less than 3kb (minified & gzipped, not including Zod)
+-   👍 Tiny: Less than 3kb (minified & gzipped)
+    -   Tree shakes to be even smaller!
+    -   No dependencies, only peer deps for React and Zod
 -   🛑 No controlled inputs required
     -   🚀 As performant as React form libraries can get!
     -   You can still use your own controlled inputs if needed

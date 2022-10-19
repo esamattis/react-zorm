@@ -14,12 +14,12 @@ Features / opinions
     -   Eg. works with any JavaScript backend or framework
     -   Remix, Next.js, Express, Node.js, CF Workers, Deno etc.
 -   📦 Tiny: Less than 3kb (minified & gzipped)
-    -   Tree shakes to be even smaller!
-    -   No dependencies, only peer deps for React and Zod
+    -   🌳 Tree shakes to be even smaller!
+    -   🤷 No dependencies, only peer deps for React and Zod
 -   🛑 No controlled inputs required
     -   🚀 As performant as React form libraries can get!
 -   🛑 No internal form state
-    -   The form is validated directly from the `<form>` DOM element
+    -   ☝️ The form is validated directly from the `<form>` DOM element
 -   🛑 No components, just a React hook
 
     

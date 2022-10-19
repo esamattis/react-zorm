@@ -13,17 +13,16 @@ Features / opinions
     -   With [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) or JSON
     -   Eg. works with any JavaScript backend or framework
     -   Remix, Next.js, Express, Node.js, CF Workers, Deno etc.
--   👍 Tiny: Less than 3kb (minified & gzipped)
+-   📦 Tiny: Less than 3kb (minified & gzipped)
     -   Tree shakes to be even smaller!
     -   No dependencies, only peer deps for React and Zod
 -   🛑 No controlled inputs required
     -   🚀 As performant as React form libraries can get!
-    -   You can still use your own controlled inputs if needed
--   🛑 No components, just a React hook
-    -   🧳 Bring your own UI!
 -   🛑 No internal form state
     -   The form is validated directly from the `<form>` DOM element
+-   🛑 No components, just a React hook
 
+    
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊
 

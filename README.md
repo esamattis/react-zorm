@@ -11,6 +11,8 @@ Features / opinions
     -   And still type-safe!
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   Via FormData ([Remix](https://remix.run/)! 💜) and JSON
+    -   Eg. works with any JavaScript backend and framework
+    -   Remix, Next.js, Express, Node.js, CF Workers, Deno etc.
 -   👍 Tiny: Less than 3kb (minified & gzipped)
     -   Tree shakes to be even smaller!
     -   No dependencies, only peer deps for React and Zod

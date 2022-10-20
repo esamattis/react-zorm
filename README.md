@@ -16,10 +16,9 @@ Features / opinions
 -   📦 Tiny: Less than 3kb (minified & gzipped)
     -   🌳 Tree shakes to be even smaller!
     -   🤷 No dependencies, only peer deps for React and Zod
--   🛑 No controlled inputs required
-    -   🚀 As performant as React form libraries can get!
--   🛑 No internal form state
+-   🛑 No controlled inputs or context providers required
     -   ☝️ The form is validated directly from the `<form>` DOM element
+    -   🚀 As performant as React form libraries can get!
 -   🛑 No components, just a React hook
 
     

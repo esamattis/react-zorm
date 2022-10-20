@@ -19,7 +19,6 @@ Features / opinions
 -   🛑 No controlled inputs or context providers required
     -   ☝️ The form is validated directly from the `<form>` DOM element
     -   🚀 As performant as React form libraries can get!
--   🛑 No components, just a React hook
 
     
 If you enjoy this lib a Twitter shout-out

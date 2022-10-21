@@ -11,7 +11,7 @@ Features / opinions
     -   And still type-safe!
 -   ✅ Validation on the client [and the server](#server-side-validation)
     -   With [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) or JSON
-    -   Eg. works with any JavaScript backend or framework
+    -   Eg. works with any JavaScript backend
     -   Remix, Next.js, Express, Node.js, CF Workers, Deno etc.
 -   📦 Tiny: Less than 3kb (minified & gzipped)
     -   🌳 Tree shakes to be even smaller!

@@ -20,7 +20,6 @@ Features / opinions
     -   ☝️ The form is validated directly from the `<form>` DOM element
     -   🚀 As performant as React form libraries can get!
 
-    
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊
 
@@ -322,6 +321,15 @@ Here's a [Codesandbox example](https://codesandbox.io/s/github/esamattis/react-z
 ### How to validate dependent fields like password confirm?
 
 See <https://twitter.com/esamatti/status/1488553690613039108>
+
+### How to translate form error messages to other languages?
+
+Use the `ZodIssue`'s `.code` properties to render corresponding error messages
+based on the current language instead of just rendering the `.message`.
+
+See this Codesandbox example:
+
+<https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/internalization?file=/src/App.tsx>
 
 ### How to use checkboxes?
 

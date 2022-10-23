@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import React, { useState } from "react";
-import { z } from "zod";
+import { z, ZodIssue } from "zod";
 
 import { useZorm } from "../src";
 import { assertNotAny } from "./test-helpers";
@@ -615,6 +615,17 @@ test("normal issues are rendered first", () => {
                 <input name={zo.fields.thing()} />
 
                 {zo.errors.thing((e) => {
+                    // e is a ZodIssue
+                    e.code;
+                    e.path;
+                    e.message;
+
+                    // @ts-expect-error
+                    e.bad;
+
+                    // @ts-expect-error
+                    const _bad: number = e.code;
+
                     return <div data-testid="error">{e.message}</div>;
                 })}
             </form>

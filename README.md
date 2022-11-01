@@ -23,6 +23,9 @@ Features / opinions
 If you enjoy this lib a Twitter shout-out
 [@esamatti](https://twitter.com/esamatti) is always welcome! 😊
 
+You can also checkout my [talk at React Findland 2022](https://www.youtube.com/watch?v=tCyOdW4D6b8). [Slides](https://docs.google.com/presentation/d/1PEjVuK1vfV_VfJtSnYNHdTUExEUrAURTDALFZZCU2DU/edit?usp=sharing).
+
+
 ## Install
 
 ```

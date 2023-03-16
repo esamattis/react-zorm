@@ -878,3 +878,29 @@ test("can bound to lazily created form", () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
+
+test.skip("[TYPE ONLY] can narrow validation type to success", () => {
+    const Schema = z.object({
+        thing: z.string(),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        const customValidation = zo.validate();
+
+        if (customValidation.success) {
+            customValidation.data.thing;
+
+            // @ts-expect-error
+            customValidation.data.bad;
+        }
+
+        if (zo.validation?.success) {
+            zo.validation.data.thing;
+
+            // @ts-expect-error
+            zo.validation.data.bad;
+        }
+    }
+});

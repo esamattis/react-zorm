@@ -1,3 +1,11 @@
+## v0.6.2
+
+2023-03-17
+
+-   Fix validation narrowing #33 [9b9e116](https://github.com/esamattis/react-zorm/commit/9b9e116) - Esa-Matti Suuronen
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.6.1...react-zorm/v0.6.2
+
 ## v0.6.1
 
 2022-10-17

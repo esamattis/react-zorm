@@ -2,7 +2,7 @@
 
 2023-03-25
 
--   Add File value support [0504863](https://github.com/esamattis/react-zorm/commit/0504863) - Esa-Matti Suuronen
+-   Add file input support [0504863](https://github.com/esamattis/react-zorm/commit/0504863) - Esa-Matti Suuronen
     -   Eg. you can now use `z.instanceof(File)` as a form field type
     -   See https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/file?file=/src/App.tsx
 -   Upgrade majors [426aff8](https://github.com/esamattis/react-zorm/commit/426aff8) - Esa-Matti Suuronen

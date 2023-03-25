@@ -5,10 +5,10 @@ import { useZorm } from "react-zorm";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z
+    password: z
         .string()
-        .regex(/^[0-9]+$/)
-        .transform(Number),
+        .min(10)
+        .refine((pw) => /[0-9]/.test(pw), "Password must contain a number"),
 });
 
 function ErrorMessage(props: { message: string }) {
@@ -35,14 +35,14 @@ export default function Signup() {
             {zo.errors.name((e) => (
                 <ErrorMessage message={e.message} />
             ))}
-            Age
+            Password:
             <input
-                type="text"
-                name={zo.fields.age()}
-                className={zo.errors.age("errored")}
+                type="password"
+                name={zo.fields.password()}
+                className={zo.errors.password("errored")}
             />
-            {zo.errors.age((e) => (
-                <ErrorMessage message="Age must a number" />
+            {zo.errors.password((e) => (
+                <ErrorMessage message={e.message} />
             ))}
             <button disabled={disabled} type="submit">
                 Signup!

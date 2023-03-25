@@ -1,3 +1,15 @@
+## v0.7.0
+
+2023-03-25
+
+-   Add File value support [0504863](https://github.com/esamattis/react-zorm/commit/0504863) - Esa-Matti Suuronen
+    -   Eg. you can now use `z.instanceof(File)` as a form field type
+    -   See https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/file?file=/src/App.tsx
+-   Upgrade majors [426aff8](https://github.com/esamattis/react-zorm/commit/426aff8) - Esa-Matti Suuronen
+-   Upgrade deps [bc1ad8c](https://github.com/esamattis/react-zorm/commit/bc1ad8c) - Esa-Matti Suuronen
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.6.2...react-zorm/v0.7.0
+
 ## v0.6.2
 
 2023-03-17

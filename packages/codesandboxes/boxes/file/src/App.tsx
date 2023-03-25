@@ -15,9 +15,9 @@ const FormSchema = z.object({
     image: z
         .instanceof(File)
         .refine((file) => file.name !== undefined, "Please upload an image.")
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+        .refine((file) => file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
         .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+            (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
             "Only .jpg, .jpeg, .png and .webp formats are supported.",
         ),
 });

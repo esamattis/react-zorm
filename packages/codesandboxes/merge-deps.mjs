@@ -8,7 +8,7 @@ Object.assign(pkg.dependencies, {
     "@types/react-dom": "18.0.6",
     react: "18.2.0",
     "react-dom": "18.2.0",
-    "react-zorm": "0.6.2-dev.b4c59ede5e",
+    "react-zorm": "0.7.0",
     zod: "3.21.4",
 });
 

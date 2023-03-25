@@ -8,6 +8,49 @@ import { useZorm } from "../src";
 import { assertNotAny } from "./test-helpers";
 import { createCustomIssues } from "../src/chains";
 
+/**
+ * For https://github.com/testing-library/user-event/pull/1109
+ */
+class WorkaroundFormData extends FormData {
+    #formRef?: HTMLFormElement;
+    constructor(...args: ConstructorParameters<typeof FormData>) {
+        super(...args);
+        this.#formRef = args[0];
+    }
+
+    // React Zorm only uses entries() so this is the only method we need to patch
+    override *entries() {
+        for (const [name, value] of super.entries()) {
+            const entry: [string, FormDataEntryValue] = [name, value];
+
+            if (value instanceof File && this.#formRef) {
+                const input = this.#formRef.querySelector(
+                    `input[name="${name}"]`,
+                );
+
+                if (input instanceof HTMLInputElement) {
+                    const realFile = input?.files?.[0];
+                    if (realFile) {
+                        entry[1] = realFile;
+                    }
+                }
+            }
+
+            yield entry;
+        }
+    }
+}
+
+const OrigFormData = globalThis.FormData;
+
+beforeAll(() => {
+    globalThis.FormData = WorkaroundFormData;
+});
+
+afterAll(() => {
+    globalThis.FormData = OrigFormData;
+});
+
 test("single field validation", () => {
     const Schema = z.object({
         thing: z.string().min(1),

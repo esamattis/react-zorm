@@ -25,7 +25,6 @@ If you enjoy this lib a Twitter shout-out
 
 You can also checkout my [talk at React Finland 2022](https://www.youtube.com/watch?v=tCyOdW4D6b8). [Slides](https://docs.google.com/presentation/d/1PEjVuK1vfV_VfJtSnYNHdTUExEUrAURTDALFZZCU2DU/edit?usp=sharing).
 
-
 ## Install
 
 ```
@@ -42,10 +41,10 @@ import { useZorm } from "react-zorm";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z
+    password: z
         .string()
-        .regex(/^[0-9]+$/)
-        .transform(Number),
+        .min(10)
+        .refine((pw) => /[0-9]/.test(pw), "Password must contain a number"),
 });
 
 function Signup() {
@@ -68,14 +67,14 @@ function Signup() {
             {zo.errors.name((e) => (
                 <ErrorMessage message={e.message} />
             ))}
-            Age
+            Password:
             <input
-                type="text"
-                name={zo.fields.age()}
-                className={zo.errors.age("errored")}
+                type="password"
+                name={zo.fields.password()}
+                className={zo.errors.password("errored")}
             />
-            {zo.errors.age((e) => (
-                <ErrorMessage message="Age must a number" />
+            {zo.errors.password((e) => (
+                <ErrorMessage message={e.message} />
             ))}
             <button disabled={disabled} type="submit">
                 Signup!
@@ -407,6 +406,17 @@ return formPost.isLoading ? "Sending..." : null;
 ```
 
 [react-query]: https://react-query.tanstack.com/
+
+### How to upload and validate files?
+
+Use `z.instanceof(File)` for the file input type. See [this
+Codesandox](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/file?file=/src/App.tsx:290-317)
+for an example.
+
+Native forms support files as is but if you need to POST as JSON you can turn
+the file to a base64 for example. See
+[`FileReader.readAsDataURL()`](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL).
+Or just post the file separately.
 
 ## API
 

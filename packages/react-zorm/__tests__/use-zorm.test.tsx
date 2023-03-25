@@ -904,3 +904,105 @@ test.skip("[TYPE ONLY] can narrow validation type to success", () => {
         }
     }
 });
+
+test("can validate files", async () => {
+    const spy = jest.fn();
+
+    const Schema = z.object({
+        myFile: z.instanceof(File).refine((file) => {
+            spy(file.type);
+            return file.type === "image/png";
+        }, "Only .png images are allowed"),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input
+                    data-testid="file"
+                    type="file"
+                    name={zo.fields.myFile()}
+                />
+
+                {zo.errors.myFile((e) => (
+                    <div data-testid="error">{e.message}</div>
+                ))}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    const file = new File(["(⌐□_□)"], "chucknorris.txt", {
+        type: "text/plain",
+    });
+
+    const fileInput = screen.getByTestId("file") as HTMLInputElement;
+    await userEvent.upload(fileInput, file);
+    fireEvent.submit(screen.getByTestId("form"));
+
+    {
+        // TEMP TESTS
+        const form = screen.getByTestId("form") as HTMLFormElement;
+        expect(fileInput.files?.[0]?.name).toBe("chucknorris.txt");
+        const formData = new FormData(form);
+        expect(formData.get("myFile")).toBeInstanceOf(File);
+        const formFile = formData.get("myFile") as File;
+
+        // XXX Bug in jsdom or react testing lib?
+        // FormData cannot read file from the form.
+        expect(formFile.name).toBe("chucknorris.txt");
+    }
+
+    expect(spy).toHaveBeenCalledWith("text/plain");
+
+    expect(screen.queryByTestId("error")).toHaveTextContent(
+        "Only .png images are allowed",
+    );
+});
+
+test("can submit files", async () => {
+    const spy = jest.fn();
+
+    const Schema = z.object({
+        myFile: z.instanceof(File).refine((file) => {
+            return file.type === "image/png";
+        }, "Only .png images are allowed"),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema, {
+            onValidSubmit(e) {
+                spy(e.data.myFile.name);
+            },
+        });
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input
+                    data-testid="file"
+                    type="file"
+                    name={zo.fields.myFile()}
+                />
+
+                {zo.errors.myFile((e) => (
+                    <div data-testid="error">{e.message}</div>
+                ))}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    const file = new File(["(⌐□_□)"], "chucknorris.png", {
+        type: "image/png",
+    });
+
+    const fileInput = screen.getByTestId("file") as HTMLInputElement;
+    await userEvent.upload(fileInput, file);
+    fireEvent.submit(screen.getByTestId("form"));
+
+    expect(spy).toHaveBeenCalledWith("text/plain");
+});

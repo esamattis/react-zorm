@@ -155,6 +155,22 @@ describe("with any", () => {
             things: [undefined, { ding: "dong" }],
         });
     });
+
+    test("can handle files ", () => {
+        const form = new FormData();
+        const file = new File(["(⌐□_□)"], "chucknorris.txt", {
+            type: "text/plain",
+        });
+        form.append("myFile", file);
+
+        const res = parseFormAny(form);
+
+        expect(res).toEqual({
+            myFile: file,
+        });
+
+        expect(res.myFile).toBe(file);
+    });
 });
 
 describe("combine chains with parsing", () => {

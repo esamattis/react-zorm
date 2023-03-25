@@ -407,6 +407,17 @@ return formPost.isLoading ? "Sending..." : null;
 
 [react-query]: https://react-query.tanstack.com/
 
+### How to upload and validate files?
+
+Use `z.instanceof(File)` for the file input type. See [this
+Codesandox](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/file?file=/src/App.tsx:290-317)
+for an example.
+
+Native forms support files as is but if you need to POST as JSON you can turn
+the file to a base64 for example. See
+[`FileReader.readAsDataURL()`](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL).
+Or just post the file separately.
+
 ## API
 
 Tools available for importing from `"react-zorm"`

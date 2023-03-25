@@ -906,11 +906,11 @@ test.skip("[TYPE ONLY] can narrow validation type to success", () => {
 });
 
 test("can validate files", async () => {
-    const spy = jest.fn();
+    const refineSpy = jest.fn();
 
     const Schema = z.object({
         myFile: z.instanceof(File).refine((file) => {
-            spy(file.type);
+            refineSpy(file.type);
             return file.type === "image/png";
         }, "Only .png images are allowed"),
     });
@@ -943,20 +943,7 @@ test("can validate files", async () => {
     await userEvent.upload(fileInput, file);
     fireEvent.submit(screen.getByTestId("form"));
 
-    {
-        // TEMP TESTS
-        const form = screen.getByTestId("form") as HTMLFormElement;
-        expect(fileInput.files?.[0]?.name).toBe("chucknorris.txt");
-        const formData = new FormData(form);
-        expect(formData.get("myFile")).toBeInstanceOf(File);
-        const formFile = formData.get("myFile") as File;
-
-        // XXX Bug in jsdom or react testing lib?
-        // FormData cannot read file from the form.
-        expect(formFile.name).toBe("chucknorris.txt");
-    }
-
-    expect(spy).toHaveBeenCalledWith("text/plain");
+    expect(refineSpy).toHaveBeenCalledWith("text/plain");
 
     expect(screen.queryByTestId("error")).toHaveTextContent(
         "Only .png images are allowed",
@@ -964,7 +951,7 @@ test("can validate files", async () => {
 });
 
 test("can submit files", async () => {
-    const spy = jest.fn();
+    const submitSpy = jest.fn();
 
     const Schema = z.object({
         myFile: z.instanceof(File).refine((file) => {
@@ -975,7 +962,7 @@ test("can submit files", async () => {
     function Test() {
         const zo = useZorm("form", Schema, {
             onValidSubmit(e) {
-                spy(e.data.myFile.name);
+                submitSpy(e.data.myFile.name);
             },
         });
 
@@ -1004,5 +991,5 @@ test("can submit files", async () => {
     await userEvent.upload(fileInput, file);
     fireEvent.submit(screen.getByTestId("form"));
 
-    expect(spy).toHaveBeenCalledWith("text/plain");
+    expect(submitSpy).toHaveBeenCalledWith("chucknorris.png");
 });

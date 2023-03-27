@@ -6,8 +6,8 @@ export interface InputProps {
     required?: boolean;
     min?: number;
     max?: number;
-    minlength?: number;
-    maxlength?: number;
+    minLength?: number;
+    maxLength?: number;
     pattern?: string;
     [key: string]: any;
 }
@@ -30,11 +30,11 @@ function stringCheckProps(type: z.ZodString) {
 
     for (const check of checks) {
         if (check.kind === "min") {
-            props.minlength = check.value;
+            props.minLength = check.value;
         }
 
         if (check.kind === "max") {
-            props.maxlength = check.value;
+            props.maxLength = check.value;
         }
 
         if (check.kind === "regex") {

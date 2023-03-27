@@ -41,6 +41,10 @@ function stringCheckProps(type: z.ZodString) {
             props.pattern = check.regex.toString().slice(1, -1);
         }
 
+        if (check.kind === "email") {
+            props.type = "email";
+        }
+
         // TODO the rest...
     }
 
@@ -77,6 +81,11 @@ function collectProps(
 
     type = removeZodEffects(type);
 
+    if (type instanceof z.ZodDefault) {
+        props.defaultValue = type._def.defaultValue();
+        return collectProps(type._def.innerType, props);
+    }
+
     if (type instanceof z.ZodOptional) {
         props.required = false;
     }
@@ -106,12 +115,14 @@ export function inputProps(field: {
     name: string;
     type: z.ZodType;
 }): InputProps {
-    const type = removeZodEffects(field.type);
+    if (field.name === "age") {
+        console.log(field.type);
+    }
 
     const props: InputProps = {
         type: "text",
         required: true,
-        ...collectProps(type),
+        ...collectProps(field.type),
         name: field.name,
     };
 

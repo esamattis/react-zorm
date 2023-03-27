@@ -6,7 +6,8 @@ import { inputProps } from "./input-props";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z.coerce.number().min(6).optional(),
+    age: z.coerce.number().min(6).optional().default(18),
+    email: z.string().email().optional(),
     password: z
         .string()
         .min(10)
@@ -28,34 +29,55 @@ export default function Signup() {
 
     return (
         <form ref={zo.ref}>
-            Name:
-            <input
-                {...zo.fields.name(inputProps)}
-                className={zo.errors.age("errored")}
-            />
-            {zo.errors.name((e) => (
-                <ErrorMessage message={e.message} />
-            ))}
-            <pre>Props {pretty(zo.fields.name(inputProps))}</pre>
-            Age:
-            <input
-                {...zo.fields.age(inputProps)}
-                className={zo.errors.age("errored")}
-            />
-            {zo.errors.age((e) => (
-                <ErrorMessage message={e.message} />
-            ))}
-            <pre>Props {pretty(zo.fields.age(inputProps))}</pre>
-            Password:
-            <input
-                {...zo.fields.password(inputProps)}
-                type="password"
-                className={zo.errors.password("errored")}
-            />
-            {zo.errors.password((e) => (
-                <ErrorMessage message={e.message} />
-            ))}
-            <pre>Props {pretty(zo.fields.password(inputProps))}</pre>
+            <>
+                Name:
+                <input
+                    {...zo.fields.name(inputProps)}
+                    className={zo.errors.age("errored")}
+                />
+                {zo.errors.name((e) => (
+                    <ErrorMessage message={e.message} />
+                ))}
+                <pre>Props {pretty(zo.fields.name(inputProps))}</pre>
+            </>
+
+            <>
+                email:
+                <input
+                    {...zo.fields.email(inputProps)}
+                    className={zo.errors.email("errored")}
+                />
+                {zo.errors.email((e) => (
+                    <ErrorMessage message={e.message} />
+                ))}
+                <pre>Props {pretty(zo.fields.email(inputProps))}</pre>
+            </>
+
+            <>
+                Age:
+                <input
+                    {...zo.fields.age(inputProps)}
+                    className={zo.errors.age("errored")}
+                />
+                {zo.errors.age((e) => (
+                    <ErrorMessage message={e.message} />
+                ))}
+                <pre>Props {pretty(zo.fields.age(inputProps))}</pre>
+            </>
+
+            <>
+                Password:
+                <input
+                    {...zo.fields.password(inputProps)}
+                    type="password"
+                    className={zo.errors.password("errored")}
+                />
+                {zo.errors.password((e) => (
+                    <ErrorMessage message={e.message} />
+                ))}
+                <pre>Props {pretty(zo.fields.password(inputProps))}</pre>
+            </>
+
             <button disabled={disabled} type="submit">
                 Signup!
             </button>

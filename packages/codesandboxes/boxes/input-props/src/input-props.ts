@@ -83,21 +83,13 @@ function collectProps(
 
     if (type instanceof z.ZodDefault) {
         props.defaultValue = type._def.defaultValue();
-    }
-
-    if (type instanceof z.ZodOptional) {
+    } else if (type instanceof z.ZodOptional) {
         props.required = false;
-    }
-
-    if (type instanceof z.ZodNullable) {
+    } else if (type instanceof z.ZodNullable) {
         props.required = false;
-    }
-
-    if (type instanceof z.ZodString) {
+    } else if (type instanceof z.ZodString) {
         Object.assign(props, stringCheckProps(type));
-    }
-
-    if (type instanceof z.ZodNumber) {
+    } else if (type instanceof z.ZodNumber) {
         Object.assign(props, numberCheckProps(type));
     }
 

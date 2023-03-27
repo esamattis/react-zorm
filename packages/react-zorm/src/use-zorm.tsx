@@ -99,6 +99,11 @@ export function useZorm<Schema extends ZodType<any>>(
         [getForm, validate],
     );
 
+    const invalidHandler = useCallback(() => {
+        submittedOnceRef.current = true;
+        validate();
+    }, [validate]);
+
     const callbackRef = useCallback(
         (form: HTMLFormElement | null) => {
             if (form !== formRef.current) {
@@ -111,16 +116,32 @@ export function useZorm<Schema extends ZodType<any>>(
                         "submit",
                         submitHandler,
                     );
+                    formRef.current.removeEventListener(
+                        "invalid",
+                        invalidHandler,
+                    );
                 }
 
                 if (form && options?.setupListeners !== false) {
                     form.addEventListener("change", changeHandler);
                     form.addEventListener("submit", submitHandler);
+
+                    // The form does not submit when it is invalid due to html5
+                    // attributes (ex. required, min, max, etc.). So detect
+                    // invalid form state with the "invalid" event and run our
+                    // own validation on it too.
+                    form.addEventListener(
+                        "invalid",
+                        invalidHandler,
+                        // "invalid" event does not bubble so listen on capture
+                        // phase by setting capture to true
+                        true,
+                    );
                 }
                 formRef.current = form ?? undefined;
             }
         },
-        [changeHandler, options?.setupListeners, submitHandler],
+        [changeHandler, options?.setupListeners, submitHandler, invalidHandler],
     );
 
     return useMemo(() => {

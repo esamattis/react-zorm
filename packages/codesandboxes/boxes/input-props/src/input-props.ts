@@ -83,7 +83,6 @@ function collectProps(
 
     if (type instanceof z.ZodDefault) {
         props.defaultValue = type._def.defaultValue();
-        return collectProps(type._def.innerType, props);
     }
 
     if (type instanceof z.ZodOptional) {

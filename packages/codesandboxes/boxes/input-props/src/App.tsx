@@ -6,11 +6,11 @@ import { inputProps } from "./input-props";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z.number().min(6).optional(),
+    age: z.coerce.number().min(6).optional(),
     password: z
         .string()
         .min(10)
-        .regex(/[a-z0-9]/, "Passwords must match [a-z0-9]"),
+        .regex(/^[a-z0-9]+$/, "Passwords must match [a-z0-9]"),
 });
 
 function ErrorMessage(props: { message: string }) {
@@ -31,7 +31,7 @@ export default function Signup() {
             Name:
             <input
                 {...zo.fields.name(inputProps)}
-                className={zo.errors.name("errored")}
+                className={zo.errors.age("errored")}
             />
             {zo.errors.name((e) => (
                 <ErrorMessage message={e.message} />

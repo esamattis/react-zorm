@@ -38,7 +38,7 @@ function stringCheckProps(type: z.ZodString) {
         }
 
         if (check.kind === "regex") {
-            props.pattern = check.regex.toString();
+            props.pattern = check.regex.toString().slice(1, -1);
         }
 
         // TODO the rest...

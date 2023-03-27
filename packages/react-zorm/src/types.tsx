@@ -15,22 +15,24 @@ export interface ZormError {
 /**
  * Something like Zod schema
  */
-export interface GenericSchema {
-    parse: (arg: any) => any;
-    safeParse: (arg: any) => any;
-}
+// export interface GenericSchema {
+//     parse: (arg: any) => any;
+//     safeParse: (arg: any) => any;
+// }
+
+export type GenericSchema = ZodType;
 
 export type FieldGetter = <
     Arg extends
         | undefined
         | "id"
         | "name"
-        | ((props: { name: string; id: string }) => any),
+        | ((props: { name: string; id: string; type: ZodType }) => any),
 >(
     arg?: Arg,
 ) => undefined extends Arg
     ? string
-    : Arg extends (props: { name: string; id: string }) => any
+    : Arg extends (props: { name: string; id: string; type: ZodType }) => any
     ? ReturnType<Arg>
     : string;
 

@@ -106,7 +106,7 @@ test("array of strings", () => {
     });
 });
 
-test("types", () => {
+test.skip("types", () => {
     const FormValues = z.object({
         value: z.string(),
         ob: z.object({

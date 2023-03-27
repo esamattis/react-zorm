@@ -6,6 +6,8 @@ export interface InputProps {
     required?: boolean;
     min?: number;
     max?: number;
+    minlength?: number;
+    maxlength?: number;
     pattern?: string;
     [key: string]: any;
 }
@@ -19,10 +21,6 @@ function removeZodEffects(type: z.ZodType): z.ZodType {
     return type;
 }
 
-function unwrapZodType(type: z.ZodType): z.ZodType {
-    return type;
-}
-
 function stringCheckProps(type: z.ZodString) {
     const checks = type._def.checks;
 
@@ -32,11 +30,11 @@ function stringCheckProps(type: z.ZodString) {
 
     for (const check of checks) {
         if (check.kind === "min") {
-            props.min = check.value;
+            props.minlength = check.value;
         }
 
         if (check.kind === "max") {
-            props.max = check.value;
+            props.maxlength = check.value;
         }
 
         if (check.kind === "regex") {

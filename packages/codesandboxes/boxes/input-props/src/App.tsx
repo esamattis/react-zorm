@@ -6,8 +6,9 @@ import { inputProps } from "./input-props";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z.coerce.number().min(6).optional().default(18),
+    age: z.coerce.number().int().min(0).optional().default(18),
     email: z.string().email().optional(),
+    date: z.date(),
     password: z
         .string()
         .min(10)
@@ -33,7 +34,7 @@ export default function Signup() {
                 Name:
                 <input
                     {...zo.fields.name(inputProps)}
-                    className={zo.errors.age("errored")}
+                    className={zo.errors.name("errored")}
                 />
                 {zo.errors.name((e) => (
                     <ErrorMessage message={e.message} />
@@ -51,6 +52,18 @@ export default function Signup() {
                     <ErrorMessage message={e.message} />
                 ))}
                 <pre>Props {pretty(zo.fields.email(inputProps))}</pre>
+            </>
+
+            <>
+                date:
+                <input
+                    {...zo.fields.date(inputProps)}
+                    className={zo.errors.date("errored")}
+                />
+                {zo.errors.date((e) => (
+                    <ErrorMessage message={e.message} />
+                ))}
+                <pre>Props {pretty(zo.fields.date(inputProps))}</pre>
             </>
 
             <>

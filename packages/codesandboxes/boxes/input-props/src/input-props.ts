@@ -83,9 +83,7 @@ function collectProps(
 
     if (type instanceof z.ZodDefault) {
         props.defaultValue = type._def.defaultValue();
-    } else if (type instanceof z.ZodOptional) {
-        props.required = false;
-    } else if (type instanceof z.ZodNullable) {
+    } else if (type instanceof z.ZodOptional || type instanceof z.ZodNullable) {
         props.required = false;
     } else if (type instanceof z.ZodString) {
         Object.assign(props, stringCheckProps(type));

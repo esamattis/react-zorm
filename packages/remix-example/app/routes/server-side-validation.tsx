@@ -1,13 +1,9 @@
 // This code is live at https://react-zorm.vercel.app/server-side-validation
-import {
-    type ActionFunction,
-    json,
-    Form,
-    useActionData,
-    useTransition,
-} from "remix";
-import { type ZodIssue, z } from "zod";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { z } from "zod";
 import { useZorm, parseForm, createCustomIssues } from "react-zorm";
+import type { ActionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 
 /**
  * Handle checkbox as boolean
@@ -32,28 +28,13 @@ const SignupSchema = z.object({
 });
 
 /**
- * Response type from the Remix Action Function
- */
-interface FormResponse {
-    /**
-     * True when form was succesfully handled
-     */
-    ok: boolean;
-
-    /**
-     * Any server-side only issues
-     */
-    serverIssues?: ZodIssue[];
-}
-
-/**
  * The form route
  */
 export default function ZormFormExample() {
     /**
      * The form response or undefined when the form is not submitted yet
      */
-    const formResponse = useActionData<FormResponse>();
+    const formResponse = useActionData<typeof action>();
 
     const zo = useZorm("signup", SignupSchema, {
         // Pass server issues to Zorm as custom issues. Zorm will handle them
@@ -61,7 +42,7 @@ export default function ZormFormExample() {
         customIssues: formResponse?.serverIssues,
     });
 
-    const submitting = useTransition().state === "submitting";
+    const submitting = useNavigation().state === "submitting";
 
     return (
         <div>
@@ -132,7 +113,7 @@ export default function ZormFormExample() {
     );
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: ActionArgs) {
     // Read the form data and parse it with Zorm's parseForm() helper
     const form = await request.formData();
     const data = parseForm(SignupSchema, form);
@@ -154,7 +135,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     // Respond with the issues if we have any
     if (issues.hasIssues()) {
-        return json<FormResponse>(
+        return json(
             { ok: false, serverIssues: issues.toArray() },
             { status: 400 },
         );
@@ -162,8 +143,8 @@ export const action: ActionFunction = async ({ request }) => {
 
     console.log("Form ok. Saving...");
 
-    return json<FormResponse>({ ok: true });
-};
+    return json({ ok: true, serverIssues: [] });
+}
 
 function Err(props: { children: string }) {
     return <div className="error">{props.children}</div>;

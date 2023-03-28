@@ -23,7 +23,8 @@ export default function ReactSelectExample() {
             alert(JSON.stringify(e.data, null, 2));
         },
         onFormData(e) {
-            // Generate state data on the form:
+            // React Select does not render actual <input> elements so we use
+            // the formdata event to add component state to the form.
             //
             //  [
             //      {code: ...},

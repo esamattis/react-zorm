@@ -1101,6 +1101,12 @@ test("passes all issues to error chain function", async () => {
                     const _: z.ZodIssue = issue;
 
                     {
+                        // not any
+                        // @ts-expect-error
+                        const _: number = issue;
+                    }
+
+                    {
                         //  First issue is always defined
                         // @ts-expect-error
                         const _: typeof issue = undefined;

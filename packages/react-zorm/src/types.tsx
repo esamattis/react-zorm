@@ -27,7 +27,12 @@ export type FieldGetter = <
         | undefined
         | "id"
         | "name"
-        | ((props: { name: string; id: string; type: ZodType }) => any),
+        | ((props: {
+              name: string;
+              id: string;
+              type: ZodType;
+              issues: ZodIssue[];
+          }) => any),
 >(
     arg?: Arg,
 ) => undefined extends Arg

@@ -1036,3 +1036,42 @@ test("can submit files", async () => {
 
     expect(submitSpy).toHaveBeenCalledWith("chucknorris.png");
 });
+
+test("passes all issues to field chain function", async () => {
+    const Schema = z.object({
+        thing: z
+            .string()
+            .refine((v) => v.length >= 10, {
+                message: "must contain at least 10 character(s)",
+            })
+            .refine((v) => !v.includes("@"), {
+                message: "@ is not allowed character",
+            }),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" name={zo.fields.thing()} />
+
+                {zo.fields.thing((f) =>
+                    f.issues.map((e) => (
+                        <div data-testid="error">{e.message}</div>
+                    )),
+                )}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    await userEvent.type(screen.getByTestId("input"), "b@d");
+
+    const form = screen.getByTestId("form");
+    fireEvent.submit(form);
+
+    expect(form).toHaveTextContent("must contain at least 10 character(s)");
+    expect(form).toHaveTextContent("@ is not allowed character");
+});

@@ -12,14 +12,6 @@ export interface ZormError {
     issues: ZodIssue[];
 }
 
-/**
- * Something like Zod schema
- */
-// export interface GenericSchema {
-//     parse: (arg: any) => any;
-//     safeParse: (arg: any) => any;
-// }
-
 export type GenericSchema = ZodType;
 
 export type FieldGetter = <

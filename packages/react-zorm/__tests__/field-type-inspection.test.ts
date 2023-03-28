@@ -125,7 +125,6 @@ test("can read regex", () => {
         throw new Error("Expected ZodString");
     }
 
-    console.log(field._def.checks[0]);
     expect(field._def.checks[0]).toMatchObject({
         kind: "regex",
         regex: /^[a-z]+$/,

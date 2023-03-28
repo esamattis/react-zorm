@@ -14,22 +14,20 @@ export interface ZormError {
 
 export type GenericSchema = ZodType;
 
+export interface GetterProps {
+    name: string;
+    id: string;
+    type: ZodType;
+    issues: ZodIssue[];
+}
+
 export type FieldGetter = <
-    Arg extends
-        | undefined
-        | "id"
-        | "name"
-        | ((props: {
-              name: string;
-              id: string;
-              type: ZodType;
-              issues: ZodIssue[];
-          }) => any),
+    Arg extends undefined | "id" | "name" | ((props: GetterProps) => any),
 >(
     arg?: Arg,
 ) => undefined extends Arg
     ? string
-    : Arg extends (props: { name: string; id: string; type: ZodType }) => any
+    : Arg extends (props: GetterProps) => any
     ? ReturnType<Arg>
     : string;
 

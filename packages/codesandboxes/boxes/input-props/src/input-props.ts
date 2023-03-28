@@ -136,10 +136,6 @@ export function inputProps(field: {
     name: string;
     type: z.ZodType;
 }): InputProps {
-    if (field.name === "age") {
-        console.log(field.type);
-    }
-
     const props: InputProps = {
         type: "text",
         required: true,

@@ -6,10 +6,10 @@ import { inputProps } from "./input-props";
 
 const FormSchema = z.object({
     name: z.string().min(1),
-    age: z.coerce.number().int().min(0).optional().default(18),
+    integer: z.coerce.number().int().min(0).optional().default(18),
     float: z.coerce.number().step(0.1).default(0.1),
     email: z.string().email().optional(),
-    date: z.date(),
+    date: z.coerce.date(),
     password: z
         .string()
         .min(10)
@@ -68,15 +68,15 @@ export default function Signup() {
             </>
 
             <>
-                Age:
+                Integer:
                 <input
-                    {...zo.fields.age(inputProps)}
-                    className={zo.errors.age("errored")}
+                    {...zo.fields.integer(inputProps)}
+                    className={zo.errors.integer("errored")}
                 />
-                {zo.errors.age((e) => (
+                {zo.errors.integer((e) => (
                     <ErrorMessage message={e.message} />
                 ))}
-                <pre>Props {pretty(zo.fields.age(inputProps))}</pre>
+                <pre>Props {pretty(zo.fields.integer(inputProps))}</pre>
             </>
 
             <>

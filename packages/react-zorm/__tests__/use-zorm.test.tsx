@@ -1097,6 +1097,30 @@ test("passes all issues to error chain function", async () => {
             <form ref={zo.ref} data-testid="form">
                 <input data-testid="input" name={zo.fields.thing()} />
 
+                {zo.errors.thing((issue, ...rest) => {
+                    const _: z.ZodIssue = issue;
+
+                    {
+                        // not any
+                        // @ts-expect-error
+                        const _: number = issue;
+                    }
+
+                    {
+                        //  First issue is always defined
+                        // @ts-expect-error
+                        const _: typeof issue = undefined;
+                    }
+
+                    {
+                        // rest can be undefined
+                        // @ts-expect-error
+                        const _: z.ZodIssue = rest[0];
+                    }
+
+                    return null;
+                })}
+
                 {zo.errors.thing((...issues) =>
                     issues.map((e, i) => (
                         <div key={i} data-testid="error">

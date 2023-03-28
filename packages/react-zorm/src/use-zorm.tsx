@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ZodType, ZodError, ZodCustomIssue, ZodIssue } from "zod";
+import {
+    ZodType,
+    ZodError,
+    ZodCustomIssue,
+    ZodIssue,
+    SafeParseReturnType,
+} from "zod";
 import { errorChain, fieldChain } from "./chains";
 import { safeParseForm } from "./parse-form";
 import type { Zorm } from "./types";
@@ -21,7 +27,7 @@ export interface ValidSubmitEvent<Data> {
     data: Data;
 }
 
-export interface UseZormOptions<Data> {
+export interface UseZormOptions<Data extends SafeParseReturnType<any, any>> {
     /**
      * Called when the form is submitted with valid data
      */
@@ -37,13 +43,17 @@ export function useZorm<Schema extends ZodType<any>>(
     schema: Schema,
     options?: UseZormOptions<ReturnType<Schema["parse"]>>,
 ): Zorm<Schema> {
-    type ValidationResult = ReturnType<Schema["safeParse"]>;
+    type ValidationResult = SafeParseReturnType<
+        any,
+        ReturnType<Schema["parse"]>
+    >;
 
     const formRef = useRef<HTMLFormElement>();
     const submittedOnceRef = useRef(false);
     const submitRef = useRef<
-        UseZormOptions<ValidationResult>["onValidSubmit"] | undefined
+        UseZormOptions<ReturnType<Schema["parse"]>>["onValidSubmit"] | undefined
     >(options?.onValidSubmit);
+
     submitRef.current = options?.onValidSubmit;
 
     const [validation, setValidation] = useState<ValidationResult | null>(null);
@@ -89,6 +99,11 @@ export function useZorm<Schema extends ZodType<any>>(
         [getForm, validate],
     );
 
+    const invalidHandler = useCallback(() => {
+        submittedOnceRef.current = true;
+        validate();
+    }, [validate]);
+
     const callbackRef = useCallback(
         (form: HTMLFormElement | null) => {
             if (form !== formRef.current) {
@@ -101,16 +116,32 @@ export function useZorm<Schema extends ZodType<any>>(
                         "submit",
                         submitHandler,
                     );
+                    formRef.current.removeEventListener(
+                        "invalid",
+                        invalidHandler,
+                    );
                 }
 
                 if (form && options?.setupListeners !== false) {
                     form.addEventListener("change", changeHandler);
                     form.addEventListener("submit", submitHandler);
+
+                    // The form does not submit when it is invalid due to html5
+                    // attributes (ex. required, min, max, etc.). So detect
+                    // invalid form state with the "invalid" event and run our
+                    // own validation on it too.
+                    form.addEventListener(
+                        "invalid",
+                        invalidHandler,
+                        // "invalid" event does not bubble so listen on capture
+                        // phase by setting capture to true
+                        true,
+                    );
                 }
                 formRef.current = form ?? undefined;
             }
         },
-        [changeHandler, options?.setupListeners, submitHandler],
+        [changeHandler, options?.setupListeners, submitHandler, invalidHandler],
     );
 
     return useMemo(() => {

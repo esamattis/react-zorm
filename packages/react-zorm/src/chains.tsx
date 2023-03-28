@@ -1,6 +1,6 @@
-import { ZodCustomIssue, ZodIssue } from "zod";
+import { ZodArray, ZodCustomIssue, ZodIssue, ZodObject, ZodType } from "zod";
+import { z } from "zod";
 import {
-    GenericSchema,
     ErrorChainFromSchema,
     ErrorGetter,
     FieldChainFromSchema,
@@ -15,7 +15,24 @@ function addArrayIndex(path: readonly string[], index: number) {
     return [...path.slice(0, -1), `${last}[${index}]`];
 }
 
-export function fieldChain<Schema extends GenericSchema>(
+function unwrapZodType(type: ZodType): ZodType {
+    if (type instanceof z.ZodObject || type instanceof z.ZodArray) {
+        return type;
+    }
+
+    if (type instanceof z.ZodEffects) {
+        return unwrapZodType(type.innerType());
+    }
+
+    const anyType = type as any;
+    if (anyType._def?.innerType) {
+        return unwrapZodType(anyType._def.innerType);
+    }
+
+    return type;
+}
+
+export function fieldChain<Schema extends ZodType>(
     ns: string,
     schema: Schema,
 ): FieldChainFromSchema<Schema> {
@@ -23,17 +40,30 @@ export function fieldChain<Schema extends GenericSchema>(
         {},
         {
             get(_target, prop) {
-                return _fieldChain(ns, [])[prop];
+                return _fieldChain(ns, schema, [])[prop];
             },
         },
     ) as any;
 }
 
-function _fieldChain(ns: string, path: readonly string[]) {
+function _fieldChain(ns: string, schema: ZodType, path: readonly string[]) {
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
-                return _fieldChain(ns, addArrayIndex(path, args[0]));
+                const unwrapped = unwrapZodType(schema);
+                if (!(unwrapped instanceof ZodArray)) {
+                    throw new Error(
+                        `Expected ZodArray at "${path.join(".")}" got ${
+                            schema.constructor.name
+                        }`,
+                    );
+                }
+
+                return _fieldChain(
+                    ns,
+                    unwrapped.element,
+                    addArrayIndex(path, args[0]),
+                );
             }
 
             const name = path.join(".");
@@ -44,25 +74,34 @@ function _fieldChain(ns: string, path: readonly string[]) {
             }
 
             if (typeof args[0] === "function") {
-                return args[0]({ id, name });
+                return args[0]({ id, name, type: schema });
             }
 
             return name;
         },
 
         get(_target, prop) {
-            if (typeof prop === "string") {
-                return _fieldChain(ns, [...path, prop]);
+            if (typeof prop !== "string") {
+                throw new Error("Unexpected string property: " + String(prop));
             }
 
-            return _fieldChain(ns, path);
+            const unwrapped = unwrapZodType(schema);
+            if (!(unwrapped instanceof ZodObject)) {
+                throw new Error(
+                    `Expected ZodObject at "${path.join(".")}" got ${
+                        schema.constructor.name
+                    }`,
+                );
+            }
+
+            return _fieldChain(ns, unwrapped.shape[prop], [...path, prop]);
         },
     });
 
     return proxy;
 }
 
-export function errorChain<Schema extends GenericSchema>(
+export function errorChain<Schema extends ZodType>(
     schema: Schema,
     issues: ZodIssue[],
     _path?: readonly (string | number)[],
@@ -113,7 +152,7 @@ export function errorChain<Schema extends GenericSchema>(
     return proxy;
 }
 
-export function createCustomIssues<Schema extends GenericSchema>(
+export function createCustomIssues<Schema extends ZodType>(
     schema: Schema,
     _state?: {
         path: (string | number)[];

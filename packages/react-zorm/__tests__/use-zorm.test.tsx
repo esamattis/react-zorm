@@ -1057,8 +1057,10 @@ test("passes all issues to field chain function", async () => {
                 <input data-testid="input" name={zo.fields.thing()} />
 
                 {zo.fields.thing((f) =>
-                    f.issues.map((e) => (
-                        <div data-testid="error">{e.message}</div>
+                    f.issues.map((e, i) => (
+                        <div key={i} data-testid="error">
+                            {e.message}
+                        </div>
                     )),
                 )}
             </form>
@@ -1096,8 +1098,10 @@ test("passes all issues to error chain function", async () => {
                 <input data-testid="input" name={zo.fields.thing()} />
 
                 {zo.errors.thing((...issues) =>
-                    issues.map((e) => (
-                        <div data-testid="error">{e.message}</div>
+                    issues.map((e, i) => (
+                        <div key={i} data-testid="error">
+                            {e.message}
+                        </div>
                     )),
                 )}
             </form>

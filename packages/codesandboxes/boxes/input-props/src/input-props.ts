@@ -78,8 +78,6 @@ function numberCheckProps(type: z.ZodNumber) {
         if (check.kind === "multipleOf") {
             props.step = check.value;
         }
-
-        // TODO the rest...
     }
 
     return props;

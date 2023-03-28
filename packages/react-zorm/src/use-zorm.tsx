@@ -124,7 +124,7 @@ export function useZorm<Schema extends ZodType<any>>(
 
                     off("change", changeHandler);
                     off("submit", submitHandler);
-                    off("invalid", invalidHandler);
+                    off("invalid", invalidHandler, false);
                     off("formdata", formdataHandler);
                 }
 

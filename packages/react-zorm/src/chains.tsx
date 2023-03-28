@@ -35,18 +35,24 @@ function unwrapZodType(type: ZodType): ZodType {
 export function fieldChain<Schema extends ZodType>(
     ns: string,
     schema: Schema,
+    issues: ZodIssue[],
 ): FieldChainFromSchema<Schema> {
     return new Proxy(
         {},
         {
             get(_target, prop) {
-                return _fieldChain(ns, schema, [])[prop];
+                return _fieldChain(ns, schema, issues, [])[prop];
             },
         },
     ) as any;
 }
 
-function _fieldChain(ns: string, schema: ZodType, path: readonly string[]) {
+function _fieldChain(
+    ns: string,
+    schema: ZodType,
+    issues: ZodIssue[],
+    path: readonly string[],
+) {
     const proxy: any = new Proxy(() => {}, {
         apply(_target, _thisArg, args) {
             if (typeof args[0] === "number") {
@@ -62,6 +68,7 @@ function _fieldChain(ns: string, schema: ZodType, path: readonly string[]) {
                 return _fieldChain(
                     ns,
                     unwrapped.element,
+                    issues,
                     addArrayIndex(path, args[0]),
                 );
             }
@@ -74,7 +81,10 @@ function _fieldChain(ns: string, schema: ZodType, path: readonly string[]) {
             }
 
             if (typeof args[0] === "function") {
-                return args[0]({ id, name, type: schema });
+                const matching = issues.filter((issue) => {
+                    return arrayEquals(issue.path, path);
+                });
+                return args[0]({ id, name, type: schema, issues: matching });
             }
 
             return name;
@@ -94,7 +104,10 @@ function _fieldChain(ns: string, schema: ZodType, path: readonly string[]) {
                 );
             }
 
-            return _fieldChain(ns, unwrapped.shape[prop], [...path, prop]);
+            return _fieldChain(ns, unwrapped.shape[prop], issues, [
+                ...path,
+                prop,
+            ]);
         },
     });
 
@@ -113,31 +126,37 @@ export function errorChain<Schema extends ZodType>(
                 return errorChain(schema, issues, [...path, args[0]]);
             }
 
-            const issue = issues.find((issue) => {
+            const matching = issues.filter((issue) => {
                 return arrayEquals(issue.path, path);
             });
+            const hasError = matching.length > 0;
 
+            // Ex. zo.error.field(Boolean)
             if (args[0] === Boolean) {
-                return Boolean(issue);
+                return Boolean(hasError);
             }
 
+            // Ex. zo.error.field(error => error.message)
             if (typeof args[0] === "function") {
-                if (issue) {
-                    return args[0](issue);
+                if (hasError) {
+                    return args[0](...matching);
                 }
 
                 return undefined;
             }
 
+            // Return itself when there is an error
+            // Ex. className={zo.error.field("errored")}
             if (args[0]) {
-                if (issue) {
+                if (hasError) {
                     return args[0];
                 } else {
                     return undefined;
                 }
             }
 
-            return issue || undefined;
+            // without args return the first error if any
+            return matching[0];
         },
 
         get(_target, prop) {

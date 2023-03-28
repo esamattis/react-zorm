@@ -8,7 +8,7 @@ test("basic", () => {
         field: z.string(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field()).toEqual("field");
     expect(chain.field("name")).toEqual("field");
@@ -43,7 +43,7 @@ test("nested object", () => {
         }),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.ob.field()).toEqual("ob.field");
     expect(chain.ob.field("name")).toEqual("ob.field");
@@ -76,7 +76,7 @@ test("array of strings", () => {
         things: z.array(z.string()),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0)()).toEqual("things[0]");
     expect(chain.things(0)("name")).toEqual("things[0]");
@@ -119,7 +119,7 @@ test("array of objects", () => {
         ),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding()).toEqual("things[0].ding");
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
@@ -158,7 +158,7 @@ test("optional fields", () => {
         field: z.string().optional(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field()).toEqual("field");
     expect(chain.field("name")).toEqual("field");
@@ -191,7 +191,7 @@ test("nullable fields", () => {
         field: z.string().nullable(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field()).toEqual("field");
     expect(chain.field("name")).toEqual("field");
@@ -224,7 +224,7 @@ test("nullish fields", () => {
         field: z.string().nullish(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field()).toEqual("field");
     expect(chain.field("name")).toEqual("field");
@@ -257,7 +257,7 @@ test("optional arrays", () => {
         things: z.array(z.object({ ding: z.string() })).optional(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
 });
@@ -267,7 +267,7 @@ test("nullish arrays", () => {
         things: z.array(z.object({ ding: z.string() })).nullish(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
 });
@@ -277,7 +277,7 @@ test("nullable arrays", () => {
         things: z.array(z.object({ ding: z.string() })).nullable(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
 });
@@ -287,7 +287,7 @@ test("nullable array items", () => {
         things: z.array(z.object({ ding: z.string() }).nullable()),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
 });
@@ -297,7 +297,7 @@ test("nullish array items", () => {
         things: z.array(z.object({ ding: z.string() }).nullish()),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.things(0).ding("name")).toEqual("things[0].ding");
 });
@@ -308,7 +308,7 @@ test("date field", () => {
         date: z.date(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.date()).toEqual("date");
 

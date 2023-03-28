@@ -211,7 +211,8 @@ Return values for different invocation types
 -   `("id"): string` - Unique `id` attribute value to be used with labels and `aria-describedby`
 -   `(): string` - The default, same as `"name"`
 -   `(index: number): FieldChain` - Special case for setting array indices
--   `(fn: RenderFunction): any` - Calls the function with `{name: string, id: string}` and renders the return value.
+-   `(fn: RenderFunction): any` -
+    Calls the function with `{name: string, id: string, type: ZodType, issues: ZodIssue}` and renders the return value.
     -   Can be used to create resuable fields. [Codesandbox example](https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/render-function?file=/src/App.tsx).
 
 ### `errors` invocation
@@ -221,9 +222,12 @@ Return values for different invocation types
     setting class names for example
 -   `(value: typeof Boolean): boolean` - Return `true` when there's an error and `false`
     when it is ok. Example `.field(Boolean)`.
--   `<T>(render: (issue: ZodIssue) => T): T | undefined` - Invoke the passed
-    function with the `ZodIssue` and return its return value. When there's no error
-    a `undefined` is returned. Useful for rendering error message components
+-   `<T>(render: (issue: ZodIssue, ...otherIssues: ZodIssue[]) => T): T | undefined` -
+    Invoke the passed function with the `ZodIssue` and return its return value.
+    When there's no error a `undefined` is returned and the function will not be
+    invoked. Useful for rendering error message components. One field can have
+    multiple issues so to render them all you can use the spread operator
+    `...issues`.
 -   `(index: number): ErrorChain` - Special case for accessing array elements
 
 ## Using input values during rendering

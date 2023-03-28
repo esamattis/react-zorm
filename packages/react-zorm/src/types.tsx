@@ -12,27 +12,22 @@ export interface ZormError {
     issues: ZodIssue[];
 }
 
-/**
- * Something like Zod schema
- */
-// export interface GenericSchema {
-//     parse: (arg: any) => any;
-//     safeParse: (arg: any) => any;
-// }
-
 export type GenericSchema = ZodType;
 
+export interface RenderProps {
+    name: string;
+    id: string;
+    type: ZodType;
+    issues: ZodIssue[];
+}
+
 export type FieldGetter = <
-    Arg extends
-        | undefined
-        | "id"
-        | "name"
-        | ((props: { name: string; id: string; type: ZodType }) => any),
+    Arg extends undefined | "id" | "name" | ((props: RenderProps) => any),
 >(
     arg?: Arg,
 ) => undefined extends Arg
     ? string
-    : Arg extends (props: { name: string; id: string; type: ZodType }) => any
+    : Arg extends (props: RenderProps) => any
     ? ReturnType<Arg>
     : string;
 
@@ -70,7 +65,7 @@ export interface ErrorGetter {
     /**
      * Call the function on error and return its value
      */
-    <Fn extends (error: ZodIssue) => any>(render: Fn):
+    <Fn extends (issue: ZodIssue, ...issues: ZodIssue[]) => any>(render: Fn):
         | ReturnType<Fn>
         | undefined;
 

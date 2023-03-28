@@ -9,7 +9,7 @@ test("single field", () => {
         ding: z.string(),
     });
 
-    const fields = fieldChain("test", Schema);
+    const fields = fieldChain("test", Schema, []);
 
     const form = makeForm(
         <form>
@@ -34,7 +34,7 @@ test("object", () => {
         }),
     });
 
-    const fields = fieldChain("test", Schema);
+    const fields = fieldChain("test", Schema, []);
 
     const form = makeForm(
         <form>
@@ -62,7 +62,7 @@ test("array of objects", () => {
         ),
     });
 
-    const fields = fieldChain("test", Schema);
+    const fields = fieldChain("test", Schema, []);
 
     const form = makeForm(
         <form>
@@ -89,7 +89,7 @@ test("array of strings", () => {
         }),
     });
 
-    const fields = fieldChain("test", Schema);
+    const fields = fieldChain("test", Schema, []);
     const form = makeForm(
         <form>
             <input name={fields.ob.strings(0)()} defaultValue="value1" />
@@ -114,7 +114,7 @@ test.skip("types", () => {
         }),
     });
 
-    const fields = fieldChain("test", FormValues);
+    const fields = fieldChain("test", FormValues, []);
 
     assertNotAny(fields.ob);
     assertNotAny(fields.value());

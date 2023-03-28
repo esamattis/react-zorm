@@ -8,7 +8,7 @@ test("can access the zod type", () => {
         field: z.string(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field((field) => field.type)).toBeInstanceOf(z.ZodString);
 });
@@ -20,7 +20,7 @@ test("can access the zod type in nested object", () => {
         }),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.nest.field((field) => field.type)).toBeInstanceOf(z.ZodString);
 });
@@ -30,7 +30,7 @@ test("can access the zod type in array", () => {
         arr: z.array(z.string()),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.arr(0)((field) => field.type)).toBeInstanceOf(z.ZodString);
 });
@@ -44,7 +44,7 @@ test("can access the zod type in complex type", () => {
         ),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.arr(0).deep((field) => field.type)).toBeInstanceOf(
         z.ZodString,
@@ -56,7 +56,7 @@ test("can access wrapped types", () => {
         field: z.number().nullish(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     // must return the wrapped type so users can detect nullish etc.
     expect(chain.field((field) => field.type)).toBeInstanceOf(z.ZodOptional);
@@ -71,7 +71,7 @@ test("can access access through optional objects", () => {
             .optional(),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.nest.field((field) => field.type)).toBeInstanceOf(z.ZodString);
 });
@@ -83,7 +83,7 @@ test("ZodEffects", () => {
         }),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.field((field) => field.type)).toBeInstanceOf(z.ZodEffects);
 });
@@ -93,7 +93,7 @@ test("can read min-max", () => {
         field: z.number().min(2).max(10),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     const field = chain.field((field) => field.type);
 
@@ -117,7 +117,7 @@ test("can read regex", () => {
         field: z.string().regex(/^[a-z]+$/),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     const field = chain.field((field) => field.type);
 
@@ -125,7 +125,6 @@ test("can read regex", () => {
         throw new Error("Expected ZodString");
     }
 
-    console.log(field._def.checks[0]);
     expect(field._def.checks[0]).toMatchObject({
         kind: "regex",
         regex: /^[a-z]+$/,
@@ -141,7 +140,23 @@ test("can access the input name", () => {
         ),
     });
 
-    const chain = fieldChain("form", Schema);
+    const chain = fieldChain("form", Schema, []);
 
     expect(chain.arr(0).deep((field) => field.name)).toEqual("arr[0].deep");
+});
+
+test.skip("[type only] can return the from the chain", () => {
+    const Schema = z.object({
+        field: z.string(),
+    });
+
+    const chain = fieldChain("form", Schema, []);
+
+    const _: z.ZodType = chain.field((field) => field.type);
+
+    {
+        // not any
+        // @ts-expect-error
+        const _: string = chain.field((field) => field.type);
+    }
 });

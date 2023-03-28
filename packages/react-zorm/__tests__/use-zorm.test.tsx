@@ -1036,3 +1036,109 @@ test("can submit files", async () => {
 
     expect(submitSpy).toHaveBeenCalledWith("chucknorris.png");
 });
+
+test("passes all issues to field chain function", async () => {
+    const Schema = z.object({
+        thing: z
+            .string()
+            .refine((v) => v.length >= 10, {
+                message: "must contain at least 10 character(s)",
+            })
+            .refine((v) => !v.includes("@"), {
+                message: "@ is not allowed character",
+            }),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" name={zo.fields.thing()} />
+
+                {zo.fields.thing((f) =>
+                    f.issues.map((e, i) => (
+                        <div key={i} data-testid="error">
+                            {e.message}
+                        </div>
+                    )),
+                )}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    await userEvent.type(screen.getByTestId("input"), "b@d");
+
+    const form = screen.getByTestId("form");
+    fireEvent.submit(form);
+
+    expect(form).toHaveTextContent("must contain at least 10 character(s)");
+    expect(form).toHaveTextContent("@ is not allowed character");
+});
+
+test("passes all issues to error chain function", async () => {
+    const Schema = z.object({
+        thing: z
+            .string()
+            .refine((v) => v.length >= 10, {
+                message: "must contain at least 10 character(s)",
+            })
+            .refine((v) => !v.includes("@"), {
+                message: "@ is not allowed character",
+            }),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" name={zo.fields.thing()} />
+
+                {zo.errors.thing((issue, ...rest) => {
+                    const _: z.ZodIssue = issue;
+
+                    {
+                        // not any
+                        // @ts-expect-error
+                        const _: number = issue;
+                    }
+
+                    {
+                        //  First issue is always defined
+                        // @ts-expect-error
+                        const _: typeof issue = undefined;
+                    }
+
+                    {
+                        // rest can be undefined
+                        // @ts-expect-error
+                        const _: z.ZodIssue = rest[0];
+                    }
+
+                    return null;
+                })}
+
+                {zo.errors.thing((...issues) =>
+                    issues.map((e, i) => (
+                        <div key={i} data-testid="error">
+                            {e.message}
+                        </div>
+                    )),
+                )}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    await userEvent.type(screen.getByTestId("input"), "b@d");
+
+    const form = screen.getByTestId("form");
+    fireEvent.submit(form);
+
+    expect(form).toHaveTextContent("must contain at least 10 character(s)");
+    expect(form).toHaveTextContent("@ is not allowed character");
+});

@@ -1,62 +1,71 @@
 import "./styles.css";
-import { useState } from "react";
 import { z } from "zod";
-import { useZorm } from "react-zorm";
+import { RenderProps, useZorm } from "react-zorm";
+
+const nameString = () =>
+    z
+        .string()
+        .min(1)
+        .max(10)
+        .refine((s) => !s || s[0] === s[0].toUpperCase(), {
+            message: "First letter must start with a capital letter",
+        })
+        .refine((s) => !s.includes(" "), {
+            message: "Name must not contain spaces",
+        });
 
 const FormSchema = z.object({
-    hiddenInput: z.string(),
+    firstName: nameString(),
+    lastName: nameString(),
 });
 
-function Horverable(props: { onHover: () => any; children: string }) {
+function textField(props: RenderProps) {
+    const hasError = props.issues.length > 0;
     return (
-        <div className="hoverable" onMouseEnter={props.onHover}>
-            {props.children}
+        <div>
+            <input
+                type="text"
+                name={props.name}
+                id={props.id}
+                defaultValue="bad too long value"
+                className={hasError ? "errored" : ""}
+            />
+            {props.issues.map((issue, i) => (
+                <div key={i} className="error-message">
+                    {issue.message}
+                </div>
+            ))}
         </div>
     );
 }
 
-/**
- *  Render function shortcut for creating hidden inputs
- */
-function hidden(value: string) {
-    return (props: { name: string; id: string }) => (
-        <input
-            type="hidden"
-            name={props.name}
-            id={props.id}
-            defaultValue={value}
-        />
-    );
-}
-
 export default function Form() {
-    const [hoverValue, setHoverValue] = useState("Nothing hovered");
-    const zo = useZorm("signup", FormSchema, {
+    const zo = useZorm("render-function", FormSchema, {
         onValidSubmit(e) {
             e.preventDefault();
         },
     });
 
     return (
-        <form ref={zo.ref}>
-            <h1>Hidden inputs</h1>
-            {zo.fields.hiddenInput(hidden(hoverValue))}
+        <form
+            method="post"
+            ref={zo.ref}
+            onSubmit={(e) => {
+                e.preventDefault();
+            }}
+        >
+            <h1>Resuable Render Functions</h1>
+
             <div>
-                <Horverable
-                    onHover={() => {
-                        setHoverValue("Left box hovered");
-                    }}
-                >
-                    Hover me!
-                </Horverable>
-                <Horverable
-                    onHover={() => {
-                        setHoverValue("Right box hovered");
-                    }}
-                >
-                    And me!
-                </Horverable>
+                <h4>First Name</h4>
+                {zo.fields.firstName(textField)}
             </div>
+
+            <div>
+                <h4>Last Name</h4>
+                {zo.fields.lastName(textField)}
+            </div>
+
             <button type="submit">Submit</button>
             <pre>Form result: {JSON.stringify(zo.validation, null, 2)}</pre>
         </form>

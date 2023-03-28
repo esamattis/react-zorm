@@ -181,7 +181,7 @@ describe("combine chains with parsing", () => {
             }),
         });
 
-        const chain = fieldChain("form", Schema);
+        const chain = fieldChain("form", Schema, []);
 
         const form = makeForm(
             <form>

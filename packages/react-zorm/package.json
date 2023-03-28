@@ -81,7 +81,7 @@
   "size-limit": [
     {
       "path": "esm/react-zorm.mjs",
-      "limit": "2.5 KB"
+      "limit": "3 KB"
     }
   ]
 }

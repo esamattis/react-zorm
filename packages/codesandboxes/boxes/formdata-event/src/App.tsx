@@ -22,21 +22,7 @@ export default function ReactSelectExample() {
             e.preventDefault();
             alert(JSON.stringify(e.data, null, 2));
         },
-    });
-
-    // Helper state for react-select
-    const [values, setValues] = useState<string[]>(["CT"]);
-
-    // React does not seem to support <form onFormData /> so
-    // we need to workaround with an effect zo.form ref
-    useEffect(() => {
-        const form = zo.form;
-
-        if (!form) {
-            return;
-        }
-
-        const onFormData = (e: FormDataEvent) => {
+        onFormData(e) {
             // Generate state data on the form:
             //
             //  [
@@ -49,14 +35,11 @@ export default function ReactSelectExample() {
                 //   <input type="hidden" name={zo.fields.states(index).code()} value={value} />
                 e.formData.set(zo.fields.states(index).code(), value);
             });
-        };
+        },
+    });
 
-        form.addEventListener("formdata", onFormData);
-
-        return () => {
-            form.removeEventListener("formdata", onFormData);
-        };
-    }, [values, zo.fields, zo.form]);
+    // Helper state for react-select
+    const [values, setValues] = useState<string[]>(["CT"]);
 
     const disabled = zo.validation?.success === false;
 

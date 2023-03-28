@@ -1,3 +1,18 @@
+## v0.8.0
+
+2023-03-28
+
+-   Support multiple issues on a single field [#41](https://github.com/esamattis/react-zorm/pull/41)
+    -   Example <https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/render-function?file=/src/App.tsx>
+-   Add onFormData() helper [#44](https://github.com/esamattis/react-zorm/pull/44)
+    -   Example <https://codesandbox.io/s/github/esamattis/react-zorm/tree/master/packages/codesandboxes/boxes/formdata-event?file=/src/App.tsx>
+-   Expose field type to the render function on the fields chain [#39](https://github.com/esamattis/react-zorm/pull/39)
+    -   See <https://github.com/esamattis/react-zorm/issues/25#issuecomment-1485653466>
+-   Upgrade Remix example [#40](https://github.com/esamattis/react-zorm/pull/40)
+    -   See <https://github.com/esamattis/react-zorm/blob/master/packages/remix-example/app/routes/server-side-validation.tsx>
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.7.0...react-zorm/v0.8.0
+
 ## v0.7.0
 
 2023-03-25

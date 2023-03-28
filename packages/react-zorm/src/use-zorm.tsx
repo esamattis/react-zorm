@@ -36,8 +36,6 @@ export interface UseZormOptions<Data extends SafeParseReturnType<any, any>> {
     setupListeners?: boolean;
 
     customIssues?: ZodIssue[];
-
-    onFormData?: (event: FormDataEvent) => any;
 }
 
 export function useZorm<Schema extends ZodType<any>>(
@@ -55,12 +53,8 @@ export function useZorm<Schema extends ZodType<any>>(
     const submitRef = useRef<
         UseZormOptions<ReturnType<Schema["parse"]>>["onValidSubmit"] | undefined
     >(options?.onValidSubmit);
-    submitRef.current = options?.onValidSubmit;
 
-    const formDataRef = useRef<
-        UseZormOptions<ReturnType<Schema["parse"]>>["onFormData"] | undefined
-    >(options?.onFormData);
-    formDataRef.current = options?.onFormData;
+    submitRef.current = options?.onValidSubmit;
 
     const [validation, setValidation] = useState<ValidationResult | null>(null);
 
@@ -84,10 +78,6 @@ export function useZorm<Schema extends ZodType<any>>(
 
         validate();
     }, [validate]);
-
-    const formdataHandler = useCallback((event: FormDataEvent) => {
-        formDataRef.current?.(event);
-    }, []);
 
     const submitHandler = useCallback(
         (e: { preventDefault(): any }) => {
@@ -118,20 +108,23 @@ export function useZorm<Schema extends ZodType<any>>(
         (form: HTMLFormElement | null) => {
             if (form !== formRef.current) {
                 if (formRef.current) {
-                    const off = formRef.current.removeEventListener.bind(
-                        formRef.current,
+                    formRef.current.removeEventListener(
+                        "change",
+                        changeHandler,
                     );
-
-                    off("change", changeHandler);
-                    off("submit", submitHandler);
-                    off("invalid", invalidHandler, false);
-                    off("formdata", formdataHandler);
+                    formRef.current.removeEventListener(
+                        "submit",
+                        submitHandler,
+                    );
+                    formRef.current.removeEventListener(
+                        "invalid",
+                        invalidHandler,
+                    );
                 }
 
                 if (form && options?.setupListeners !== false) {
                     form.addEventListener("change", changeHandler);
                     form.addEventListener("submit", submitHandler);
-                    form.addEventListener("formdata", formdataHandler);
 
                     // The form does not submit when it is invalid due to html5
                     // attributes (ex. required, min, max, etc.). So detect
@@ -148,13 +141,7 @@ export function useZorm<Schema extends ZodType<any>>(
                 formRef.current = form ?? undefined;
             }
         },
-        [
-            options?.setupListeners,
-            changeHandler,
-            submitHandler,
-            invalidHandler,
-            formdataHandler,
-        ],
+        [changeHandler, options?.setupListeners, submitHandler, invalidHandler],
     );
 
     return useMemo(() => {

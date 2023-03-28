@@ -27,9 +27,7 @@ test("can use the formdata inject data", async ({ page }) => {
     const error = page.locator(".error");
     const input = page.locator("input");
     const validData = page.locator(".valid-data");
-    const setExtraButton = page.locator("button", { hasText: "set extra" });
 
-    await setExtraButton.click();
     await input.fill("some text");
     await page.keyboard.press("Enter");
 

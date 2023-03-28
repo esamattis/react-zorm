@@ -12,19 +12,31 @@ function Test() {
     const [validFormData, setValidFormData] =
         useState<z.infer<typeof Schema>>();
 
+    // use state to detect stale closure in onFormData
+    const [extra, setExtra] = useState("");
+
     const zo = useZorm("form", Schema, {
         onValidSubmit(e) {
             e.preventDefault();
             setValidFormData(e.data);
         },
         onFormData(e) {
-            e.formData.set(zo.fields.extra(), "extra data");
+            e.formData.set(zo.fields.extra(), extra);
         },
     });
 
     return (
         <form ref={zo.ref} data-testid="form">
             <input data-testid="input" name={zo.fields.input()} />
+
+            <button
+                type="button"
+                onClick={() => {
+                    setExtra("extra data");
+                }}
+            >
+                set extra
+            </button>
 
             <button>submit with extra data</button>
 

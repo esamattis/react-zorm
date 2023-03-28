@@ -11,7 +11,6 @@ export interface InputProps {
     pattern?: string;
     step?: string | number;
     defaultValue?: string | number;
-    [key: string]: any;
 }
 
 function removeZodEffects(type: z.ZodType): z.ZodType {

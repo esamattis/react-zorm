@@ -126,31 +126,37 @@ export function errorChain<Schema extends ZodType>(
                 return errorChain(schema, issues, [...path, args[0]]);
             }
 
-            const issue = issues.find((issue) => {
+            const matching = issues.filter((issue) => {
                 return arrayEquals(issue.path, path);
             });
+            const hasError = matching.length > 0;
 
+            // Ex. zo.error.field(Boolean)
             if (args[0] === Boolean) {
-                return Boolean(issue);
+                return Boolean(hasError);
             }
 
+            // Ex. zo.error.field(error => error.message)
             if (typeof args[0] === "function") {
-                if (issue) {
-                    return args[0](issue);
+                if (hasError) {
+                    return args[0](...matching);
                 }
 
                 return undefined;
             }
 
+            // Return itself when there is an error
+            // Ex. className={zo.error.field("errored")}
             if (args[0]) {
-                if (issue) {
+                if (hasError) {
                     return args[0];
                 } else {
                     return undefined;
                 }
             }
 
-            return issue || undefined;
+            // without args return the first error if any
+            return matching[0];
         },
 
         get(_target, prop) {

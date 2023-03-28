@@ -67,7 +67,7 @@ export interface ErrorGetter {
     /**
      * Call the function on error and return its value
      */
-    <Fn extends (error: ZodIssue) => any>(render: Fn):
+    <Fn extends (issue: ZodIssue, ...issues: ZodIssue[]) => any>(render: Fn):
         | ReturnType<Fn>
         | undefined;
 

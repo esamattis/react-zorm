@@ -453,7 +453,7 @@ Zod schema to parse the form with.
     when to validate the form. Set your own `onSubmit` on the form etc. Defaults to `true`.
 -   `customIssues: ZodIssue[]`: Any additional `ZodIssue` to be rendered within
     the error chain. This is commonly used to handle server-side field validation
--   `onFormdata(event: FormDataEvent)`: Convinience callback for accessing the [formdata
+-   `onFormData(event: FormDataEvent)`: Convinience callback for accessing the [formdata
     event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event)
     because React does not support it directly on the in JSX. This can be used to modify
     the outgoing form without modifying the form on the DOM. See this [Codesandbox

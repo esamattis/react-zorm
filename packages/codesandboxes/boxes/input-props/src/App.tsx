@@ -3,6 +3,8 @@ import React from "react";
 import { z } from "zod";
 import { useZorm } from "react-zorm";
 import { inputProps } from "./input-props";
+// or even!
+// import { unstable_inputProps as inputProps } from "react-zorm";
 
 const FormSchema = z.object({
     name: z.string().min(1),

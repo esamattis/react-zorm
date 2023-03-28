@@ -146,7 +146,7 @@ test("can access the input name", () => {
     expect(chain.arr(0).deep((field) => field.name)).toEqual("arr[0].deep");
 });
 
-test.skip("[type only] can resturn the from the chain", () => {
+test.skip("[type only] can return the from the chain", () => {
     const Schema = z.object({
         field: z.string(),
     });

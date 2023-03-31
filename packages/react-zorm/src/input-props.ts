@@ -7,6 +7,7 @@ import {
     ZodDefault,
     ZodOptional,
     ZodNullable,
+    ZodIssue,
 } from "zod";
 
 export interface InputProps {
@@ -20,6 +21,8 @@ export interface InputProps {
     pattern?: string;
     step?: string | number;
     defaultValue?: string | number;
+    ["aria-invalid"]?: boolean;
+    ["aria-errormessage"]?: string;
 }
 
 function removeZodEffects(type: ZodType): ZodType {
@@ -140,7 +143,12 @@ function collectProps(
     return props;
 }
 
-export function inputProps(field: { name: string; type: ZodType }): InputProps {
+export function inputProps(field: {
+    name: string;
+    id: string;
+    type: ZodType;
+    issues: ZodIssue[];
+}): InputProps {
     const props: InputProps = {
         type: "text",
         required: true,
@@ -150,6 +158,11 @@ export function inputProps(field: { name: string; type: ZodType }): InputProps {
 
     if (props.required === false) {
         delete props.required;
+    }
+
+    if (field.issues.length > 0) {
+        props["aria-invalid"] = true;
+        props["aria-errormessage"] = "error:" + field.id;
     }
 
     return props;

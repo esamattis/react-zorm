@@ -1,3 +1,13 @@
+## v0.9.0
+
+2023-04-03
+
+-   Please give Feedback for the Automatic progressive HTML Attributes here: https://github.com/esamattis/react-zorm/discussions/48
+-   Add errorId [2b5e52d](https://github.com/esamattis/react-zorm/commit/2b5e52d) - Esa-Matti Suuronen
+-   Add aria attributes for invalid inputs [6a6ca8a](https://github.com/esamattis/react-zorm/commit/6a6ca8a) - Esa-Matti Suuronen
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/v0.8.0...react-zorm/v0.9.0
+
 ## v0.8.0
 
 2023-03-28

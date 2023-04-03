@@ -2,9 +2,9 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import React, { useState } from "react";
-import { z, ZodIssue } from "zod";
+import { z } from "zod";
 
-import { useZorm } from "../src";
+import { useZorm, unstable_inputProps as inputProps } from "../src";
 import { assertNotAny } from "./test-helpers";
 import { createCustomIssues } from "../src/chains";
 
@@ -1141,4 +1141,41 @@ test("passes all issues to error chain function", async () => {
 
     expect(form).toHaveTextContent("must contain at least 10 character(s)");
     expect(form).toHaveTextContent("@ is not allowed character");
+});
+
+test("can use inputProps()", () => {
+    const Schema = z.object({
+        thing: z.string().min(1),
+    });
+
+    function Test() {
+        const zo = useZorm("form", Schema);
+
+        return (
+            <form ref={zo.ref} data-testid="form">
+                <input data-testid="input" {...zo.fields.thing(inputProps)} />
+
+                {zo.errors.thing((e) => (
+                    <div data-testid="error" id={zo.fields.thing("errorid")}>
+                        {e.code}
+                    </div>
+                ))}
+            </form>
+        );
+    }
+
+    render(<Test />);
+
+    fireEvent.submit(screen.getByTestId("form"));
+
+    const input = screen.getByTestId("input");
+    expect(input).toHaveAttribute("required");
+    expect(input).toHaveAttribute("name", "thing");
+    expect(input).toHaveAttribute("type", "text");
+    expect(input).toHaveAttribute("minlength", "1");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("aria-errormessage", "error:form:thing");
+
+    const errorEl = screen.getByTestId("error");
+    expect(errorEl).toHaveAttribute("id", "error:form:thing");
 });

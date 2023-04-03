@@ -1,4 +1,14 @@
-import { z } from "zod";
+import {
+    ZodType,
+    ZodEffects,
+    ZodString,
+    ZodNumber,
+    ZodDate,
+    ZodDefault,
+    ZodOptional,
+    ZodNullable,
+} from "zod";
+import { RenderProps } from "react-zorm";
 
 export interface InputProps {
     type: string;
@@ -11,18 +21,20 @@ export interface InputProps {
     pattern?: string;
     step?: string | number;
     defaultValue?: string | number;
+    ["aria-invalid"]?: boolean;
+    ["aria-errormessage"]?: string;
 }
 
-function removeZodEffects(type: z.ZodType): z.ZodType {
+function removeZodEffects(type: ZodType): ZodType {
     // remove .refine() etc.
-    if (type instanceof z.ZodEffects) {
+    if (type instanceof ZodEffects) {
         return removeZodEffects(type.innerType());
     }
 
     return type;
 }
 
-function stringCheckProps(type: z.ZodString) {
+function stringCheckProps(type: ZodString) {
     const checks = type._def.checks;
 
     const props: Partial<InputProps> = {
@@ -52,7 +64,7 @@ function stringCheckProps(type: z.ZodString) {
     return props;
 }
 
-function numberCheckProps(type: z.ZodNumber) {
+function numberCheckProps(type: ZodNumber) {
     const checks = type._def.checks;
 
     const props: Partial<InputProps> = {
@@ -82,7 +94,7 @@ function numberCheckProps(type: z.ZodNumber) {
     return props;
 }
 
-function dateCheckProps(type: z.ZodDate) {
+function dateCheckProps(type: ZodDate) {
     const checks = type._def.checks;
 
     const props: Partial<InputProps> = {
@@ -103,22 +115,22 @@ function dateCheckProps(type: z.ZodDate) {
 }
 
 function collectProps(
-    type: z.ZodType,
+    type: ZodType,
     _props: Partial<InputProps> = {},
 ): Partial<InputProps> {
     const props = _props ?? {};
 
     type = removeZodEffects(type);
 
-    if (type instanceof z.ZodDefault) {
+    if (type instanceof ZodDefault) {
         props.defaultValue = type._def.defaultValue();
-    } else if (type instanceof z.ZodOptional || type instanceof z.ZodNullable) {
+    } else if (type instanceof ZodOptional || type instanceof ZodNullable) {
         props.required = false;
-    } else if (type instanceof z.ZodString) {
+    } else if (type instanceof ZodString) {
         Object.assign(props, stringCheckProps(type));
-    } else if (type instanceof z.ZodNumber) {
+    } else if (type instanceof ZodNumber) {
         Object.assign(props, numberCheckProps(type));
-    } else if (type instanceof z.ZodDate) {
+    } else if (type instanceof ZodDate) {
         Object.assign(props, dateCheckProps(type));
     }
 
@@ -131,10 +143,7 @@ function collectProps(
     return props;
 }
 
-export function inputProps(field: {
-    name: string;
-    type: z.ZodType;
-}): InputProps {
+export function inputProps(field: RenderProps): InputProps {
     const props: InputProps = {
         type: "text",
         required: true,
@@ -144,6 +153,11 @@ export function inputProps(field: {
 
     if (props.required === false) {
         delete props.required;
+    }
+
+    if (field.issues.length > 0) {
+        props["aria-invalid"] = true;
+        props["aria-errormessage"] = field.errorId;
     }
 
     return props;

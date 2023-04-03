@@ -9,6 +9,7 @@ import {
     ZodNullable,
     ZodIssue,
 } from "zod";
+import { RenderProps } from ".";
 
 export interface InputProps {
     type: string;
@@ -143,12 +144,7 @@ function collectProps(
     return props;
 }
 
-export function inputProps(field: {
-    name: string;
-    id: string;
-    type: ZodType;
-    issues: ZodIssue[];
-}): InputProps {
+export function inputProps(field: RenderProps): InputProps {
     const props: InputProps = {
         type: "text",
         required: true,
@@ -162,7 +158,7 @@ export function inputProps(field: {
 
     if (field.issues.length > 0) {
         props["aria-invalid"] = true;
-        props["aria-errormessage"] = "error:" + field.id;
+        props["aria-errormessage"] = field.errorId;
     }
 
     return props;

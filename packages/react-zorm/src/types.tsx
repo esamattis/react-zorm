@@ -17,12 +17,18 @@ export type GenericSchema = ZodType;
 export interface RenderProps {
     name: string;
     id: string;
+    errorId: string;
     type: ZodType;
     issues: ZodIssue[];
 }
 
 export type FieldGetter = <
-    Arg extends undefined | "id" | "name" | ((props: RenderProps) => any),
+    Arg extends
+        | undefined
+        | "name"
+        | "id"
+        | "errorid"
+        | ((props: RenderProps) => any),
 >(
     arg?: Arg,
 ) => undefined extends Arg

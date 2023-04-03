@@ -6,6 +6,7 @@ import {
     FieldChainFromSchema,
     IssueCreatorFromSchema,
     IssueCreatorMethods,
+    RenderProps,
     ZodCustomIssueWithMessage,
 } from "./types";
 import { arrayEquals } from "./utils";
@@ -80,11 +81,26 @@ function _fieldChain(
                 return id;
             }
 
+            const errorId = "error:" + id;
+
+            if (args[0] === "errorid") {
+                return errorId;
+            }
+
             if (typeof args[0] === "function") {
                 const matching = issues.filter((issue) => {
                     return arrayEquals(issue.path, path);
                 });
-                return args[0]({ id, name, type: schema, issues: matching });
+
+                const props: RenderProps = {
+                    id,
+                    name,
+                    type: schema,
+                    issues: matching,
+                    errorId,
+                };
+
+                return args[0](props);
             }
 
             return name;

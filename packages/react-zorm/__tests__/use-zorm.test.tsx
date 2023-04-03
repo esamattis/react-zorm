@@ -1156,7 +1156,9 @@ test("can use inputProps()", () => {
                 <input data-testid="input" {...zo.fields.thing(inputProps)} />
 
                 {zo.errors.thing((e) => (
-                    <div data-testid="error">{e.code}</div>
+                    <div data-testid="error" id={zo.fields.thing("errorid")}>
+                        {e.code}
+                    </div>
                 ))}
             </form>
         );
@@ -1166,13 +1168,14 @@ test("can use inputProps()", () => {
 
     fireEvent.submit(screen.getByTestId("form"));
 
-    expect(screen.getByTestId("input")).toHaveAttribute("required");
-    expect(screen.getByTestId("input")).toHaveAttribute("name", "thing");
-    expect(screen.getByTestId("input")).toHaveAttribute("type", "text");
-    expect(screen.getByTestId("input")).toHaveAttribute("minlength", "1");
-    expect(screen.getByTestId("input")).toHaveAttribute("aria-invalid", "true");
-    expect(screen.getByTestId("input")).toHaveAttribute(
-        "aria-errormessage",
-        "error:form:thing",
-    );
+    const input = screen.getByTestId("input");
+    expect(input).toHaveAttribute("required");
+    expect(input).toHaveAttribute("name", "thing");
+    expect(input).toHaveAttribute("type", "text");
+    expect(input).toHaveAttribute("minlength", "1");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("aria-errormessage", "error:form:thing");
+
+    const errorEl = screen.getByTestId("error");
+    expect(errorEl).toHaveAttribute("id", "error:form:thing");
 });

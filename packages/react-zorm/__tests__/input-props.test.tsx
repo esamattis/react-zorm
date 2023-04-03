@@ -4,6 +4,7 @@ import { unstable_inputProps as inputProps } from "../src";
 test("sets type=text by default", () => {
     const props = inputProps({
         id: "form:test",
+        errorId: "error:form:test",
         name: "test",
         type: z.string(),
         issues: [],
@@ -19,6 +20,7 @@ test("sets type=text by default", () => {
 test("sets aria-invalid when there is issues", () => {
     const props = inputProps({
         name: "test",
+        errorId: "error:form:test",
         type: z.string(),
         id: "form:test",
         issues: [

@@ -7,7 +7,6 @@ import {
     ZodDefault,
     ZodOptional,
     ZodNullable,
-    ZodIssue,
 } from "zod";
 import { RenderProps } from ".";
 

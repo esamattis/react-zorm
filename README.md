@@ -4,7 +4,7 @@ Type-safe `<form>` for React using [Zod](https://github.com/colinhacks/zod)!
 
 Features / opinions
 
--   🔥 NEW Automatic progressive HTML Attributes
+-   🔥 NEW experimental automatic progressive HTML attributes helper
     -   Docs and [feedback here](https://github.com/esamattis/react-zorm/discussions/48).
 -   💎 Type-safe
     -   Get form data as a typed object

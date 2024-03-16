@@ -77,6 +77,11 @@ export function useZorm<Schema extends ZodType<any>>(
         return res;
     }, [getForm, schema]);
 
+    const validationReset = useCallback(() => {
+        setValidation(null);
+        submittedOnceRef.current = false;
+    }, []);
+
     const changeHandler = useCallback(() => {
         if (!submittedOnceRef.current) {
             return;
@@ -174,6 +179,7 @@ export function useZorm<Schema extends ZodType<any>>(
                 return formRef.current;
             },
             validation,
+            validationReset,
             fields,
             errors,
             customIssues: customIssues,
@@ -185,5 +191,6 @@ export function useZorm<Schema extends ZodType<any>>(
         schema,
         validate,
         validation,
+        validationReset,
     ]);
 }

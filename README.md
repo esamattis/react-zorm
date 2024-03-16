@@ -468,6 +468,7 @@ Zod schema to parse the form with.
 -   `validation: SafeParseReturnType | null`: The current Zod validation status
     returned by
     [`safeParse()`][safeparse]
+-   `validationReset(): void`: Reset the validation status
 -   `validate(): SafeParseReturnType`: Manually invoke validation
 -   `fields: FieldChain`: The fields chain
 -   `errors: ErroChain`: The error chain
